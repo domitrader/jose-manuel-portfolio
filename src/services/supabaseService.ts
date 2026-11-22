@@ -1,7 +1,7 @@
 import { PortfolioState } from '../types/portfolio';
 import { INITIAL_PORTFOLIO_STATE } from '../data/mockPortfolio';
 
-const LOCAL_STORAGE_KEY = 'jose_manuel_portfolio_state_v2';
+const LOCAL_STORAGE_KEY = 'jose_manuel_portfolio_state_v3';
 const SUPABASE_CONFIG_KEY = 'jose_manuel_supabase_config_v1';
 const CLOUD_ROW_ID = 'jose_manuel_portfolio';
 
@@ -11,8 +11,21 @@ const DEFAULT_SUPABASE_KEY = 'sb_publishable_V0QP2u2j3Ds_-cPTItsgBw_1RGlkerw';
 // Legacy keys to clean up
 const LEGACY_STORAGE_KEYS = [
   'jose_manuel_portfolio_state_v0',
-  'jose_manuel_portfolio_state_v1'
+  'jose_manuel_portfolio_state_v1',
+  'jose_manuel_portfolio_state_v2'
 ];
+
+function mergeMyInvestorIfMissing(state: PortfolioState): PortfolioState {
+  const existingIds = new Set((state.positions || []).map(p => p.id));
+  const missingMyi = INITIAL_PORTFOLIO_STATE.positions.filter(
+    p => (p.portfolioId === 'myinvestor' || p.broker === 'MyInvestor') && !existingIds.has(p.id)
+  );
+  if (missingMyi.length === 0) return state;
+  return {
+    ...state,
+    positions: [...(state.positions || []), ...missingMyi],
+  };
+}
 
 export interface SupabaseCloudConfig {
   url: string;
@@ -113,7 +126,7 @@ export class SupabaseService {
         if (res.ok) {
           const rows = await res.json();
           if (Array.isArray(rows) && rows.length > 0 && rows[0].state) {
-            const cloudState: PortfolioState = rows[0].state;
+            const cloudState: PortfolioState = mergeMyInvestorIfMissing(rows[0].state);
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cloudState));
             return cloudState;
           }
@@ -130,7 +143,7 @@ export class SupabaseService {
 
       const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (stored) {
-        const parsed: PortfolioState = JSON.parse(stored);
+        const parsed: PortfolioState = mergeMyInvestorIfMissing(JSON.parse(stored));
         const hasLegacyMergedPositions = parsed.positions?.some(
           p => p.id === 'pos-wt-gold-3x' || (p.isin === 'IE00B8HGT870' && p.shares === 155)
         );

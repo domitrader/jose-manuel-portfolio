@@ -159,18 +159,19 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
   }, [currentPortfolioPositions]);
 
   // Total cuenta (cartera activa + efectivo activo)
+  const isDegiroOnly = activePortfolioId === 'degiro';
   const isDegiroOrConsolidated = !activePortfolioId || activePortfolioId === 'todas' || activePortfolioId === 'degiro';
-  const totalMarketVal = isDegiroOrConsolidated ? accountSummary.cuentaCompleta : (activeCarteraVal + activeCash);
+  const totalMarketVal = isDegiroOnly ? accountSummary.cuentaCompleta : (activeCarteraVal + activeCash);
   const headerFormatted = formatHeaderEUR(totalMarketVal, hideFigures);
-  const displayCarteraVal = isDegiroOrConsolidated ? accountSummary.cartera : activeCarteraVal;
-  const displayCashVal = isDegiroOrConsolidated ? accountSummary.efectivoEur : activeCash;
-  const displayMargenLibre = isDegiroOrConsolidated ? accountSummary.margenLibre : activeCash;
+  const displayCarteraVal = isDegiroOnly ? accountSummary.cartera : activeCarteraVal;
+  const displayCashVal = isDegiroOnly ? accountSummary.efectivoEur : activeCash;
+  const displayMargenLibre = isDegiroOnly ? accountSummary.margenLibre : activeCash;
 
   // Métricas calculadas para la cartera activa
   const metrics = calculatePortfolioMetrics(currentPortfolioPositions, activeCash);
-  const displayDiaBp = isDegiroOrConsolidated ? accountSummary.diaBp : metrics.dailyChangeValue;
-  const displayDiaBpPct = isDegiroOrConsolidated ? accountSummary.diaBpPct : metrics.dailyChangePct;
-  const displayTotalBp = isDegiroOrConsolidated ? accountSummary.totalBpDegiro : metrics.unrealizedGainLoss;
+  const displayDiaBp = isDegiroOnly ? accountSummary.diaBp : metrics.dailyChangeValue;
+  const displayDiaBpPct = isDegiroOnly ? accountSummary.diaBpPct : metrics.dailyChangePct;
+  const displayTotalBp = isDegiroOnly ? accountSummary.totalBpDegiro : metrics.unrealizedGainLoss;
   const chartPoints = MOCK_CHART_DATA[selectedTimeRange] || MOCK_CHART_DATA['1D'];
 
   // Filtrado y ordenación de posiciones abiertas

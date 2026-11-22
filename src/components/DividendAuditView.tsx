@@ -30,6 +30,9 @@ export const DividendAuditView: React.FC<DividendAuditViewProps> = ({ hideFigure
   const [activeTab, setActiveTab] = useState<'historial' | 'mapa-futuro' | 'empresas'>('historial');
   const [searchTerm, setSearchTerm] = useState<string>('');
   
+  // Activo seleccionado en la pestaña 'Por Activo'
+  const [selectedProductIsin, setSelectedProductIsin] = useState<string>('TODOS');
+
   // Botón solicitado: Dividendos netos con retención 19% (fiscalidad española) vs. Brutos
   const [taxRateSpanish19, setTaxRateSpanish19] = useState<boolean>(true);
 
@@ -149,6 +152,43 @@ export const DividendAuditView: React.FC<DividendAuditViewProps> = ({ hideFigure
     return Math.max(...rawData.annualSummary.map(a => a.net), 1);
   }, [rawData.annualSummary]);
 
+  // Datos consolidados o específicos para la pestaña 'Por Activo'
+  const selectedProductData = useMemo(() => {
+    if (selectedProductIsin === 'TODOS') {
+      const gross = rawData.productSummary.reduce((acc, p) => acc + p.gross, 0);
+      const tax = rawData.productSummary.reduce((acc, p) => acc + p.tax, 0);
+      const net = rawData.productSummary.reduce((acc, p) => acc + p.net, 0);
+      const count = rawData.productSummary.reduce((acc, p) => acc + p.count, 0);
+      return {
+        product: 'Todos los Activos con Dividendo',
+        ticker: `${rawData.productSummary.length} activos`,
+        isin: 'TODOS',
+        flag: '💼',
+        gross,
+        tax,
+        net,
+        count,
+      };
+    }
+    const found = rawData.productSummary.find(p => p.isin === selectedProductIsin);
+    if (found) return found;
+    return rawData.productSummary[0] || {
+      product: 'Activo',
+      ticker: '',
+      isin: '',
+      flag: '📄',
+      gross: 0,
+      tax: 0,
+      net: 0,
+      count: 0,
+    };
+  }, [selectedProductIsin, rawData.productSummary]);
+
+  const selectedProductPayments = useMemo(() => {
+    if (selectedProductIsin === 'TODOS') return rawData.payments;
+    return rawData.payments.filter(p => p.isin === selectedProductIsin);
+  }, [selectedProductIsin, rawData.payments]);
+
   return (
     <div className="space-y-4">
       {/* 1. SELECTOR DE CARTERA / BROKER */}
@@ -212,124 +252,28 @@ export const DividendAuditView: React.FC<DividendAuditViewProps> = ({ hideFigure
         </div>
       </div>
 
-      {/* 2. SUMA TOTAL COBROS FUTUROS & BOTÓN FISCALIDAD ESPAÑOLA 19% */}
-      <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-white rounded-3xl p-5 shadow-xl border border-slate-800">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-emerald-400" />
-            <span className="text-[11px] font-black uppercase tracking-wider text-slate-300">
-              Suma Total Cobros Futuros Proyectados
-            </span>
-          </div>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-            {filteredFutureCalendar.length} Pagos Estimados
+      {/* 2. NAVEGACIÓN PRINCIPAL DE PESTAÑAS (ARRIBA DEL TODO) */}
+      <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-2xl gap-1 shadow-inner border border-slate-200/60 dark:border-slate-700/60">
+        <button
+          onClick={() => setActiveTab('historial')}
+          className={`flex-1 py-2 px-3 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+            activeTab === 'historial'
+              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/10 dark:ring-white/10'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <span>📜 Historial</span>
+          <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+            {filteredPayments.length}
           </span>
-        </div>
+        </button>
 
-        {/* BOTÓN CONMUTADOR: BRUTO vs NETO (19% IRPF ESPAÑA) */}
-        <div className="flex items-center bg-slate-900/90 p-1 rounded-2xl mb-4 border border-slate-700/60 shadow-inner">
-          <button
-            type="button"
-            onClick={() => setTaxRateSpanish19(false)}
-            className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-              !taxRateSpanish19
-                ? 'bg-slate-700 text-white shadow-sm ring-1 ring-slate-500'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <span>💶 Dividendos Brutos</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setTaxRateSpanish19(true)}
-            className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 ${
-              taxRateSpanish19
-                ? 'bg-emerald-600 text-white shadow-sm ring-1 ring-emerald-400'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <span>🇪🇸 Neto (-19% IRPF España)</span>
-          </button>
-        </div>
-
-        {/* Cifra Grande Principal Dinámica */}
-        <div className="text-center py-1">
-          <div className="text-3xl sm:text-4xl font-black tracking-tight text-white">
-            +{formatEUR(taxRateSpanish19 ? futureNet19Sum : futureGrossSum, hideFigures)}
-          </div>
-          <div className="text-xs font-medium text-slate-300 mt-1 flex items-center justify-center gap-1.5">
-            <span>{taxRateSpanish19 ? 'Neto en Cuenta (Tras 19% Fiscalidad Española)' : 'Importe Total Bruto Estimado'}</span>
-          </div>
-        </div>
-
-        {/* Desglose de Retenciones y Neto */}
-        <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-800 text-center">
-          <div className="bg-slate-900/70 rounded-xl p-2 border border-slate-800">
-            <div className="text-[10px] text-slate-400 font-bold uppercase">Total Bruto</div>
-            <div className="text-xs font-black text-slate-200 mt-0.5">
-              +{formatEUR(futureGrossSum, hideFigures)}
-            </div>
-          </div>
-          <div className="bg-slate-900/70 rounded-xl p-2 border border-slate-800">
-            <div className="text-[10px] text-amber-400 font-bold uppercase">Retención 19%</div>
-            <div className="text-xs font-black text-rose-400 mt-0.5">
-              -{formatEUR(futureSpanishTax19Sum, hideFigures)}
-            </div>
-          </div>
-          <div className="bg-slate-900/70 rounded-xl p-2 border border-emerald-500/30">
-            <div className="text-[10px] text-emerald-400 font-bold uppercase">Neto en Banco</div>
-            <div className="text-xs font-black text-emerald-400 mt-0.5">
-              +{formatEUR(futureNet19Sum, hideFigures)}
-            </div>
-          </div>
-        </div>
-
-        {/* Nota legal / tributaria de la retención del 19% en España */}
-        <div className="mt-3.5 bg-slate-900/90 rounded-2xl p-2.5 text-[11px] text-slate-300 border border-slate-800 flex items-start gap-2">
-          <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-          <span className="leading-snug">
-            <strong>Fiscalidad Española:</strong> Retención aplicada del <strong>19%</strong> correspondiente al primer tramo de la base liquidable del ahorro (&lt; 6.000 € anuales en IRPF). Formulario W-8BEN aplicado en dividendos USA (15% en origen + 4% complementario).
-          </span>
-        </div>
-      </div>
-
-      {/* 3. HISTÓRICO ACUMULADO */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 shadow-xs">
-        <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-          <div className="flex items-center gap-2">
-            <Receipt className="w-4 h-4 text-blue-600" />
-            <h3 className="font-extrabold text-xs uppercase tracking-wider text-slate-900 dark:text-white">
-              Historial Cobrado Real ({filteredPayments.length} abonos)
-            </h3>
-          </div>
-          <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">
-            +{formatEUR(currentNet, hideFigures)} neto
-          </span>
-        </div>
-        <div className="grid grid-cols-3 gap-2 mt-3 text-center">
-          <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-            <div className="text-[10px] text-slate-400 font-bold">Total Bruto</div>
-            <div className="text-xs font-black text-slate-800 dark:text-slate-200">{formatEUR(currentGross, hideFigures)}</div>
-          </div>
-          <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-            <div className="text-[10px] text-slate-400 font-bold">Retenciones</div>
-            <div className="text-xs font-black text-rose-500">-{formatEUR(currentTaxes, hideFigures)}</div>
-          </div>
-          <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50">
-            <div className="text-[10px] text-emerald-700 dark:text-emerald-300 font-bold">Neto Cobrado</div>
-            <div className="text-xs font-black text-emerald-600 dark:text-emerald-400">{formatEUR(currentNet, hideFigures)}</div>
-          </div>
-        </div>
-      </div>
-
-      {/* 4. NAVEGACIÓN INTERNA: MAPA FUTURO | HISTORIAL | POR EMPRESA */}
-      <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-2xl gap-1">
         <button
           onClick={() => setActiveTab('mapa-futuro')}
-          className={`flex-1 py-2 text-xs font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+          className={`flex-1 py-2 px-3 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 ${
             activeTab === 'mapa-futuro'
-              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/10 dark:ring-white/10'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
           <span>📅 Mapa Futuro</span>
@@ -337,121 +281,259 @@ export const DividendAuditView: React.FC<DividendAuditViewProps> = ({ hideFigure
         </button>
 
         <button
-          onClick={() => setActiveTab('historial')}
-          className={`flex-1 py-2 text-xs font-extrabold rounded-xl transition-all ${
-            activeTab === 'historial'
-              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
-          }`}
-        >
-          📜 Historial ({filteredPayments.length})
-        </button>
-
-        <button
           onClick={() => setActiveTab('empresas')}
-          className={`flex-1 py-2 text-xs font-extrabold rounded-xl transition-all ${
+          className={`flex-1 py-2 px-3 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 ${
             activeTab === 'empresas'
-              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/10 dark:ring-white/10'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
-          🏢 Por Activo
+          <span>🏢 Por Activo</span>
+          <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+            {rawData.productSummary.length}
+          </span>
         </button>
       </div>
 
-      {/* CONTENIDO PESTAÑA: MAPA FUTURO */}
-      {activeTab === 'mapa-futuro' && (
-        <div className="space-y-4">
-          {/* TARJETA DESTACADA: SUMA TOTAL ANUAL EN MAPA FUTURO */}
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white rounded-3xl p-5 shadow-lg border border-slate-700/60">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-slate-700/50">
-              <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black shrink-0">
-                  <Calendar className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="text-[10px] font-black uppercase tracking-wider text-emerald-400">
-                    Proyección Anual 2027 • Suma Total de Cartera
-                  </div>
-                  <h3 className="text-base font-extrabold text-white">
-                    {futureDistinctAssets.length} {futureDistinctAssets.length === 1 ? 'Activo' : 'Activos'} con Dividendo ({filteredFutureCalendar.length} Cobros en el Año)
-                  </h3>
-                </div>
-              </div>
+      {/* 3. PANEL HERO DINÁMICO (CUADRO AZUL QUE REACCIONA A LA PESTAÑA Y AL ACTIVO SELECCIONADO) */}
+      {activeTab === 'historial' && (
+        <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-white rounded-3xl p-5 shadow-xl border border-slate-800">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Receipt className="w-4 h-4 text-emerald-400" />
+              <span className="text-[11px] font-black uppercase tracking-wider text-slate-300">
+                Historial de Dividendos Cobrados
+              </span>
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              {filteredPayments.length} Cobros Reales Registrados
+            </span>
+          </div>
 
-              {/* Botón selector Bruto / Neto 19% */}
-              <div className="flex items-center gap-1.5 p-1 bg-slate-800/80 rounded-xl border border-slate-700 self-start sm:self-auto">
-                <button
-                  type="button"
-                  onClick={() => setTaxRateSpanish19(false)}
-                  className={`px-3 py-1 text-[11px] font-bold rounded-lg transition-all ${
-                    !taxRateSpanish19 ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  💶 Bruto
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTaxRateSpanish19(true)}
-                  className={`px-3 py-1 text-[11px] font-bold rounded-lg transition-all ${
-                    taxRateSpanish19 ? 'bg-emerald-500 text-white shadow-xs' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  🇪🇸 Neto (-19% IRPF)
-                </button>
+          <div className="text-center py-2">
+            <div className="text-3xl sm:text-4xl font-black tracking-tight text-emerald-400">
+              +{formatEUR(currentNet, hideFigures)}
+            </div>
+            <div className="text-xs font-medium text-slate-300 mt-1">
+              Neto Líquido Real Ingresado en Cuenta
+            </div>
+          </div>
+
+          {/* 3 Columnas: Bruto, Retenciones, Neto */}
+          <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-800 text-center">
+            <div className="bg-slate-900/70 rounded-xl p-2 border border-slate-800">
+              <div className="text-[10px] text-slate-400 font-bold uppercase">Total Bruto</div>
+              <div className="text-xs font-black text-slate-200 mt-0.5">
+                +{formatEUR(currentGross, hideFigures)}
               </div>
             </div>
-
-            {/* 3 Columnas de Totales Anuales */}
-            <div className="grid grid-cols-3 gap-3 pt-3.5 text-center">
-              <div className="bg-white/5 rounded-2xl p-2.5 border border-white/5">
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  Total Bruto Anual
-                </div>
-                <div className="text-base sm:text-lg font-black text-white mt-0.5">
-                  +{formatEUR(futureGrossSum, hideFigures)}
-                </div>
-                <div className="text-[9px] text-slate-400 mt-0.5 font-medium">100% devengado</div>
-              </div>
-
-              <div className="bg-rose-500/10 rounded-2xl p-2.5 border border-rose-500/20">
-                <div className="text-[10px] font-bold text-rose-300 uppercase tracking-wider">
-                  Retenciones (19%)
-                </div>
-                <div className="text-base sm:text-lg font-black text-rose-400 mt-0.5">
-                  -{formatEUR(futureSpanishTax19Sum, hideFigures)}
-                </div>
-                <div className="text-[9px] text-rose-300/80 mt-0.5 font-medium">IRPF España</div>
-              </div>
-
-              <div className="bg-emerald-500/15 rounded-2xl p-2.5 border border-emerald-500/30">
-                <div className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">
-                  Total Neto Anual
-                </div>
-                <div className="text-base sm:text-lg font-black text-emerald-400 mt-0.5">
-                  +{formatEUR(futureNet19Sum, hideFigures)}
-                </div>
-                <div className="text-[9px] text-emerald-300/80 mt-0.5 font-medium">Líquido a percibir</div>
+            <div className="bg-slate-900/70 rounded-xl p-2 border border-slate-800">
+              <div className="text-[10px] text-amber-400 font-bold uppercase">Retenciones</div>
+              <div className="text-xs font-black text-rose-400 mt-0.5">
+                -{formatEUR(currentTaxes, hideFigures)}
               </div>
             </div>
-
-            {/* Resumen por Activo */}
-            <div className="mt-3.5 pt-3 border-t border-slate-700/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-slate-300">
-              <span className="font-semibold text-slate-400">Activos en el cómputo anual:</span>
-              <div className="flex flex-wrap items-center gap-2">
-                {futureDistinctAssets.map(a => (
-                  <span key={a.isin} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/10 text-white font-bold border border-white/10">
-                    <span>{a.flag}</span>
-                    <span>{a.product}</span>
-                    <span className="text-emerald-400">
-                      (+{formatEUR(taxRateSpanish19 ? a.annualGross * 0.81 : a.annualGross, hideFigures)})
-                    </span>
-                  </span>
-                ))}
+            <div className="bg-slate-900/70 rounded-xl p-2 border border-emerald-500/30">
+              <div className="text-[10px] text-emerald-400 font-bold uppercase">Neto Cobrado</div>
+              <div className="text-xs font-black text-emerald-400 mt-0.5">
+                +{formatEUR(currentNet, hideFigures)}
               </div>
             </div>
           </div>
 
+          {/* Selector de Años en el Historial */}
+          <div className="mt-3.5 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+            <span className="text-[11px] text-slate-400 font-semibold">Filtrar por año:</span>
+            <div className="flex items-center gap-1.5 overflow-x-auto">
+              {['Todos', ...rawData.yearsAvailable].map(y => (
+                <button
+                  key={y}
+                  onClick={() => setSelectedYear(y)}
+                  className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all ${
+                    selectedYear === y
+                      ? 'bg-white text-slate-900 shadow-xs'
+                      : 'bg-slate-800/80 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {y}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'mapa-futuro' && (
+        <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-white rounded-3xl p-5 shadow-xl border border-slate-800">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-emerald-400" />
+              <span className="text-[11px] font-black uppercase tracking-wider text-slate-300">
+                Proyección Anual 2027 • Cobros Futuros
+              </span>
+            </div>
+
+            {/* BOTÓN CONMUTADOR: BRUTO vs NETO (19% IRPF ESPAÑA) */}
+            <div className="flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-700/60 shadow-inner self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={() => setTaxRateSpanish19(false)}
+                className={`py-1 px-2.5 rounded-lg text-[11px] font-bold transition-all ${
+                  !taxRateSpanish19
+                    ? 'bg-slate-700 text-white shadow-sm ring-1 ring-slate-500'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                💶 Bruto
+              </button>
+              <button
+                type="button"
+                onClick={() => setTaxRateSpanish19(true)}
+                className={`py-1 px-2.5 rounded-lg text-[11px] font-black transition-all ${
+                  taxRateSpanish19
+                    ? 'bg-emerald-600 text-white shadow-sm ring-1 ring-emerald-400'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                🇪🇸 Neto (-19% IRPF)
+              </button>
+            </div>
+          </div>
+
+          <div className="text-center py-2">
+            <div className="text-3xl sm:text-4xl font-black tracking-tight text-white">
+              +{formatEUR(taxRateSpanish19 ? futureNet19Sum : futureGrossSum, hideFigures)}
+            </div>
+            <div className="text-xs font-medium text-slate-300 mt-1">
+              {taxRateSpanish19
+                ? 'Neto Anual Proyectado (Tras 19% Fiscalidad Española)'
+                : 'Importe Total Bruto Proyectado'}
+            </div>
+          </div>
+
+          {/* 3 Columnas: Bruto, Retención 19%, Neto */}
+          <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-800 text-center">
+            <div className="bg-slate-900/70 rounded-xl p-2 border border-slate-800">
+              <div className="text-[10px] text-slate-400 font-bold uppercase">Total Bruto</div>
+              <div className="text-xs font-black text-slate-200 mt-0.5">
+                +{formatEUR(futureGrossSum, hideFigures)}
+              </div>
+            </div>
+            <div className="bg-slate-900/70 rounded-xl p-2 border border-slate-800">
+              <div className="text-[10px] text-amber-400 font-bold uppercase">Retención 19%</div>
+              <div className="text-xs font-black text-rose-400 mt-0.5">
+                -{formatEUR(futureSpanishTax19Sum, hideFigures)}
+              </div>
+            </div>
+            <div className="bg-slate-900/70 rounded-xl p-2 border border-emerald-500/30">
+              <div className="text-[10px] text-emerald-400 font-bold uppercase">Neto Anual</div>
+              <div className="text-xs font-black text-emerald-400 mt-0.5">
+                +{formatEUR(futureNet19Sum, hideFigures)}
+              </div>
+            </div>
+          </div>
+
+          {/* Resumen de activos que reparten en el año */}
+          <div className="mt-3.5 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-300">
+            <span className="font-semibold text-slate-400">Activos en el cómputo anual:</span>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {futureDistinctAssets.map(a => (
+                <span key={a.isin} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-white/10 text-white font-bold border border-white/10 text-[10px]">
+                  <span>{a.flag}</span>
+                  <span>{a.product}</span>
+                  <span className="text-emerald-400">
+                    (+{formatEUR(taxRateSpanish19 ? a.annualGross * 0.81 : a.annualGross, hideFigures)})
+                  </span>
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'empresas' && (
+        <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-white rounded-3xl p-5 shadow-xl border border-slate-800">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-emerald-400" />
+              <span className="text-[11px] font-black uppercase tracking-wider text-slate-300 truncate max-w-[220px]">
+                {selectedProductData.product}
+              </span>
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              {selectedProductData.count} Cobros Realizados
+            </span>
+          </div>
+
+          <div className="text-center py-2">
+            <div className="text-3xl sm:text-4xl font-black tracking-tight text-emerald-400">
+              +{formatEUR(selectedProductData.net, hideFigures)}
+            </div>
+            <div className="text-xs font-medium text-slate-300 mt-1">
+              Neto Real Cobrado de {selectedProductData.product}
+            </div>
+          </div>
+
+          {/* 3 Columnas: Bruto, Retención, Neto */}
+          <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-800 text-center">
+            <div className="bg-slate-900/70 rounded-xl p-2 border border-slate-800">
+              <div className="text-[10px] text-slate-400 font-bold uppercase">Total Bruto</div>
+              <div className="text-xs font-black text-slate-200 mt-0.5">
+                +{formatEUR(selectedProductData.gross, hideFigures)}
+              </div>
+            </div>
+            <div className="bg-slate-900/70 rounded-xl p-2 border border-slate-800">
+              <div className="text-[10px] text-amber-400 font-bold uppercase">Retenciones</div>
+              <div className="text-xs font-black text-rose-400 mt-0.5">
+                -{formatEUR(selectedProductData.tax, hideFigures)}
+              </div>
+            </div>
+            <div className="bg-slate-900/70 rounded-xl p-2 border border-emerald-500/30">
+              <div className="text-[10px] text-emerald-400 font-bold uppercase">Neto Total</div>
+              <div className="text-xs font-black text-emerald-400 mt-0.5">
+                +{formatEUR(selectedProductData.net, hideFigures)}
+              </div>
+            </div>
+          </div>
+
+          {/* Selector Rápido de Activo en la Tarjeta */}
+          <div className="mt-3.5 pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+            <span className="text-[11px] text-slate-400 font-semibold">Tocar activo:</span>
+            <div className="flex items-center gap-1.5 overflow-x-auto">
+              <button
+                type="button"
+                onClick={() => setSelectedProductIsin('TODOS')}
+                className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all ${
+                  selectedProductIsin === 'TODOS'
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'bg-slate-800/80 text-slate-400 hover:text-white'
+                }`}
+              >
+                🌐 Todos
+              </button>
+              {rawData.productSummary.map(prod => (
+                <button
+                  key={prod.isin}
+                  type="button"
+                  onClick={() => setSelectedProductIsin(prod.isin)}
+                  className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all flex items-center gap-1 shrink-0 ${
+                    selectedProductIsin === prod.isin
+                      ? 'bg-emerald-500 text-white shadow-xs'
+                      : 'bg-slate-800/80 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <span>{prod.flag}</span>
+                  <span>{prod.product.includes('Visa') ? 'Visa Inc.' : 'Bono EUR'}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CONTENIDO PESTAÑA: MAPA FUTURO */}
+      {activeTab === 'mapa-futuro' && (
+        <div className="space-y-4">
           {/* Tarjeta explicativa de los activos de José Manuel */}
           <div className="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 rounded-3xl p-4 text-xs">
             <div className="flex items-center gap-2 text-blue-900 dark:text-blue-300 font-bold mb-1">
@@ -583,41 +665,128 @@ export const DividendAuditView: React.FC<DividendAuditViewProps> = ({ hideFigure
 
       {/* CONTENIDO PESTAÑA: POR ACTIVO */}
       {activeTab === 'empresas' && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 shadow-xs space-y-2">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-            <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-              Activo / Producto
-            </span>
-            <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-              Neto Cobrado Real
-            </span>
-          </div>
+        <div className="space-y-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 shadow-xs space-y-2">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+              <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                Selecciona un Activo para Ver sus Datos Arriba
+              </span>
+              <span className="text-xs font-bold text-slate-400">
+                {rawData.productSummary.length} activos
+              </span>
+            </div>
 
-          <div className="space-y-1">
-            {rawData.productSummary.map((prod, idx) => (
-              <div
-                key={prod.isin || idx}
-                className="flex items-center justify-between py-2 px-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
+            <div className="space-y-2 pt-1">
+              {/* Botón para ver todos */}
+              <button
+                type="button"
+                onClick={() => setSelectedProductIsin('TODOS')}
+                className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all border text-left ${
+                  selectedProductIsin === 'TODOS'
+                    ? 'bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-400 dark:border-emerald-600 ring-2 ring-emerald-500/30'
+                    : 'bg-slate-50/80 dark:bg-slate-800/40 border-slate-100 dark:border-slate-800 hover:border-slate-300'
+                }`}
               >
-                <div className="flex items-center gap-2 min-w-0 pr-2">
-                  <span className="text-sm shrink-0">{prod.flag}</span>
-                  <div className="min-w-0">
-                    <div className="font-extrabold text-slate-900 dark:text-white text-xs truncate">
-                      {prod.product}
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-slate-800 text-white font-black text-sm flex items-center justify-center">
+                    🌐
+                  </div>
+                  <div>
+                    <div className="font-black text-slate-900 dark:text-white text-xs">
+                      Todos los Activos Consolidados
                     </div>
-                    <div className="text-[10px] text-slate-400">
-                      {prod.count} pagos • Bruto: {prod.gross.toFixed(2)} € • Ret.: -{prod.tax.toFixed(2)} €
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400">
+                      Suma total de cobros históricos de la cartera
                     </div>
                   </div>
                 </div>
-
-                <div className="text-right shrink-0">
-                  <span className="font-black text-emerald-600 dark:text-emerald-400 text-xs">
-                    +{formatEUR(prod.net, hideFigures)}
-                  </span>
+                <div className="text-right">
+                  <div className="font-black text-emerald-600 dark:text-emerald-400 text-xs">
+                    +{formatEUR(rawData.totalHistoricalNet, hideFigures)}
+                  </div>
+                  <div className="text-[9px] text-slate-400 font-bold uppercase">Neto Total</div>
                 </div>
-              </div>
-            ))}
+              </button>
+
+              {/* Lista de cada activo */}
+              {rawData.productSummary.map((prod) => {
+                const isSelected = selectedProductIsin === prod.isin;
+                return (
+                  <button
+                    key={prod.isin}
+                    type="button"
+                    onClick={() => setSelectedProductIsin(prod.isin)}
+                    className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all border text-left ${
+                      isSelected
+                        ? 'bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-400 dark:border-emerald-600 ring-2 ring-emerald-500/30'
+                        : 'bg-slate-50/80 dark:bg-slate-800/40 border-slate-100 dark:border-slate-800 hover:border-slate-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                      <div className="w-9 h-9 rounded-xl bg-slate-800 text-white font-black text-xs flex items-center justify-center shrink-0">
+                        {prod.flag}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="font-black text-slate-900 dark:text-white text-xs truncate">
+                          {prod.product}
+                        </div>
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
+                          {prod.count} pagos • Bruto: {prod.gross.toFixed(2)} € • Retención: -{prod.tax.toFixed(2)} €
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <div className="font-black text-emerald-600 dark:text-emerald-400 text-xs">
+                        +{formatEUR(prod.net, hideFigures)}
+                      </div>
+                      <div className="text-[9px] text-slate-400 font-bold uppercase">
+                        {isSelected ? '✓ Seleccionado' : 'Tocar para ver'}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Historial detallado de cobros del activo seleccionado */}
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 shadow-xs space-y-2">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+              <h4 className="font-extrabold text-xs text-slate-900 dark:text-white flex items-center gap-2">
+                <Receipt className="w-4 h-4 text-emerald-500" />
+                <span>Cobros de {selectedProductData.product} ({selectedProductPayments.length} abonos)</span>
+              </h4>
+              <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">
+                +{formatEUR(selectedProductData.net, hideFigures)}
+              </span>
+            </div>
+
+            <div className="space-y-2 pt-1">
+              {selectedProductPayments.map((p, idx) => (
+                <div
+                  key={`${p.date}_${p.isin}_${idx}`}
+                  className="bg-slate-50/80 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-2xl p-2.5 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                    <span className="text-base shrink-0">{p.flag}</span>
+                    <div className="min-w-0">
+                      <div className="font-bold text-slate-900 dark:text-white text-xs truncate">
+                        {p.product}
+                      </div>
+                      <div className="text-[10px] text-slate-400 font-mono">
+                        {p.date} • Bruto: {p.gross.toFixed(2)} € • Ret.: -{p.tax.toFixed(2)} €
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="font-black text-emerald-600 dark:text-emerald-400 text-xs">
+                      +{formatEUR(p.net, hideFigures)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

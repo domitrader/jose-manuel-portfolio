@@ -1,7 +1,7 @@
 import { PortfolioState } from '../types/portfolio';
 import { INITIAL_PORTFOLIO_STATE } from '../data/mockPortfolio';
 
-const LOCAL_STORAGE_KEY = 'jose_manuel_portfolio_state_v4';
+const LOCAL_STORAGE_KEY = 'jose_manuel_portfolio_state_v5';
 const SUPABASE_CONFIG_KEY = 'jose_manuel_supabase_config_v1';
 const CLOUD_ROW_ID = 'jose_manuel_portfolio';
 
@@ -13,11 +13,16 @@ const LEGACY_STORAGE_KEYS = [
   'jose_manuel_portfolio_state_v0',
   'jose_manuel_portfolio_state_v1',
   'jose_manuel_portfolio_state_v2',
-  'jose_manuel_portfolio_state_v3'
+  'jose_manuel_portfolio_state_v3',
+  'jose_manuel_portfolio_state_v4'
 ];
 
 function mergeMyInvestorIfMissing(state: PortfolioState): PortfolioState {
-  const existingIds = new Set((state.positions || []).map(p => p.id));
+  // Eliminar la antigua posición agregada de Urbanitae si existiera en la nube o caché
+  const cleanedPositions = (state.positions || []).filter(p => p.id !== 'pos-urbanitae-12');
+  const hadLegacy = (state.positions || []).some(p => p.id === 'pos-urbanitae-12');
+
+  const existingIds = new Set(cleanedPositions.map(p => p.id));
   const missingPositions = INITIAL_PORTFOLIO_STATE.positions.filter(
     p => (p.portfolioId === 'myinvestor' || p.broker === 'MyInvestor' || p.portfolioId === 'urbanitae' || p.broker === 'Urbanitae') && !existingIds.has(p.id)
   );
@@ -26,11 +31,11 @@ function mergeMyInvestorIfMissing(state: PortfolioState): PortfolioState {
     pt => !existingPortIds.has(pt.id)
   );
 
-  if (missingPositions.length === 0 && missingPortfolios.length === 0) return state;
+  if (!hadLegacy && missingPositions.length === 0 && missingPortfolios.length === 0) return state;
   return {
     ...state,
     portfolios: [...(state.portfolios || []), ...missingPortfolios],
-    positions: [...(state.positions || []), ...missingPositions],
+    positions: [...cleanedPositions, ...missingPositions],
   };
 }
 

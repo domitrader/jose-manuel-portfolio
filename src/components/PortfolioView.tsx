@@ -806,13 +806,13 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                   </div>
                 )}
 
-                {/* SECCIÓN FONDOS DE INVERSIÓN (MYINVESTOR / INDEXADOS) */}
+                {/* SECCIÓN FONDOS DE INVERSIÓN (MYINVESTOR / URBANITAE) */}
                 {(selectedAssetFilter === 'Todos' || selectedAssetFilter === 'Fondos') && fondosPositions.length > 0 && (
                   <div className="mb-5">
                     <div className="flex items-center justify-between mb-2 pb-1 border-b border-slate-100 dark:border-slate-800">
                       <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
                         <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
-                        <span>Fondos de Inversión ({fondosPositions.length})</span>
+                        <span>{activePortfolioId === 'urbanitae' ? `Proyectos Crowdfunding (${fondosPositions.length})` : `Fondos e Inversión (${fondosPositions.length})`}</span>
                       </span>
                       <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
                         {formatEUR(fondosVal, hideFigures)}
@@ -821,6 +821,8 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
 
                     <div className="space-y-1">
                       {fondosPositions.map(pos => {
+                        const isUrbanitae = pos.broker === 'Urbanitae';
+
                         return (
                           <div
                             key={pos.id}
@@ -835,9 +837,14 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                                 <div className="font-bold text-slate-900 dark:text-white text-xs truncate flex items-center gap-1.5">
                                   <span>{pos.name}</span>
                                   {pos.countryFlag && <span className="text-xs">{pos.countryFlag}</span>}
+                                  {isUrbanitae && (
+                                    <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shrink-0">
+                                      Financiado
+                                    </span>
+                                  )}
                                 </div>
-                                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                                  {pos.market || 'MyInvestor'} | € {pos.currentPrice} × {pos.shares} part.
+                                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 truncate">
+                                  {isUrbanitae ? pos.market : `${pos.market || 'MyInvestor'} | € ${pos.currentPrice} × ${pos.shares} part.`}
                                 </div>
                               </div>
                             </div>
@@ -846,7 +853,7 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                                 {formatEUR(pos.totalValue, hideFigures)}
                               </div>
                               <div className="text-[11px] font-semibold text-emerald-500">
-                                {pos.purchaseDate ? formatDateToSpanish(pos.purchaseDate) : 'Fondo Indexado'}
+                                {isUrbanitae ? 'Urbanitae' : (pos.purchaseDate ? formatDateToSpanish(pos.purchaseDate) : 'Fondo Indexado')}
                               </div>
                             </div>
                           </div>
@@ -1098,42 +1105,81 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-3 my-4">
-              <div className="bg-slate-50 p-3 rounded-xl">
-                <span className="text-[11px] text-slate-500">Títulos en posesión</span>
-                <div className="text-base font-bold text-slate-900">{selectedPosition.shares}</div>
+            {selectedPosition.broker === 'Urbanitae' ? (
+              <div className="space-y-3 my-4">
+                <div className="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 p-3 rounded-2xl flex items-center justify-between text-xs">
+                  <span className="text-emerald-800 dark:text-emerald-300 font-bold flex items-center gap-1.5">
+                    <span>Estado del Proyecto:</span>
+                  </span>
+                  <span className="font-extrabold text-emerald-900 dark:text-emerald-200 bg-white dark:bg-slate-900 px-2 py-0.5 rounded-lg border border-emerald-200">
+                    Financiado
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                    <span className="text-[11px] text-slate-500">Inversión Aportada</span>
+                    <div className="text-base font-bold text-slate-900 dark:text-white">{formatEUR(selectedPosition.totalValue)}</div>
+                  </div>
+                  <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                    <span className="text-[11px] text-slate-500">Plataforma</span>
+                    <div className="text-base font-bold text-emerald-600">Urbanitae</div>
+                  </div>
+                  <div className="col-span-2 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                    <span className="text-[11px] text-slate-500">Modalidad & Participación</span>
+                    <div className="text-xs font-bold text-slate-900 dark:text-white mt-0.5">{selectedPosition.market}</div>
+                  </div>
+                </div>
               </div>
-              <div className="bg-slate-50 p-3 rounded-xl">
-                <span className="text-[11px] text-slate-500">Precio de compra medio</span>
-                <div className="text-base font-bold text-slate-900">{formatEUR(selectedPosition.avgPrice)}</div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 my-4">
+                <div className="bg-slate-50 p-3 rounded-xl">
+                  <span className="text-[11px] text-slate-500">Títulos en posesión</span>
+                  <div className="text-base font-bold text-slate-900">{selectedPosition.shares}</div>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl">
+                  <span className="text-[11px] text-slate-500">Precio de compra medio</span>
+                  <div className="text-base font-bold text-slate-900">{formatEUR(selectedPosition.avgPrice)}</div>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl">
+                  <span className="text-[11px] text-slate-500">Cotización actual</span>
+                  <div className="text-base font-bold text-slate-900">{formatEUR(selectedPosition.currentPrice)}</div>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl">
+                  <span className="text-[11px] text-slate-500">Valor de posición</span>
+                  <div className="text-base font-bold text-slate-900">{formatEUR(selectedPosition.totalValue)}</div>
+                </div>
               </div>
-              <div className="bg-slate-50 p-3 rounded-xl">
-                <span className="text-[11px] text-slate-500">Cotización actual</span>
-                <div className="text-base font-bold text-slate-900">{formatEUR(selectedPosition.currentPrice)}</div>
-              </div>
-              <div className="bg-slate-50 p-3 rounded-xl">
-                <span className="text-[11px] text-slate-500">Valor de posición</span>
-                <div className="text-base font-bold text-slate-900">{formatEUR(selectedPosition.totalValue)}</div>
-              </div>
-            </div>
+            )}
 
             <div className="flex items-center gap-2 pt-2">
               <button
                 onClick={() => {
-                  const newShares = prompt('Modificar número de títulos:', selectedPosition.shares.toString());
-                  if (newShares && !isNaN(Number(newShares))) {
-                    const sharesNum = Number(newShares);
-                    onUpdatePosition({
-                      ...selectedPosition,
-                      shares: sharesNum,
-                      totalValue: Number((sharesNum * selectedPosition.currentPrice).toFixed(2)),
-                    });
+                  const promptMsg = selectedPosition.broker === 'Urbanitae' ? 'Modificar importe invertido (€):' : 'Modificar número de títulos:';
+                  const defaultVal = selectedPosition.broker === 'Urbanitae' ? selectedPosition.totalValue.toString() : selectedPosition.shares.toString();
+                  const newVal = prompt(promptMsg, defaultVal);
+                  if (newVal && !isNaN(Number(newVal))) {
+                    const valNum = Number(newVal);
+                    if (selectedPosition.broker === 'Urbanitae') {
+                      onUpdatePosition({
+                        ...selectedPosition,
+                        avgPrice: valNum,
+                        currentPrice: valNum,
+                        totalValue: valNum,
+                      });
+                    } else {
+                      onUpdatePosition({
+                        ...selectedPosition,
+                        shares: valNum,
+                        totalValue: Number((valNum * selectedPosition.currentPrice).toFixed(2)),
+                      });
+                    }
                     setSelectedPosition(null);
                   }
                 }}
                 className="flex-1 bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs hover:bg-slate-800 transition-colors"
               >
-                Editar títulos
+                {selectedPosition.broker === 'Urbanitae' ? 'Editar importe (€)' : 'Editar títulos'}
               </button>
               <button
                 onClick={() => {

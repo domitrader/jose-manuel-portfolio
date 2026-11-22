@@ -1,7 +1,7 @@
 import { PortfolioState } from '../types/portfolio';
 import { INITIAL_PORTFOLIO_STATE } from '../data/mockPortfolio';
 
-const LOCAL_STORAGE_KEY = 'jose_manuel_portfolio_state_v5';
+const LOCAL_STORAGE_KEY = 'jose_manuel_portfolio_state_v6';
 const SUPABASE_CONFIG_KEY = 'jose_manuel_supabase_config_v1';
 const CLOUD_ROW_ID = 'jose_manuel_portfolio';
 
@@ -14,7 +14,8 @@ const LEGACY_STORAGE_KEYS = [
   'jose_manuel_portfolio_state_v1',
   'jose_manuel_portfolio_state_v2',
   'jose_manuel_portfolio_state_v3',
-  'jose_manuel_portfolio_state_v4'
+  'jose_manuel_portfolio_state_v4',
+  'jose_manuel_portfolio_state_v5'
 ];
 
 function mergeMyInvestorIfMissing(state: PortfolioState): PortfolioState {

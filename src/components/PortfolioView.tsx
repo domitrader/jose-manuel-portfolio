@@ -97,6 +97,7 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<InicioSubTab>('portafolio');
   const [selectedAssetFilter, setSelectedAssetFilter] = useState<'Todos' | AssetType>('Todos');
+  const [urbanitaeSubFilter, setUrbanitaeSubFilter] = useState<'todos' | 'plusvalia' | 'prestamo'>('todos');
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [positionSort, setPositionSort] = useState<'degiro' | 'value-desc' | 'change-asc' | 'change-desc' | 'name-asc'>('degiro');
   const [selectedPosition, setSelectedPosition] = useState<PositionItem | null>(null);
@@ -197,6 +198,29 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
   const fondosPositions = filteredPositions.filter(p => p.type === 'Fondos' && p.broker !== 'Urbanitae');
   const inmobiliarioPositions = filteredPositions.filter(p => p.type === 'Inmobiliario' || p.broker === 'Urbanitae');
   const etfAndCryptoPositions = filteredPositions.filter(p => p.type === 'ETFs' || p.type === 'Cripto');
+
+  // Separación individual de proyectos Urbanitae: Plusvalía (Equity) vs Préstamos (Deuda Garantizada)
+  const plusvaliaPositions = useMemo(() => {
+    return inmobiliarioPositions.filter(p =>
+      (p.market && p.market.toLowerCase().includes('plusvalía')) ||
+      p.id.includes('martinica') ||
+      p.id.includes('nervion') ||
+      p.id.includes('francos') ||
+      p.id.includes('lavapies') ||
+      p.name.includes('Martinica') ||
+      p.name.includes('Nervión') ||
+      p.name.includes('Francos') ||
+      p.name.includes('Lavapiés')
+    );
+  }, [inmobiliarioPositions]);
+
+  const prestamoPositions = useMemo(() => {
+    const plusvaliaIds = new Set(plusvaliaPositions.map(p => p.id));
+    return inmobiliarioPositions.filter(p => !plusvaliaIds.has(p.id));
+  }, [inmobiliarioPositions, plusvaliaPositions]);
+
+  const plusvaliaVal = useMemo(() => plusvaliaPositions.reduce((acc, p) => acc + p.totalValue, 0), [plusvaliaPositions]);
+  const prestamoVal = useMemo(() => prestamoPositions.reduce((acc, p) => acc + p.totalValue, 0), [prestamoPositions]);
 
   const closedStocks = filteredClosedPositions.filter(p => p.type === 'Acciones');
   const closedFondos = filteredClosedPositions.filter(p => p.type === 'Fondos' && p.broker !== 'Urbanitae');
@@ -861,52 +885,175 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
 
                 {/* SECCIÓN 2: CROWDFUNDING INMOBILIARIO (URBANITAE) */}
                 {(selectedAssetFilter === 'Todos' || selectedAssetFilter === 'Inmobiliario') && inmobiliarioPositions.length > 0 && (
-                  <div className="mb-5">
-                    <div className="flex items-center justify-between mb-2 pb-1 border-b border-slate-100 dark:border-slate-800">
-                      <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
-                        <Building2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Crowdfunding Inmobiliario ({inmobiliarioPositions.length})</span>
-                      </span>
-                      <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
-                        {formatEUR(inmobiliarioVal, hideFigures)}
-                      </span>
+                  <div className="mb-6 bg-slate-50/70 dark:bg-slate-900/40 p-3.5 sm:p-4 rounded-3xl border border-slate-200/80 dark:border-slate-800">
+                    {/* Encabezado General */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-2.5 border-b border-slate-200 dark:border-slate-800">
+                      <div>
+                        <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                          <Building2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                          <span>Crowdfunding Inmobiliario ({inmobiliarioPositions.length} Proyectos)</span>
+                        </span>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+                          Inversión inmobiliaria participativa en SPVs y Préstamos garantizados (Urbanitae • CNMV nº 4)
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-sm font-black text-slate-900 dark:text-white">
+                          {formatEUR(inmobiliarioVal, hideFigures)}
+                        </span>
+                        <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                          100% Financiados
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="space-y-1">
-                      {inmobiliarioPositions.map(pos => (
-                        <div
-                          key={pos.id}
-                          onClick={() => setSelectedPosition(pos)}
-                          className="flex items-center justify-between py-2.5 px-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 active:scale-[0.99]"
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white text-xs font-black shadow-xs shrink-0 ${pos.logoBg || 'bg-emerald-600'}`}>
-                              {pos.logoText || '•U'}
-                            </div>
-                            <div className="min-w-0">
-                              <div className="font-bold text-slate-900 dark:text-white text-xs truncate flex items-center gap-1.5">
-                                <span>{pos.name}</span>
-                                {pos.countryFlag && <span className="text-xs">{pos.countryFlag}</span>}
-                                <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shrink-0">
-                                  Financiado
+                    {/* Selector de Separación Individual: Todos / Plusvalía / Préstamos */}
+                    <div className="flex items-center gap-1.5 mb-3.5 overflow-x-auto no-scrollbar pb-1">
+                      <button
+                        onClick={() => setUrbanitaeSubFilter('todos')}
+                        className={`px-3 py-1 rounded-xl text-xs font-bold transition-all shrink-0 ${
+                          urbanitaeSubFilter === 'todos'
+                            ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs'
+                            : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        Ver Todos ({inmobiliarioPositions.length})
+                      </button>
+                      <button
+                        onClick={() => setUrbanitaeSubFilter('plusvalia')}
+                        className={`px-3 py-1 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1 ${
+                          urbanitaeSubFilter === 'plusvalia'
+                            ? 'bg-emerald-600 text-white shadow-xs'
+                            : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        <span>📈 Plusvalía ({plusvaliaPositions.length})</span>
+                        <span className="text-[10px] opacity-80 font-mono">({formatEUR(plusvaliaVal, hideFigures)})</span>
+                      </button>
+                      <button
+                        onClick={() => setUrbanitaeSubFilter('prestamo')}
+                        className={`px-3 py-1 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1 ${
+                          urbanitaeSubFilter === 'prestamo'
+                            ? 'bg-blue-600 text-white shadow-xs'
+                            : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        <span>🤝 Préstamos ({prestamoPositions.length})</span>
+                        <span className="text-[10px] opacity-80 font-mono">({formatEUR(prestamoVal, hideFigures)})</span>
+                      </button>
+                    </div>
+
+                    {/* BLOQUE A: PROYECTOS DE PLUSVALÍA (EQUITY) */}
+                    {(urbanitaeSubFilter === 'todos' || urbanitaeSubFilter === 'plusvalia') && plusvaliaPositions.length > 0 && (
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <span className="text-[11px] font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-400">
+                              Proyectos en Plusvalía / Equity ({plusvaliaPositions.length})
+                            </span>
+                          </div>
+                          <span className="text-xs font-extrabold text-slate-700 dark:text-slate-300">
+                            {formatEUR(plusvaliaVal, hideFigures)}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {plusvaliaPositions.map(pos => (
+                            <div
+                              key={pos.id}
+                              onClick={() => setSelectedPosition(pos)}
+                              className="bg-white dark:bg-slate-800/90 rounded-2xl p-3 border border-slate-200/90 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 transition-all cursor-pointer shadow-2xs hover:shadow-sm"
+                            >
+                              <div className="flex items-start justify-between gap-2 mb-1.5">
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white text-[11px] font-black flex items-center justify-center shrink-0 shadow-2xs">
+                                    •U
+                                  </div>
+                                  <div className="min-w-0">
+                                    <div className="font-extrabold text-slate-900 dark:text-white text-xs truncate flex items-center gap-1">
+                                      <span>{pos.name}</span>
+                                      {pos.countryFlag && <span>{pos.countryFlag}</span>}
+                                    </div>
+                                    <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono truncate">
+                                      {pos.ticker}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="text-right shrink-0">
+                                  <div className="font-black text-slate-950 dark:text-white text-xs">
+                                    {formatEUR(pos.totalValue, hideFigures)}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-700/60 mt-1">
+                                <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                                  Plusvalía • SPV
+                                </span>
+                                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate max-w-[180px]">
+                                  {(pos.market || '').replace(/Urbanitae • Crowdfunding Inmobiliario \((Plusvalía • )?/, '').replace(/\)$/, '')}
                                 </span>
                               </div>
-                              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 truncate">
-                                {pos.market}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* BLOQUE B: PROYECTOS DE PRÉSTAMO (DEUDA GARANTIZADA) */}
+                    {(urbanitaeSubFilter === 'todos' || urbanitaeSubFilter === 'prestamo') && prestamoPositions.length > 0 && (
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <span className="text-[11px] font-black uppercase tracking-wider text-blue-800 dark:text-blue-400">
+                              Proyectos en Préstamo / Deuda Garantizada ({prestamoPositions.length})
+                            </span>
+                          </div>
+                          <span className="text-xs font-extrabold text-slate-700 dark:text-slate-300">
+                            {formatEUR(prestamoVal, hideFigures)}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {prestamoPositions.map(pos => (
+                            <div
+                              key={pos.id}
+                              onClick={() => setSelectedPosition(pos)}
+                              className="bg-white dark:bg-slate-800/90 rounded-2xl p-3 border border-slate-200/90 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all cursor-pointer shadow-2xs hover:shadow-sm"
+                            >
+                              <div className="flex items-start justify-between gap-2 mb-1.5">
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <div className="w-8 h-8 rounded-xl bg-blue-600 text-white text-[11px] font-black flex items-center justify-center shrink-0 shadow-2xs">
+                                    •U
+                                  </div>
+                                  <div className="min-w-0">
+                                    <div className="font-extrabold text-slate-900 dark:text-white text-xs truncate flex items-center gap-1">
+                                      <span>{pos.name}</span>
+                                      {pos.countryFlag && <span>{pos.countryFlag}</span>}
+                                    </div>
+                                    <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono truncate">
+                                      {pos.ticker}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="text-right shrink-0">
+                                  <div className="font-black text-slate-950 dark:text-white text-xs">
+                                    {formatEUR(pos.totalValue, hideFigures)}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-700/60 mt-1">
+                                <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20">
+                                  Préstamo • Garantía
+                                </span>
+                                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate max-w-[180px]">
+                                  {(pos.market || '').replace(/Urbanitae • Crowdfunding Inmobiliario \((Préstamo • )?/, '').replace(/\)$/, '')}
+                                </span>
                               </div>
                             </div>
-                          </div>
-                          <div className="text-right shrink-0">
-                            <div className="font-extrabold text-slate-900 dark:text-white text-xs">
-                              {formatEUR(pos.totalValue, hideFigures)}
-                            </div>
-                            <div className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                              Crowdfunding Inmobiliario
-                            </div>
-                          </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -1154,27 +1301,41 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
 
             {selectedPosition.broker === 'Urbanitae' ? (
               <div className="space-y-3 my-4">
-                <div className="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 p-3 rounded-2xl flex items-center justify-between text-xs">
-                  <span className="text-emerald-800 dark:text-emerald-300 font-bold flex items-center gap-1.5">
-                    <span>Estado del Proyecto:</span>
+                <div className="flex items-center justify-between p-3 rounded-2xl border text-xs bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700">
+                  <span className="font-bold flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
+                    <span>Tipo de Inversión:</span>
                   </span>
-                  <span className="font-extrabold text-emerald-900 dark:text-emerald-200 bg-white dark:bg-slate-900 px-2 py-0.5 rounded-lg border border-emerald-200">
-                    Financiado
-                  </span>
+                  {selectedPosition.market?.includes('Plusvalía') ? (
+                    <span className="font-black px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                      📈 Plusvalía (Equity SPV)
+                    </span>
+                  ) : (
+                    <span className="font-black px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20">
+                      🤝 Préstamo a Tipo Fijo (Garantía)
+                    </span>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
                     <span className="text-[11px] text-slate-500">Inversión Aportada</span>
-                    <div className="text-base font-bold text-slate-900 dark:text-white">{formatEUR(selectedPosition.totalValue)}</div>
+                    <div className="text-base font-black text-slate-900 dark:text-white">{formatEUR(selectedPosition.totalValue)}</div>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                    <span className="text-[11px] text-slate-500">Plataforma</span>
-                    <div className="text-base font-bold text-emerald-600">Urbanitae</div>
+                    <span className="text-[11px] text-slate-500">Estado</span>
+                    <div className="text-base font-black text-emerald-600">Financiado</div>
                   </div>
                   <div className="col-span-2 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                    <span className="text-[11px] text-slate-500">Modalidad & Participación</span>
-                    <div className="text-xs font-bold text-slate-900 dark:text-white mt-0.5">{selectedPosition.market}</div>
+                    <span className="text-[11px] text-slate-500">Regulación & Plataforma</span>
+                    <div className="text-xs font-bold text-slate-900 dark:text-white mt-0.5">
+                      Urbanitae (PSFP nº 4 CNMV) • Crowdfunding Inmobiliario
+                    </div>
+                  </div>
+                  <div className="col-span-2 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                    <span className="text-[11px] text-slate-500">Detalles de Participación</span>
+                    <div className="text-xs font-medium text-slate-700 dark:text-slate-300 mt-0.5">
+                      {selectedPosition.market}
+                    </div>
                   </div>
                 </div>
               </div>

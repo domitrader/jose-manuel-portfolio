@@ -43,6 +43,7 @@ import {
   Check,
   Upload,
   TrendingUp,
+  Building2,
 } from 'lucide-react';
 
 interface PortfolioViewProps {
@@ -191,26 +192,30 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
     .filter(pos => selectedAssetFilter === 'Todos' || pos.type === selectedAssetFilter)
     .sort((a, b) => b.realized_pnl - a.realized_pnl);
 
-  // Separación explícita solicitada por el usuario: Acciones ARRIBA, ETFs ABAJO
+  // Separación explícita por clases de activos
   const stockPositions = filteredPositions.filter(p => p.type === 'Acciones');
-  const fondosPositions = filteredPositions.filter(p => p.type === 'Fondos');
+  const fondosPositions = filteredPositions.filter(p => p.type === 'Fondos' && p.broker !== 'Urbanitae');
+  const inmobiliarioPositions = filteredPositions.filter(p => p.type === 'Inmobiliario' || p.broker === 'Urbanitae');
   const etfAndCryptoPositions = filteredPositions.filter(p => p.type === 'ETFs' || p.type === 'Cripto');
 
   const closedStocks = filteredClosedPositions.filter(p => p.type === 'Acciones');
-  const closedFondos = filteredClosedPositions.filter(p => p.type === 'Fondos');
+  const closedFondos = filteredClosedPositions.filter(p => p.type === 'Fondos' && p.broker !== 'Urbanitae');
+  const closedInmobiliario = filteredClosedPositions.filter(p => p.type === 'Inmobiliario' || p.broker === 'Urbanitae');
   const closedEtfsAndCrypto = filteredClosedPositions.filter(p => p.type === 'ETFs' || p.type === 'Cripto');
 
   // Cálculo de distribución por tipo
   const totalPosValue = currentPortfolioPositions.reduce((acc, p) => acc + p.totalValue, 0) || 1;
   const accionesVal = currentPortfolioPositions.filter(p => p.type === 'Acciones').reduce((a, b) => a + b.totalValue, 0);
   const etfsVal = currentPortfolioPositions.filter(p => p.type === 'ETFs').reduce((a, b) => a + b.totalValue, 0);
-  const fondosVal = currentPortfolioPositions.filter(p => p.type === 'Fondos').reduce((a, b) => a + b.totalValue, 0);
+  const fondosVal = currentPortfolioPositions.filter(p => p.type === 'Fondos' && p.broker !== 'Urbanitae').reduce((a, b) => a + b.totalValue, 0);
+  const inmobiliarioVal = currentPortfolioPositions.filter(p => p.type === 'Inmobiliario' || p.broker === 'Urbanitae').reduce((a, b) => a + b.totalValue, 0);
   const criptoVal = currentPortfolioPositions.filter(p => p.type === 'Cripto').reduce((a, b) => a + b.totalValue, 0);
 
   const accionesPct = Math.round((accionesVal / totalPosValue) * 100);
   const etfsPct = Math.round((etfsVal / totalPosValue) * 100);
   const fondosPct = Math.round((fondosVal / totalPosValue) * 100);
-  const criptoPct = Math.max(0, 100 - accionesPct - etfsPct - fondosPct);
+  const inmobiliarioPct = Math.round((inmobiliarioVal / totalPosValue) * 100);
+  const criptoPct = Math.max(0, 100 - accionesPct - etfsPct - fondosPct - inmobiliarioPct);
 
   // Meta de inversión calculada
   const goalProgress = Math.min(100, Math.round((metrics.totalMarketValue / goalAmount) * 100));
@@ -708,17 +713,17 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
 
             {/* Chips de filtro rápido por tipo */}
             <div className="flex items-center gap-1.5 mb-3 overflow-x-auto no-scrollbar">
-              {(['Todos', 'Acciones', 'ETFs', 'Fondos', 'Cripto'] as const).map(f => (
+              {(['Todos', 'Acciones', 'ETFs', 'Fondos', 'Inmobiliario', 'Cripto'] as const).map(f => (
                 <button
                   key={f}
                   onClick={() => setSelectedAssetFilter(f)}
-                  className={`text-xs px-3 py-1 rounded-full font-semibold transition-colors ${
+                  className={`text-xs px-3 py-1 rounded-full font-semibold transition-colors shrink-0 ${
                     selectedAssetFilter === f
                       ? 'bg-slate-900 dark:bg-emerald-600 text-white shadow-xs'
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                   }`}
                 >
-                  {f}
+                  {f === 'Inmobiliario' ? 'Inmobiliario (Urbanitae)' : f}
                 </button>
               ))}
             </div>
@@ -806,13 +811,13 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                   </div>
                 )}
 
-                {/* SECCIÓN FONDOS DE INVERSIÓN (MYINVESTOR / URBANITAE) */}
+                {/* SECCIÓN 1: FONDOS DE INVERSIÓN (MYINVESTOR / FONDOS INDEXADOS) */}
                 {(selectedAssetFilter === 'Todos' || selectedAssetFilter === 'Fondos') && fondosPositions.length > 0 && (
                   <div className="mb-5">
                     <div className="flex items-center justify-between mb-2 pb-1 border-b border-slate-100 dark:border-slate-800">
                       <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
                         <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
-                        <span>{activePortfolioId === 'urbanitae' ? `Proyectos Crowdfunding (${fondosPositions.length})` : `Fondos e Inversión (${fondosPositions.length})`}</span>
+                        <span>Fondos de Inversión ({fondosPositions.length})</span>
                       </span>
                       <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
                         {formatEUR(fondosVal, hideFigures)}
@@ -820,45 +825,87 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                     </div>
 
                     <div className="space-y-1">
-                      {fondosPositions.map(pos => {
-                        const isUrbanitae = pos.broker === 'Urbanitae';
-
-                        return (
-                          <div
-                            key={pos.id}
-                            onClick={() => setSelectedPosition(pos)}
-                            className="flex items-center justify-between py-2.5 px-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 active:scale-[0.99]"
-                          >
-                            <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                              <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white text-xs font-black shadow-xs shrink-0 ${pos.logoBg || 'bg-emerald-700'}`}>
-                                {pos.logoText || pos.ticker.slice(0, 3)}
-                              </div>
-                              <div className="min-w-0">
-                                <div className="font-bold text-slate-900 dark:text-white text-xs truncate flex items-center gap-1.5">
-                                  <span>{pos.name}</span>
-                                  {pos.countryFlag && <span className="text-xs">{pos.countryFlag}</span>}
-                                  {isUrbanitae && (
-                                    <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shrink-0">
-                                      Financiado
-                                    </span>
-                                  )}
-                                </div>
-                                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 truncate">
-                                  {isUrbanitae ? pos.market : `${pos.market || 'MyInvestor'} | € ${pos.currentPrice} × ${pos.shares} part.`}
-                                </div>
-                              </div>
+                      {fondosPositions.map(pos => (
+                        <div
+                          key={pos.id}
+                          onClick={() => setSelectedPosition(pos)}
+                          className="flex items-center justify-between py-2.5 px-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 active:scale-[0.99]"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white text-xs font-black shadow-xs shrink-0 ${pos.logoBg || 'bg-emerald-700'}`}>
+                              {pos.logoText || pos.ticker.slice(0, 3)}
                             </div>
-                            <div className="text-right shrink-0">
-                              <div className="font-extrabold text-slate-900 dark:text-white text-xs">
-                                {formatEUR(pos.totalValue, hideFigures)}
+                            <div className="min-w-0">
+                              <div className="font-bold text-slate-900 dark:text-white text-xs truncate flex items-center gap-1.5">
+                                <span>{pos.name}</span>
+                                {pos.countryFlag && <span className="text-xs">{pos.countryFlag}</span>}
                               </div>
-                              <div className="text-[11px] font-semibold text-emerald-500">
-                                {isUrbanitae ? 'Urbanitae' : (pos.purchaseDate ? formatDateToSpanish(pos.purchaseDate) : 'Fondo Indexado')}
+                              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 truncate">
+                                {pos.market || 'MyInvestor'} | € {pos.currentPrice} × {pos.shares} part.
                               </div>
                             </div>
                           </div>
-                        );
-                      })}
+                          <div className="text-right shrink-0">
+                            <div className="font-extrabold text-slate-900 dark:text-white text-xs">
+                              {formatEUR(pos.totalValue, hideFigures)}
+                            </div>
+                            <div className="text-[11px] font-semibold text-emerald-500">
+                              {pos.purchaseDate ? formatDateToSpanish(pos.purchaseDate) : 'Fondo Indexado'}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* SECCIÓN 2: CROWDFUNDING INMOBILIARIO (URBANITAE) */}
+                {(selectedAssetFilter === 'Todos' || selectedAssetFilter === 'Inmobiliario') && inmobiliarioPositions.length > 0 && (
+                  <div className="mb-5">
+                    <div className="flex items-center justify-between mb-2 pb-1 border-b border-slate-100 dark:border-slate-800">
+                      <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                        <Building2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Crowdfunding Inmobiliario ({inmobiliarioPositions.length})</span>
+                      </span>
+                      <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
+                        {formatEUR(inmobiliarioVal, hideFigures)}
+                      </span>
+                    </div>
+
+                    <div className="space-y-1">
+                      {inmobiliarioPositions.map(pos => (
+                        <div
+                          key={pos.id}
+                          onClick={() => setSelectedPosition(pos)}
+                          className="flex items-center justify-between py-2.5 px-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 active:scale-[0.99]"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white text-xs font-black shadow-xs shrink-0 ${pos.logoBg || 'bg-emerald-600'}`}>
+                              {pos.logoText || '•U'}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="font-bold text-slate-900 dark:text-white text-xs truncate flex items-center gap-1.5">
+                                <span>{pos.name}</span>
+                                {pos.countryFlag && <span className="text-xs">{pos.countryFlag}</span>}
+                                <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shrink-0">
+                                  Financiado
+                                </span>
+                              </div>
+                              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 truncate">
+                                {pos.market}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <div className="font-extrabold text-slate-900 dark:text-white text-xs">
+                              {formatEUR(pos.totalValue, hideFigures)}
+                            </div>
+                            <div className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                              Crowdfunding Inmobiliario
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -1258,7 +1305,7 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
 
               <div>
                 <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>ETFs</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>Trackers (ETFs)</span>
                   <span>{etfsPct}% ({formatEUR(etfsVal, hideFigures)})</span>
                 </div>
                 <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -1266,15 +1313,41 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                 </div>
               </div>
 
-              <div>
-                <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-purple-500"></span>Cripto</span>
-                  <span>{criptoPct}% ({formatEUR(criptoVal, hideFigures)})</span>
+              {fondosVal > 0 && (
+                <div>
+                  <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>Fondos de Inversión</span>
+                    <span>{fondosPct}% ({formatEUR(fondosVal, hideFigures)})</span>
+                  </div>
+                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${fondosPct}%` }}></div>
+                  </div>
                 </div>
-                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-purple-500 rounded-full" style={{ width: `${criptoPct}%` }}></div>
+              )}
+
+              {inmobiliarioVal > 0 && (
+                <div>
+                  <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-teal-500"></span>Crowdfunding Inmobiliario</span>
+                    <span>{inmobiliarioPct}% ({formatEUR(inmobiliarioVal, hideFigures)})</span>
+                  </div>
+                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-teal-500 rounded-full" style={{ width: `${inmobiliarioPct}%` }}></div>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {criptoVal > 0 && (
+                <div>
+                  <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-purple-500"></span>Cripto</span>
+                    <span>{criptoPct}% ({formatEUR(criptoVal, hideFigures)})</span>
+                  </div>
+                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-purple-500 rounded-full" style={{ width: `${criptoPct}%` }}></div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <button

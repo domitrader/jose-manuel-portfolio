@@ -19,10 +19,24 @@ const LEGACY_STORAGE_KEYS = [
 
 function mergeMyInvestorIfMissing(state: PortfolioState): PortfolioState {
   // Eliminar la antigua posición agregada de Urbanitae si existiera en la nube o caché
-  const cleanedPositions = (state.positions || []).filter(p => p.id !== 'pos-urbanitae-12');
-  const hadLegacy = (state.positions || []).some(p => p.id === 'pos-urbanitae-12');
+  let positions = (state.positions || []).filter(p => p.id !== 'pos-urbanitae-12');
 
-  const existingIds = new Set(cleanedPositions.map(p => p.id));
+  // Asegurar que TODAS las posiciones de Urbanitae tengan tipo 'Inmobiliario' y descripción de Crowdfunding
+  positions = positions.map(p => {
+    if (p.broker === 'Urbanitae' || p.portfolioId === 'urbanitae' || p.id.startsWith('pos-urb-') || p.id.startsWith('urb-') || (p.ticker && p.ticker.startsWith('URB-'))) {
+      const match = INITIAL_PORTFOLIO_STATE.positions.find(ip => ip.id === p.id);
+      return {
+        ...p,
+        type: 'Inmobiliario' as const,
+        market: match?.market || p.market,
+        logoBg: match?.logoBg || p.logoBg || 'bg-emerald-600',
+        logoText: match?.logoText || p.logoText || '•U',
+      };
+    }
+    return p;
+  });
+
+  const existingIds = new Set(positions.map(p => p.id));
   const missingPositions = INITIAL_PORTFOLIO_STATE.positions.filter(
     p => (p.portfolioId === 'myinvestor' || p.broker === 'MyInvestor' || p.portfolioId === 'urbanitae' || p.broker === 'Urbanitae') && !existingIds.has(p.id)
   );
@@ -31,11 +45,10 @@ function mergeMyInvestorIfMissing(state: PortfolioState): PortfolioState {
     pt => !existingPortIds.has(pt.id)
   );
 
-  if (!hadLegacy && missingPositions.length === 0 && missingPortfolios.length === 0) return state;
   return {
     ...state,
     portfolios: [...(state.portfolios || []), ...missingPortfolios],
-    positions: [...cleanedPositions, ...missingPositions],
+    positions: [...positions, ...missingPositions],
   };
 }
 

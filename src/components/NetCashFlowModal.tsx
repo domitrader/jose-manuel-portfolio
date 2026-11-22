@@ -33,93 +33,57 @@ export const NetCashFlowModal: React.FC<NetCashFlowModalProps> = ({
   const [allExpanded, setAllExpanded] = useState(false);
 
   const summary = (degiroDataRaw as any).accountSummary || {};
-  const netFlow = summary.totalRetiradoNeto || 31690.78;
-  const totalDeposited = summary.totalDeposited || 3651806.63;
-  const totalWithdrawn = summary.totalWithdrawn || 3683497.41;
-  const currentCash = summary.efectivoEur || 419.92;
-  const freeMargin = summary.margenLibre || 812.74;
+  const netFlow = summary.totalRetiradoNeto || 18478.86;
+  const totalDeposited = summary.totalDeposited || 40000.00;
+  const totalWithdrawn = summary.totalWithdrawn || 18478.86;
+  const currentCash = summary.efectivoEur || 4360.23;
+  const freeMargin = summary.margenLibre || 15169.67;
 
   const annualFlows = [
     {
       year: '2026',
-      deposited: 123006.63,
-      withdrawn: 120047.41,
-      net: -2959.22,
-      opsEstimate: 312,
-      coverage: '97,6 %',
-      notes: 'Tesorería equilibrada y mantenimiento de liquidez para compras en caídas de mercado.',
+      deposited: 0.00,
+      withdrawn: 0.00,
+      net: 0.00,
+      opsEstimate: 6,
+      coverage: '100,0 %',
+      notes: 'Generación de plusvalías en oro, dividendos de renta fija y venta parcial de Visa Inc.',
     },
     {
       year: '2025',
-      deposited: 290400.00,
-      withdrawn: 285200.00,
-      net: -5200.00,
-      opsEstimate: 450,
-      coverage: '98,2 %',
-      notes: 'Rotación táctica hacia ETFs y tomas parciales de beneficio transferidas a banco.',
+      deposited: 37500.00,
+      withdrawn: 15000.00,
+      net: -22500.00,
+      opsEstimate: 140,
+      coverage: '40,0 %',
+      notes: 'Aportaciones de capital para compras estratégicas en ETFs y retirada a banco de 15.000 €.',
     },
     {
       year: '2024',
-      deposited: 410200.00,
-      withdrawn: 418300.00,
-      net: +8100.00,
-      opsEstimate: 520,
-      coverage: '102,0 %',
-      notes: 'Superávit neto retirado: los ingresos de ventas superaron las aportaciones de capital.',
+      deposited: 0.00,
+      withdrawn: 3478.86,
+      net: +3478.86,
+      opsEstimate: 2,
+      coverage: '100,0 %',
+      notes: 'Retirada neta de fondos a la cuenta bancaria (20-05-2024) sin nuevas aportaciones.',
     },
     {
       year: '2023',
-      deposited: 530100.00,
-      withdrawn: 538900.00,
-      net: +8800.00,
-      opsEstimate: 590,
-      coverage: '101,7 %',
-      notes: 'Año de alta plusvalía realizada con transferencias periódicas a la cuenta bancaria.',
+      deposited: 0.00,
+      withdrawn: 0.00,
+      net: 0.00,
+      opsEstimate: 32,
+      coverage: '100,0 %',
+      notes: 'Año de rebalanceo y operativa activa en WisdomTree Nasdaq 100 3X y Amundi.',
     },
     {
       year: '2022',
-      deposited: 640200.00,
-      withdrawn: 632100.00,
-      net: -8100.00,
-      opsEstimate: 410,
-      coverage: '98,7 %',
-      notes: 'Incremento de aportaciones para aprovechar la corrección bajista en tecnología.',
-    },
-    {
-      year: '2021',
-      deposited: 780500.00,
-      withdrawn: 794200.00,
-      net: +13700.00,
-      opsEstimate: 340,
-      coverage: '101,8 %',
-      notes: 'Máximo volumen histórico de operaciones y retiradas récord de plusvalías netas.',
-    },
-    {
-      year: '2020',
-      deposited: 512000.00,
-      withdrawn: 528450.00,
-      net: +16450.00,
-      opsEstimate: 165,
-      coverage: '103,2 %',
-      notes: 'Excelente gestión durante la volatilidad con el mayor superávit neto anual transferido a banco.',
-    },
-    {
-      year: '2019',
-      deposited: 245000.00,
-      withdrawn: 252100.00,
-      net: +7100.00,
-      opsEstimate: 50,
-      coverage: '102,9 %',
-      notes: 'Crecimiento de cartera y consolidación de ganancias retiradas periódicamente.',
-    },
-    {
-      year: '2018',
-      deposited: 120400.00,
-      withdrawn: 114200.00,
-      net: -6200.00,
+      deposited: 2500.00,
+      withdrawn: 0.00,
+      net: -2500.00,
       opsEstimate: 10,
-      coverage: '94,9 %',
-      notes: 'Inicio de la operativa en DEGIRO (09-03-2018) con capital inicial de apertura.',
+      coverage: '0,0 %',
+      notes: 'Apertura de la cuenta en DEGIRO (23-06-2022) con depósito inicial de 2.500 €.',
     },
   ];
 

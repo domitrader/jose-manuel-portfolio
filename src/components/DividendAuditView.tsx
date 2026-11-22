@@ -110,6 +110,27 @@ export const DividendAuditView: React.FC<DividendAuditViewProps> = ({ hideFigure
     return futureGrossSum * 0.81;
   }, [futureGrossSum]);
 
+  const futureDistinctAssets = useMemo(() => {
+    const map = new Map<string, { product: string; ticker: string; isin: string; flag: string; annualGross: number; count: number }>();
+    filteredFutureCalendar.forEach(ev => {
+      const existing = map.get(ev.isin);
+      if (existing) {
+        existing.annualGross += ev.estimatedGrossEUR;
+        existing.count += 1;
+      } else {
+        map.set(ev.isin, {
+          product: ev.product,
+          ticker: ev.ticker,
+          isin: ev.isin,
+          flag: ev.flag,
+          annualGross: ev.estimatedGrossEUR,
+          count: 1,
+        });
+      }
+    });
+    return Array.from(map.values());
+  }, [filteredFutureCalendar]);
+
   // Cálculos dinámicos según filtros aplicados para historial
   const currentNet = useMemo(() => {
     return filteredPayments.reduce((acc, p) => acc + p.net, 0);
@@ -341,6 +362,96 @@ export const DividendAuditView: React.FC<DividendAuditViewProps> = ({ hideFigure
       {/* CONTENIDO PESTAÑA: MAPA FUTURO */}
       {activeTab === 'mapa-futuro' && (
         <div className="space-y-4">
+          {/* TARJETA DESTACADA: SUMA TOTAL ANUAL EN MAPA FUTURO */}
+          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white rounded-3xl p-5 shadow-lg border border-slate-700/60">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-slate-700/50">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black shrink-0">
+                  <Calendar className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-[10px] font-black uppercase tracking-wider text-emerald-400">
+                    Proyección Anual 2027 • Suma Total de Cartera
+                  </div>
+                  <h3 className="text-base font-extrabold text-white">
+                    {futureDistinctAssets.length} {futureDistinctAssets.length === 1 ? 'Activo' : 'Activos'} con Dividendo ({filteredFutureCalendar.length} Cobros en el Año)
+                  </h3>
+                </div>
+              </div>
+
+              {/* Botón selector Bruto / Neto 19% */}
+              <div className="flex items-center gap-1.5 p-1 bg-slate-800/80 rounded-xl border border-slate-700 self-start sm:self-auto">
+                <button
+                  type="button"
+                  onClick={() => setTaxRateSpanish19(false)}
+                  className={`px-3 py-1 text-[11px] font-bold rounded-lg transition-all ${
+                    !taxRateSpanish19 ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  💶 Bruto
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTaxRateSpanish19(true)}
+                  className={`px-3 py-1 text-[11px] font-bold rounded-lg transition-all ${
+                    taxRateSpanish19 ? 'bg-emerald-500 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  🇪🇸 Neto (-19% IRPF)
+                </button>
+              </div>
+            </div>
+
+            {/* 3 Columnas de Totales Anuales */}
+            <div className="grid grid-cols-3 gap-3 pt-3.5 text-center">
+              <div className="bg-white/5 rounded-2xl p-2.5 border border-white/5">
+                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  Total Bruto Anual
+                </div>
+                <div className="text-base sm:text-lg font-black text-white mt-0.5">
+                  +{formatEUR(futureGrossSum, hideFigures)}
+                </div>
+                <div className="text-[9px] text-slate-400 mt-0.5 font-medium">100% devengado</div>
+              </div>
+
+              <div className="bg-rose-500/10 rounded-2xl p-2.5 border border-rose-500/20">
+                <div className="text-[10px] font-bold text-rose-300 uppercase tracking-wider">
+                  Retenciones (19%)
+                </div>
+                <div className="text-base sm:text-lg font-black text-rose-400 mt-0.5">
+                  -{formatEUR(futureSpanishTax19Sum, hideFigures)}
+                </div>
+                <div className="text-[9px] text-rose-300/80 mt-0.5 font-medium">IRPF España</div>
+              </div>
+
+              <div className="bg-emerald-500/15 rounded-2xl p-2.5 border border-emerald-500/30">
+                <div className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">
+                  Total Neto Anual
+                </div>
+                <div className="text-base sm:text-lg font-black text-emerald-400 mt-0.5">
+                  +{formatEUR(futureNet19Sum, hideFigures)}
+                </div>
+                <div className="text-[9px] text-emerald-300/80 mt-0.5 font-medium">Líquido a percibir</div>
+              </div>
+            </div>
+
+            {/* Resumen por Activo */}
+            <div className="mt-3.5 pt-3 border-t border-slate-700/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-slate-300">
+              <span className="font-semibold text-slate-400">Activos en el cómputo anual:</span>
+              <div className="flex flex-wrap items-center gap-2">
+                {futureDistinctAssets.map(a => (
+                  <span key={a.isin} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/10 text-white font-bold border border-white/10">
+                    <span>{a.flag}</span>
+                    <span>{a.product}</span>
+                    <span className="text-emerald-400">
+                      (+{formatEUR(taxRateSpanish19 ? a.annualGross * 0.81 : a.annualGross, hideFigures)})
+                    </span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* Tarjeta explicativa de los activos de José Manuel */}
           <div className="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 rounded-3xl p-4 text-xs">
             <div className="flex items-center gap-2 text-blue-900 dark:text-blue-300 font-bold mb-1">

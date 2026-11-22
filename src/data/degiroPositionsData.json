@@ -8,7 +8,12 @@
     "diaBpPct": 0.0,
     "totalBpDegiro": 4950.73,
     "historicoCerradoPnl": 8408.91,
-    "totalTrades": 190
+    "totalTrades": 190,
+    "totalComisiones": 509.53,
+    "totalDeposited": 40000.0,
+    "totalWithdrawn": 18478.86,
+    "totalRetiradoNeto": 18478.86,
+    "netCashFlow": -21521.14
   },
   "closedPositions": [
     {

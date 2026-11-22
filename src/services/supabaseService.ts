@@ -1,11 +1,12 @@
 import { PortfolioState } from '../types/portfolio';
 import { INITIAL_PORTFOLIO_STATE } from '../data/mockPortfolio';
 
-const LOCAL_STORAGE_KEY = 'jose_manuel_portfolio_state_v1';
+const LOCAL_STORAGE_KEY = 'jose_manuel_portfolio_state_v2';
 
 // Legacy keys to clean up
 const LEGACY_STORAGE_KEYS = [
-  'jose_manuel_portfolio_state_v0'
+  'jose_manuel_portfolio_state_v0',
+  'jose_manuel_portfolio_state_v1'
 ];
 
 /**

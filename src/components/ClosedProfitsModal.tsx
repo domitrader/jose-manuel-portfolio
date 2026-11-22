@@ -40,8 +40,8 @@ export const ClosedProfitsModal: React.FC<ClosedProfitsModalProps> = ({
 
   const summary = (degiroDataRaw as any).accountSummary || {};
   const closedPositions = (degiroDataRaw as any).closedPositions || [];
-  const totalPnl = summary.historicoCerradoPnl || 28145.97;
-  const totalTrades = summary.totalTrades || 2847;
+  const totalPnl = summary.historicoCerradoPnl || 8408.91;
+  const totalTrades = summary.totalTrades || 190;
 
   // Key metrics
   const winnersCount = closedPositions.filter((p: any) => p.realized_pnl > 0).length;

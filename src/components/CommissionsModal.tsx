@@ -39,10 +39,10 @@ export const CommissionsModal: React.FC<CommissionsModalProps> = ({
   const [isExpandedView, setIsExpandedView] = useState(false);
 
   const summary = (degiroDataRaw as any).accountSummary || {};
-  const totalFees = summary.totalComisiones || 3234.95;
-  const totalTrades = summary.totalTrades || 2847;
-  const grossRealizedPnl = summary.historicoCerradoPnl || 28145.97;
-  const netRealizedPnl = grossRealizedPnl - totalFees; // 24.911,02 €
+  const totalFees = summary.totalComisiones || 509.53;
+  const totalTrades = summary.totalTrades || 190;
+  const grossRealizedPnl = summary.historicoCerradoPnl || 8408.91;
+  const netRealizedPnl = grossRealizedPnl - totalFees;
 
   // Unificar y deduplicar activos desde historicalAssetStats.json
   const allAssets = useMemo(() => {

@@ -40,6 +40,7 @@ import {
   RefreshCw,
   ChevronDown,
   Check,
+  Upload,
 } from 'lucide-react';
 
 interface PortfolioViewProps {
@@ -715,8 +716,29 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
             {/* VISTA 1: POSICIONES ABIERTAS (O TODAS) */}
             {(positionViewMode === 'abiertas' || positionViewMode === 'todas') && (
               <>
+                {filteredPositions.length === 0 && (
+                  <div className="text-center py-8 px-4 bg-slate-50 dark:bg-slate-900/60 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800 my-4">
+                    <div className="w-12 h-12 mx-auto rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center text-xl mb-2.5 shadow-2xs">
+                      {portfolios.find(p => p.id === activePortfolioId)?.icon || '💼'}
+                    </div>
+                    <h4 className="font-extrabold text-xs text-slate-800 dark:text-slate-200">
+                      Cartera {portfolios.find(p => p.id === activePortfolioId)?.name || ''} sin activos registrados
+                    </h4>
+                    <p className="text-[11px] text-slate-400 mt-1 max-w-xs mx-auto">
+                      Esta cartera está vacía. No se muestran datos ficticios; solo datos 100% reales cuando se registren.
+                    </p>
+                    <button
+                      onClick={onOpenImport}
+                      className="mt-3.5 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-colors shadow-xs"
+                    >
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>Importar o Añadir Activo</span>
+                    </button>
+                  </div>
+                )}
+
                 {/* 1. SECCIÓN: ACCIONES (ARRIBA) */}
-                {(selectedAssetFilter === 'Todos' || selectedAssetFilter === 'Acciones') && (
+                {filteredPositions.length > 0 && (selectedAssetFilter === 'Todos' || selectedAssetFilter === 'Acciones') && (
                   <div className="mb-5">
                     <div className="flex items-center justify-between mb-2 pb-1 border-b border-slate-100 dark:border-slate-800">
                       <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
@@ -775,7 +797,7 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                 )}
 
                 {/* 2. SECCIÓN: TRACKERS (ETFS) Y CRIPTO (ABAJO) */}
-                {(selectedAssetFilter === 'Todos' || selectedAssetFilter === 'ETFs' || selectedAssetFilter === 'Cripto') && (
+                {filteredPositions.length > 0 && (selectedAssetFilter === 'Todos' || selectedAssetFilter === 'ETFs' || selectedAssetFilter === 'Cripto') && (
                   <div className="mb-5">
                     <div className="flex items-center justify-between mb-2 pb-1 border-b border-slate-100 dark:border-slate-800">
                       <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">

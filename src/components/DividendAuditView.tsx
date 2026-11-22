@@ -174,7 +174,7 @@ export const DividendAuditView: React.FC<DividendAuditViewProps> = ({ hideFigure
             }`}
           >
             <span>🏦 MyInv.</span>
-            <span className="text-[9px] font-medium opacity-80">Fondos & DGI</span>
+            <span className="text-[9px] font-medium opacity-80">0 cobros</span>
           </button>
 
           <button
@@ -186,7 +186,7 @@ export const DividendAuditView: React.FC<DividendAuditViewProps> = ({ hideFigure
             }`}
           >
             <span>🐙 Kraken</span>
-            <span className="text-[9px] font-medium opacity-80">Cripto</span>
+            <span className="text-[9px] font-medium opacity-80">0 cobros</span>
           </button>
         </div>
       </div>

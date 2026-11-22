@@ -1,13 +1,14 @@
 {
   "accountSummary": {
-    "cuentaCompleta": 25869.94,
-    "cartera": 21509.72,
-    "efectivoEur": 4360.22,
-    "margenLibre": 4360.22,
-    "diaBp": 0.0,
+    "cuentaCompleta": 26470.55,
+    "cartera": 22110.32,
+    "efectivoEur": 4360.23,
+    "margenLibre": 15169.67,
+    "diaBp": 0.6,
     "diaBpPct": 0.0,
-    "totalBpDegiro": 8408.91,
-    "historicoCerradoPnl": 8408.91
+    "totalBpDegiro": 4950.73,
+    "historicoCerradoPnl": 8408.91,
+    "totalTrades": 190
   },
   "closedPositions": [
     {

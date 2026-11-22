@@ -156,8 +156,12 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
   }, [currentPortfolioPositions]);
 
   // Total cuenta (cartera activa + efectivo activo)
-  const totalMarketVal = activeCarteraVal + activeCash;
+  const isDegiroOrConsolidated = !activePortfolioId || activePortfolioId === 'todas' || activePortfolioId === 'degiro';
+  const totalMarketVal = isDegiroOrConsolidated ? accountSummary.cuentaCompleta : (activeCarteraVal + activeCash);
   const headerFormatted = formatHeaderEUR(totalMarketVal, hideFigures);
+  const displayCarteraVal = isDegiroOrConsolidated ? accountSummary.cartera : activeCarteraVal;
+  const displayCashVal = isDegiroOrConsolidated ? accountSummary.efectivoEur : activeCash;
+  const displayMargenLibre = isDegiroOrConsolidated ? accountSummary.margenLibre : activeCash;
 
   // Métricas calculadas para la cartera activa
   const metrics = calculatePortfolioMetrics(currentPortfolioPositions, activeCash);
@@ -318,18 +322,18 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
               </span>
               <span className="text-slate-300 dark:text-slate-700">•</span>
               <span className="inline-flex items-center gap-1 text-emerald-500 font-extrabold">
-                <span>Total B/P (DEGIRO):</span>
+                <span>Total B/P:</span>
                 <span>+{formatEUR(accountSummary.totalBpDegiro, hideFigures)}</span>
               </span>
             </div>
 
             {/* Fila de desglose DEGIRO / Cartera: Cartera + EUR + Margen Libre */}
             <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              <span>Cartera: <strong className="text-slate-800 dark:text-slate-200">{formatEUR(activeCarteraVal, hideFigures)}</strong></span>
+              <span>Cartera: <strong className="text-slate-800 dark:text-slate-200">{formatEUR(displayCarteraVal, hideFigures)}</strong></span>
               <span>•</span>
-              <span>EUR: <strong className="text-emerald-500">{formatEUR(activeCash, hideFigures)}</strong></span>
+              <span>EUR: <strong className="text-emerald-500">{formatEUR(displayCashVal, hideFigures)}</strong></span>
               <span>•</span>
-              <span>Margen libre: <strong className="text-slate-700 dark:text-slate-300">{formatEUR(activeCash, hideFigures)}</strong></span>
+              <span>Margen libre: <strong className="text-slate-700 dark:text-slate-300">{formatEUR(displayMargenLibre, hideFigures)}</strong></span>
             </div>
 
             {/* Indicador de actualización de cotizaciones en tiempo real */}

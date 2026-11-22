@@ -10,17 +10,17 @@ export const INITIAL_POSITIONS: PositionItem[] = [
     type: 'Acciones',
     shares: 2,
     avgPrice: 294.31,
-    currentPrice: 366.42,
+    currentPrice: 366.725,
     currency: 'EUR',
-    market: 'New York Stock Exchange (NSY)',
+    market: 'New York Stock Exchange (NSY) | $ 402,23 × 2',
     exchange: 'NSY',
     exchangeName: 'NYSE (EE.UU.)',
     countryFlag: '🇺🇸',
     logoBg: 'bg-blue-800',
     logoText: 'V',
-    dailyChangePct: 0.15,
-    dailyChangeValue: 1.10,
-    totalValue: 732.85,
+    dailyChangePct: 0.09,
+    dailyChangeValue: 0.59,
+    totalValue: 733.45,
     unrealizedGainLoss: 144.23,
     unrealizedGainLossPct: 24.5,
     sparkline: [362.0, 363.5, 365.0, 366.42],
@@ -533,7 +533,7 @@ export const DEFAULT_PORTFOLIOS: PortfolioMeta[] = [
     icon: '🌐',
     color: '#0ea5e9',
     hidden: false,
-    cash: 4360.22,
+    cash: 4360.23,
   },
   {
     id: 'degiro',
@@ -544,7 +544,7 @@ export const DEFAULT_PORTFOLIOS: PortfolioMeta[] = [
     icon: '🏛️',
     color: '#2563eb',
     hidden: false,
-    cash: 4360.22,
+    cash: 4360.23,
   },
   {
     id: 'myinvestor',
@@ -571,7 +571,7 @@ export const DEFAULT_PORTFOLIOS: PortfolioMeta[] = [
 ];
 
 export const INITIAL_PORTFOLIO_STATE: PortfolioState = {
-  cash: 4360.22,
+  cash: 4360.23,
   goalAmount: 35000.00,
   currency: 'EUR',
   hideFigures: false,
@@ -593,7 +593,7 @@ export const INITIAL_PORTFOLIO_STATE: PortfolioState = {
     totalWithdrawn: 55436.58,
     netCashFlow: 15436.58,
     totalDividendsReceived: 184.28,
-    currentCashBalance: 4360.22,
+    currentCashBalance: 4360.23,
   },
 };
 

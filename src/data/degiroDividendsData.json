@@ -1,0 +1,352 @@
+{
+  "totalHistoricalNet": 184.28,
+  "totalHistoricalGross": 186.22,
+  "totalHistoricalTaxes": 1.94,
+  "totalPaymentsCount": 9,
+  "yearsAvailable": [
+    "2026",
+    "2025"
+  ],
+  "brokersAvailable": [
+    "Todas",
+    "DEGIRO",
+    "MyInvestor",
+    "Kraken"
+  ],
+  "annualSummary": [
+    {
+      "year": "2026",
+      "gross": 114.42,
+      "tax": 1.5,
+      "net": 112.92,
+      "count": 6
+    },
+    {
+      "year": "2025",
+      "gross": 71.8,
+      "tax": 0.44,
+      "net": 71.36,
+      "count": 3
+    }
+  ],
+  "productSummary": [
+    {
+      "product": "iShares EUR Ultrashort Bond UCITS ETF (Dist)",
+      "isin": "IE00BCRY6557",
+      "flag": "🇮🇪",
+      "gross": 171.83,
+      "tax": 0.0,
+      "net": 171.83,
+      "count": 4
+    },
+    {
+      "product": "Visa Inc. Class A",
+      "isin": "US92826C8394",
+      "flag": "🇺🇸",
+      "gross": 14.39,
+      "tax": 1.94,
+      "net": 12.45,
+      "count": 5
+    }
+  ],
+  "payments": [
+    {
+      "date": "01-10-2026",
+      "year": "2026",
+      "month": "Octubre",
+      "product": "iShares EUR Ultrashort Bond UCITS ETF (Dist)",
+      "isin": "IE00BCRY6557",
+      "gross": 35.62,
+      "tax": 0.0,
+      "net": 35.62,
+      "currency": "EUR",
+      "broker": "DEGIRO",
+      "flag": "🇮🇪",
+      "descriptions": [
+        "Dividendo trimestral bono corporativo ultracorto"
+      ]
+    },
+    {
+      "date": "02-09-2026",
+      "year": "2026",
+      "month": "Septiembre",
+      "product": "Visa Inc. Class A",
+      "isin": "US92826C8394",
+      "gross": 2.98,
+      "tax": 0.44,
+      "net": 2.54,
+      "currency": "EUR",
+      "broker": "DEGIRO",
+      "flag": "🇺🇸",
+      "descriptions": [
+        "Dividendo 3,35 USD @ retención origen 15% W-8BEN"
+      ]
+    },
+    {
+      "date": "01-07-2026",
+      "year": "2026",
+      "month": "Julio",
+      "product": "iShares EUR Ultrashort Bond UCITS ETF (Dist)",
+      "isin": "IE00BCRY6557",
+      "gross": 32.83,
+      "tax": 0.0,
+      "net": 32.83,
+      "currency": "EUR",
+      "broker": "DEGIRO",
+      "flag": "🇮🇪",
+      "descriptions": [
+        "Dividendo trimestral bono ultracorto"
+      ]
+    },
+    {
+      "date": "02-06-2026",
+      "year": "2026",
+      "month": "Junio",
+      "product": "Visa Inc. Class A",
+      "isin": "US92826C8394",
+      "gross": 2.98,
+      "tax": 0.44,
+      "net": 2.54,
+      "currency": "EUR",
+      "broker": "DEGIRO",
+      "flag": "🇺🇸",
+      "descriptions": [
+        "Dividendo 3,35 USD @ retención origen 15% W-8BEN"
+      ]
+    },
+    {
+      "date": "01-04-2026",
+      "year": "2026",
+      "month": "Abril",
+      "product": "iShares EUR Ultrashort Bond UCITS ETF (Dist)",
+      "isin": "IE00BCRY6557",
+      "gross": 32.57,
+      "tax": 0.0,
+      "net": 32.57,
+      "currency": "EUR",
+      "broker": "DEGIRO",
+      "flag": "🇮🇪",
+      "descriptions": [
+        "Dividendo trimestral renta fija"
+      ]
+    },
+    {
+      "date": "03-03-2026",
+      "year": "2026",
+      "month": "Marzo",
+      "product": "Visa Inc. Class A",
+      "isin": "US92826C8394",
+      "gross": 2.98,
+      "tax": 0.44,
+      "net": 2.54,
+      "currency": "EUR",
+      "broker": "DEGIRO",
+      "flag": "🇺🇸",
+      "descriptions": [
+        "Dividendo 3,35 USD @ retención origen 15%"
+      ]
+    },
+    {
+      "date": "30-12-2025",
+      "year": "2025",
+      "month": "Diciembre",
+      "product": "iShares EUR Ultrashort Bond UCITS ETF (Dist)",
+      "isin": "IE00BCRY6557",
+      "gross": 70.81,
+      "tax": 0.0,
+      "net": 70.81,
+      "currency": "EUR",
+      "broker": "DEGIRO",
+      "flag": "🇮🇪",
+      "descriptions": [
+        "Dividendo semestral acumulado"
+      ]
+    },
+    {
+      "date": "02-12-2025",
+      "year": "2025",
+      "month": "Diciembre",
+      "product": "Visa Inc. Class A",
+      "isin": "US92826C8394",
+      "gross": 2.98,
+      "tax": 0.44,
+      "net": 2.54,
+      "currency": "EUR",
+      "broker": "DEGIRO",
+      "flag": "🇺🇸",
+      "descriptions": [
+        "Dividendo 3,35 USD"
+      ]
+    },
+    {
+      "date": "03-09-2025",
+      "year": "2025",
+      "month": "Septiembre",
+      "product": "Visa Inc. Class A",
+      "isin": "US92826C8394",
+      "gross": 2.62,
+      "tax": 0.39,
+      "net": 2.23,
+      "currency": "EUR",
+      "broker": "DEGIRO",
+      "flag": "🇺🇸",
+      "descriptions": [
+        "Dividendo 2,95 USD"
+      ]
+    }
+  ],
+  "futureCalendar": [
+    {
+      "id": "fut-bond-q1",
+      "product": "iShares EUR Ultrashort Bond UCITS ETF (Dist)",
+      "ticker": "ERNE",
+      "isin": "IE00BCRY6557",
+      "shares": 58,
+      "broker": "DEGIRO",
+      "flag": "🇮🇪",
+      "month": "Enero 2027",
+      "quarter": "Q1",
+      "estimatedDate": "2027-01-15",
+      "dividendPerShare": 0.61,
+      "currency": "EUR",
+      "estimatedGrossEUR": 35.38,
+      "estimatedTaxEUR": 6.72,
+      "estimatedNetEUR": 28.66,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-visa-q1",
+      "product": "Visa Inc. Class A",
+      "ticker": "V",
+      "isin": "US92826C8394",
+      "shares": 2,
+      "broker": "DEGIRO",
+      "flag": "🇺🇸",
+      "month": "Marzo 2027",
+      "quarter": "Q1",
+      "estimatedDate": "2027-03-02",
+      "dividendPerShare": 0.59,
+      "currency": "USD",
+      "estimatedGrossEUR": 1.05,
+      "estimatedTaxEUR": 0.2,
+      "estimatedNetEUR": 0.85,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-bond-q2",
+      "product": "iShares EUR Ultrashort Bond UCITS ETF (Dist)",
+      "ticker": "ERNE",
+      "isin": "IE00BCRY6557",
+      "shares": 58,
+      "broker": "DEGIRO",
+      "flag": "🇮🇪",
+      "month": "Abril 2027",
+      "quarter": "Q2",
+      "estimatedDate": "2027-04-15",
+      "dividendPerShare": 0.61,
+      "currency": "EUR",
+      "estimatedGrossEUR": 35.38,
+      "estimatedTaxEUR": 6.72,
+      "estimatedNetEUR": 28.66,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-visa-q2",
+      "product": "Visa Inc. Class A",
+      "ticker": "V",
+      "isin": "US92826C8394",
+      "shares": 2,
+      "broker": "DEGIRO",
+      "flag": "🇺🇸",
+      "month": "Junio 2027",
+      "quarter": "Q2",
+      "estimatedDate": "2027-06-02",
+      "dividendPerShare": 0.59,
+      "currency": "USD",
+      "estimatedGrossEUR": 1.05,
+      "estimatedTaxEUR": 0.2,
+      "estimatedNetEUR": 0.85,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-bond-q3",
+      "product": "iShares EUR Ultrashort Bond UCITS ETF (Dist)",
+      "ticker": "ERNE",
+      "isin": "IE00BCRY6557",
+      "shares": 58,
+      "broker": "DEGIRO",
+      "flag": "🇮🇪",
+      "month": "Julio 2027",
+      "quarter": "Q3",
+      "estimatedDate": "2027-07-15",
+      "dividendPerShare": 0.61,
+      "currency": "EUR",
+      "estimatedGrossEUR": 35.38,
+      "estimatedTaxEUR": 6.72,
+      "estimatedNetEUR": 28.66,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-visa-q3",
+      "product": "Visa Inc. Class A",
+      "ticker": "V",
+      "isin": "US92826C8394",
+      "shares": 2,
+      "broker": "DEGIRO",
+      "flag": "🇺🇸",
+      "month": "Septiembre 2027",
+      "quarter": "Q3",
+      "estimatedDate": "2027-09-02",
+      "dividendPerShare": 0.59,
+      "currency": "USD",
+      "estimatedGrossEUR": 1.05,
+      "estimatedTaxEUR": 0.2,
+      "estimatedNetEUR": 0.85,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-bond-q4",
+      "product": "iShares EUR Ultrashort Bond UCITS ETF (Dist)",
+      "ticker": "ERNE",
+      "isin": "IE00BCRY6557",
+      "shares": 58,
+      "broker": "DEGIRO",
+      "flag": "🇮🇪",
+      "month": "Octubre 2027",
+      "quarter": "Q4",
+      "estimatedDate": "2027-10-15",
+      "dividendPerShare": 0.61,
+      "currency": "EUR",
+      "estimatedGrossEUR": 35.38,
+      "estimatedTaxEUR": 6.72,
+      "estimatedNetEUR": 28.66,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-visa-q4",
+      "product": "Visa Inc. Class A",
+      "ticker": "V",
+      "isin": "US92826C8394",
+      "shares": 2,
+      "broker": "DEGIRO",
+      "flag": "🇺🇸",
+      "month": "Diciembre 2027",
+      "quarter": "Q4",
+      "estimatedDate": "2027-12-02",
+      "dividendPerShare": 0.59,
+      "currency": "USD",
+      "estimatedGrossEUR": 1.05,
+      "estimatedTaxEUR": 0.2,
+      "estimatedNetEUR": 0.85,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    }
+  ]
+}

@@ -168,6 +168,9 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
 
   // Métricas calculadas para la cartera activa
   const metrics = calculatePortfolioMetrics(currentPortfolioPositions, activeCash);
+  const displayDiaBp = isDegiroOrConsolidated ? accountSummary.diaBp : metrics.dailyChangeValue;
+  const displayDiaBpPct = isDegiroOrConsolidated ? accountSummary.diaBpPct : metrics.dailyChangePct;
+  const displayTotalBp = isDegiroOrConsolidated ? accountSummary.totalBpDegiro : metrics.unrealizedGainLoss;
   const chartPoints = MOCK_CHART_DATA[selectedTimeRange] || MOCK_CHART_DATA['1D'];
 
   // Filtrado y ordenación de posiciones abiertas
@@ -182,8 +185,8 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
       return 0;
     });
 
-  // Filtrado de posiciones cerradas
-  const filteredClosedPositions = closedPositions
+  // Filtrado de posiciones cerradas (solo si estamos en DEGIRO o Todas)
+  const filteredClosedPositions = (isDegiroOrConsolidated ? closedPositions : [])
     .filter(pos => selectedAssetFilter === 'Todos' || pos.type === selectedAssetFilter)
     .sort((a, b) => b.realized_pnl - a.realized_pnl);
 
@@ -323,14 +326,14 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
 
             {/* Métricas Oficiales DEGIRO / Cartera */}
             <div className="flex items-center justify-center gap-3 text-xs font-semibold mt-1.5">
-              <span className="inline-flex items-center gap-1 text-emerald-500 font-bold">
+              <span className={`inline-flex items-center gap-1 font-bold ${displayDiaBp >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
                 <span>Día B/P:</span>
-                <span>+{formatEUR(accountSummary.diaBp, hideFigures)} (+{accountSummary.diaBpPct.toFixed(2)}%)</span>
+                <span>{displayDiaBp >= 0 ? '+' : ''}{formatEUR(displayDiaBp, hideFigures)} ({displayDiaBpPct >= 0 ? '+' : ''}{displayDiaBpPct.toFixed(2)}%)</span>
               </span>
               <span className="text-slate-300 dark:text-slate-700">•</span>
-              <span className="inline-flex items-center gap-1 text-emerald-500 font-extrabold">
+              <span className={`inline-flex items-center gap-1 font-extrabold ${displayTotalBp >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
                 <span>Total B/P:</span>
-                <span>+{formatEUR(accountSummary.totalBpDegiro, hideFigures)}</span>
+                <span>{displayTotalBp >= 0 ? '+' : ''}{formatEUR(displayTotalBp, hideFigures)}</span>
               </span>
             </div>
 
@@ -467,8 +470,8 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
             </div>
           </section>
 
-          {/* Historial Global DEGIRO & Rendimiento Realizado */}
-          {tradingAnalytics && (
+          {/* Historial Global DEGIRO & Rendimiento Realizado (Solo en DEGIRO o Todas) */}
+          {tradingAnalytics && isDegiroOrConsolidated && (
             <section className="px-4 mb-4">
               <div className="bg-gradient-to-br from-slate-900 to-slate-950 dark:from-slate-900/90 dark:to-slate-950/90 text-white rounded-3xl p-4 shadow-xl border border-slate-800">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-800/80">
@@ -567,7 +570,7 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                   className="w-full mt-3 py-2 px-3 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 rounded-xl text-xs font-bold text-emerald-300 flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
                 >
                   <span>📊</span>
-                  <span>Ver Beneficio Histórico por Acción & ETF (117 activos)</span>
+                  <span>Ver Beneficio Histórico por Acción & ETF (12 activos)</span>
                 </button>
               </div>
             </section>

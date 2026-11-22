@@ -1178,6 +1178,37 @@ export const INITIAL_POSITIONS: PositionItem[] = [
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
+  },
+  {
+    "id": "pos-urbanitae-12",
+    "name": "Urbanitae — 12 Proyectos Inmobiliarios",
+    "ticker": "URB-12",
+    "isin": "URBANITAE-12",
+    "type": "Fondos",
+    "shares": 12,
+    "avgPrice": 541.67,
+    "currentPrice": 541.67,
+    "currency": "EUR",
+    "market": "Urbanitae • Crowdfunding Inmobiliario (MyInvestor)",
+    "exchange": "URB",
+    "exchangeName": "Urbanitae",
+    "countryFlag": "🏗️",
+    "logoBg": "bg-emerald-600",
+    "logoText": "•U",
+    "dailyChangePct": 0.0,
+    "dailyChangeValue": 0.0,
+    "totalValue": 6500.00,
+    "unrealizedGainLoss": 0.0,
+    "unrealizedGainLossPct": 0.0,
+    "sparkline": [
+      6500.0,
+      6500.0,
+      6500.0
+    ],
+    "dividendYield": 0,
+    "status": "Abierta",
+    "portfolioId": "urbanitae",
+    "broker": "Urbanitae"
   }
 ];
 
@@ -1400,6 +1431,17 @@ export const DEFAULT_PORTFOLIOS: PortfolioMeta[] = [
     broker: 'MyInvestor',
     icon: '🏦',
     color: '#059669',
+    hidden: false,
+    cash: 0.00,
+  },
+  {
+    id: 'urbanitae',
+    name: 'Urbanitae',
+    currency: 'EUR',
+    createdAt: '2024-06-01',
+    broker: 'Urbanitae',
+    icon: '🏗️',
+    color: '#16a34a',
     hidden: false,
     cash: 0.00,
   },

@@ -29,6 +29,8 @@ import {
   Wallet,
   RefreshCw,
   Fingerprint,
+  GripVertical,
+  Sparkles,
 } from 'lucide-react';
 
 interface ProfileViewProps {
@@ -46,6 +48,7 @@ interface ProfileViewProps {
   onStartSetPin?: () => void;
   onDisablePin?: () => void;
   onLockNow?: () => void;
+  onReorderPortfolios?: (newPortfolios: PortfolioMeta[]) => void;
 }
 
 const BROKER_OPTIONS = [
@@ -75,6 +78,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   onStartSetPin,
   onDisablePin,
   onLockNow,
+  onReorderPortfolios,
 }) => {
   const [showAddPort, setShowAddPort] = useState(false);
   const [newPortName, setNewPortName] = useState('');
@@ -87,6 +91,88 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   useEffect(() => {
     biometricService.isAvailable().then(setBiometricAvailable);
   }, []);
+
+  // Reordenación táctil con el dedo y orden inteligente por uso
+  const [draggedPortfolioId, setDraggedPortfolioId] = useState<string | null>(null);
+  const [dragOverPortfolioId, setDragOverPortfolioId] = useState<string | null>(null);
+  const [sortNotification, setSortNotification] = useState<string | null>(null);
+
+  const touchStateRef = React.useRef<{
+    fromId: string | null;
+    currentOverId: string | null;
+    startY: number;
+    hasMoved: boolean;
+  }>({ fromId: null, currentOverId: null, startY: 0, hasMoved: false });
+
+  const handleSortByUsage = () => {
+    if (!portfolioState.portfolios || !onReorderPortfolios) return;
+    const todas = portfolioState.portfolios.find(p => p.id === 'todas');
+    const others = portfolioState.portfolios.filter(p => p.id !== 'todas');
+    
+    others.sort((a, b) => {
+      const countA = a.accessCount || 0;
+      const countB = b.accessCount || 0;
+      if (countB !== countA) return countB - countA;
+      return (b.lastAccessedAt || 0) - (a.lastAccessedAt || 0);
+    });
+
+    const newOrder = todas ? [todas, ...others] : others;
+    onReorderPortfolios(newOrder);
+    setSortNotification('✓ Ordenadas');
+    setTimeout(() => setSortNotification(null), 2000);
+  };
+
+  const handleMovePortfolio = (fromId: string, toId: string) => {
+    if (!portfolioState.portfolios || !onReorderPortfolios || fromId === toId) return;
+    const currentList = [...portfolioState.portfolios];
+    const fromIndex = currentList.findIndex(p => p.id === fromId);
+    const toIndex = currentList.findIndex(p => p.id === toId);
+    if (fromIndex === -1 || toIndex === -1) return;
+
+    const [moved] = currentList.splice(fromIndex, 1);
+    currentList.splice(toIndex, 0, moved);
+    onReorderPortfolios(currentList);
+  };
+
+  const handleTouchStartGrip = (e: React.TouchEvent, portId: string) => {
+    e.stopPropagation();
+    touchStateRef.current = {
+      fromId: portId,
+      currentOverId: portId,
+      startY: e.touches[0].clientY,
+      hasMoved: false,
+    };
+    setDraggedPortfolioId(portId);
+    setDragOverPortfolioId(portId);
+  };
+
+  const handleTouchMoveGrip = (e: React.TouchEvent) => {
+    if (!touchStateRef.current.fromId) return;
+    const touch = e.touches[0];
+    const diff = Math.abs(touch.clientY - touchStateRef.current.startY);
+    if (diff > 4) {
+      touchStateRef.current.hasMoved = true;
+    }
+    const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+    const itemElem = elem?.closest('[data-portfolio-id]');
+    if (itemElem) {
+      const overId = itemElem.getAttribute('data-portfolio-id');
+      if (overId && overId !== touchStateRef.current.currentOverId) {
+        touchStateRef.current.currentOverId = overId;
+        setDragOverPortfolioId(overId);
+      }
+    }
+  };
+
+  const handleTouchEndGrip = (e: React.TouchEvent) => {
+    const { fromId, currentOverId, hasMoved } = touchStateRef.current;
+    if (fromId && currentOverId && hasMoved && fromId !== currentOverId) {
+      handleMovePortfolio(fromId, currentOverId);
+    }
+    touchStateRef.current = { fromId: null, currentOverId: null, startY: 0, hasMoved: false };
+    setDraggedPortfolioId(null);
+    setDragOverPortfolioId(null);
+  };
 
   const handleToggleBiometric = async () => {
     if (biometricEnabled) {
@@ -232,12 +318,23 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             <Briefcase className="w-4 h-4 text-blue-600" />
             <h3 className="font-extrabold text-slate-900 dark:text-white text-sm">Gestión de Carteras</h3>
           </div>
-          <button
-            onClick={() => setShowAddPort(!showAddPort)}
-            className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-xl border border-emerald-200 dark:border-emerald-800"
-          >
-            <Plus className="w-3.5 h-3.5" /> Nueva Cartera
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleSortByUsage}
+              className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 flex items-center gap-1 bg-indigo-50 dark:bg-indigo-950/60 px-2.5 py-1 rounded-xl border border-indigo-200 dark:border-indigo-800 transition-colors"
+              title="Ordenar carteras automáticamente según las más usadas"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+              <span>{sortNotification || 'Ordenar por uso'}</span>
+            </button>
+            <button
+              onClick={() => setShowAddPort(!showAddPort)}
+              className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-xl border border-emerald-200 dark:border-emerald-800"
+            >
+              <Plus className="w-3.5 h-3.5" /> Nueva Cartera
+            </button>
+          </div>
         </div>
 
         <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-3 leading-relaxed">
@@ -307,24 +404,65 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           </div>
         )}
 
-        {/* Listado de Carteras con selector, visibilidad y eliminar */}
+        {/* Listado de Carteras con selector, visibilidad, reordenación y eliminar */}
         <div className="space-y-2">
           {portfolioState.portfolios.map(port => {
             const isSelected = portfolioState.activePortfolioId === port.id;
             const isHidden = port.hidden === true;
             const isProtected = port.id === 'todas';
+            const isBeingDragged = draggedPortfolioId === port.id;
+            const isOver = dragOverPortfolioId === port.id && draggedPortfolioId !== port.id;
 
             return (
               <div
                 key={port.id}
+                data-portfolio-id={port.id}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  if (dragOverPortfolioId !== port.id) setDragOverPortfolioId(port.id);
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const srcId = e.dataTransfer.getData('text/plain') || draggedPortfolioId;
+                  if (srcId && srcId !== port.id) handleMovePortfolio(srcId, port.id);
+                  setDraggedPortfolioId(null);
+                  setDragOverPortfolioId(null);
+                }}
                 className={`p-3 rounded-2xl border transition-all flex items-center justify-between ${
                   isSelected
                     ? 'border-slate-950 bg-slate-950 text-white shadow-xs dark:bg-white dark:text-slate-950 dark:border-white'
                     : 'border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50'
-                } ${isHidden ? 'opacity-60 bg-slate-100/50 dark:bg-slate-900/50' : ''}`}
+                } ${isHidden ? 'opacity-60 bg-slate-100/50 dark:bg-slate-900/50' : ''} ${
+                  isBeingDragged
+                    ? 'opacity-40 scale-[0.99] ring-1 ring-slate-400/50'
+                    : isOver
+                    ? 'ring-2 ring-indigo-500/80 bg-indigo-50/50 dark:bg-indigo-950/40'
+                    : ''
+                }`}
               >
+                {/* Tirador táctil sutil para mover con el dedo */}
                 <div
-                  className="flex-1 cursor-pointer flex items-center gap-3"
+                  onTouchStart={(e) => handleTouchStartGrip(e, port.id)}
+                  onTouchMove={handleTouchMoveGrip}
+                  onTouchEnd={handleTouchEndGrip}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', port.id);
+                    setDraggedPortfolioId(port.id);
+                  }}
+                  onDragEnd={() => {
+                    setDraggedPortfolioId(null);
+                    setDragOverPortfolioId(null);
+                  }}
+                  className="touch-none cursor-grab active:cursor-grabbing p-1.5 -ml-1 text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 select-none shrink-0"
+                  title="Arrastrar con el dedo para mover"
+                >
+                  <GripVertical className="w-4 h-4" />
+                </div>
+
+                <div
+                  className="flex-1 cursor-pointer flex items-center gap-3 pl-1"
                   onClick={() => onSwitchPortfolio(port.id)}
                 >
                   <span className="text-xl shrink-0">{port.icon || '💼'}</span>

@@ -44,6 +44,8 @@ import {
   Upload,
   TrendingUp,
   Building2,
+  GripVertical,
+  Sparkles,
 } from 'lucide-react';
 
 interface PortfolioViewProps {
@@ -69,6 +71,7 @@ interface PortfolioViewProps {
   onRefreshLiveQuotes?: () => void;
   isRefreshingLive?: boolean;
   lastUpdatedTime?: string;
+  onReorderPortfolios?: (newPortfolios: PortfolioMeta[]) => void;
 }
 
 export const PortfolioView: React.FC<PortfolioViewProps> = ({
@@ -94,6 +97,7 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
   onRefreshLiveQuotes,
   isRefreshingLive = false,
   lastUpdatedTime,
+  onReorderPortfolios,
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<InicioSubTab>('portafolio');
   const [selectedAssetFilter, setSelectedAssetFilter] = useState<'Todos' | AssetType>('Todos');
@@ -114,6 +118,88 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
   const [positionViewMode, setPositionViewMode] = useState<'abiertas' | 'cerradas' | 'todas'>('abiertas');
   const [showViewDropdown, setShowViewDropdown] = useState(false);
   const [showPortfolioDropdown, setShowPortfolioDropdown] = useState(false);
+
+  // Reordenación táctil con el dedo y orden inteligente por uso
+  const [draggedPortfolioId, setDraggedPortfolioId] = useState<string | null>(null);
+  const [dragOverPortfolioId, setDragOverPortfolioId] = useState<string | null>(null);
+  const [sortNotification, setSortNotification] = useState<string | null>(null);
+
+  const touchStateRef = React.useRef<{
+    fromId: string | null;
+    currentOverId: string | null;
+    startY: number;
+    hasMoved: boolean;
+  }>({ fromId: null, currentOverId: null, startY: 0, hasMoved: false });
+
+  const handleSortByUsage = () => {
+    if (!portfolios || !onReorderPortfolios) return;
+    const todas = portfolios.find(p => p.id === 'todas');
+    const others = portfolios.filter(p => p.id !== 'todas');
+    
+    others.sort((a, b) => {
+      const countA = a.accessCount || 0;
+      const countB = b.accessCount || 0;
+      if (countB !== countA) return countB - countA;
+      return (b.lastAccessedAt || 0) - (a.lastAccessedAt || 0);
+    });
+
+    const newOrder = todas ? [todas, ...others] : others;
+    onReorderPortfolios(newOrder);
+    setSortNotification('✓ Ordenadas');
+    setTimeout(() => setSortNotification(null), 2000);
+  };
+
+  const handleMovePortfolio = (fromId: string, toId: string) => {
+    if (!portfolios || !onReorderPortfolios || fromId === toId) return;
+    const currentList = [...portfolios];
+    const fromIndex = currentList.findIndex(p => p.id === fromId);
+    const toIndex = currentList.findIndex(p => p.id === toId);
+    if (fromIndex === -1 || toIndex === -1) return;
+
+    const [moved] = currentList.splice(fromIndex, 1);
+    currentList.splice(toIndex, 0, moved);
+    onReorderPortfolios(currentList);
+  };
+
+  const handleTouchStartGrip = (e: React.TouchEvent, portId: string) => {
+    e.stopPropagation();
+    touchStateRef.current = {
+      fromId: portId,
+      currentOverId: portId,
+      startY: e.touches[0].clientY,
+      hasMoved: false,
+    };
+    setDraggedPortfolioId(portId);
+    setDragOverPortfolioId(portId);
+  };
+
+  const handleTouchMoveGrip = (e: React.TouchEvent) => {
+    if (!touchStateRef.current.fromId) return;
+    const touch = e.touches[0];
+    const diff = Math.abs(touch.clientY - touchStateRef.current.startY);
+    if (diff > 4) {
+      touchStateRef.current.hasMoved = true;
+    }
+    const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+    const itemElem = elem?.closest('[data-portfolio-id]');
+    if (itemElem) {
+      const overId = itemElem.getAttribute('data-portfolio-id');
+      if (overId && overId !== touchStateRef.current.currentOverId) {
+        touchStateRef.current.currentOverId = overId;
+        setDragOverPortfolioId(overId);
+      }
+    }
+  };
+
+  const handleTouchEndGrip = (e: React.TouchEvent) => {
+    const { fromId, currentOverId, hasMoved } = touchStateRef.current;
+    if (fromId && currentOverId && hasMoved && fromId !== currentOverId) {
+      handleMovePortfolio(fromId, currentOverId);
+    }
+    touchStateRef.current = { fromId: null, currentOverId: null, startY: 0, hasMoved: false };
+    setDraggedPortfolioId(null);
+    setDragOverPortfolioId(null);
+  };
 
   const closedPositions = (degiroData.closedPositions || []) as any[];
   const accountSummary = degiroData.accountSummary || {
@@ -305,35 +391,96 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                 className="fixed inset-0 z-40"
                 onClick={() => setShowPortfolioDropdown(false)}
               />
-              <div className="absolute left-0 mt-1.5 w-64 z-50 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl p-1.5 animate-fadeIn">
-                <div className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                  Seleccionar Cartera
+              <div className="absolute left-0 mt-1.5 w-68 sm:w-72 z-50 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl p-1.5 animate-fadeIn">
+                <div className="flex items-center justify-between px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  <span>Carteras</span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSortByUsage();
+                    }}
+                    className="text-[10px] font-semibold text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-1 transition-colors normal-case cursor-pointer"
+                    title="Ordenar carteras automáticamente según las más usadas"
+                  >
+                    <Sparkles className="w-2.5 h-2.5 text-indigo-500" />
+                    <span>{sortNotification || 'Ordenar por uso'}</span>
+                  </button>
                 </div>
+
                 <div className="space-y-0.5">
                   {(portfolios || []).filter(p => !p.hidden).map(port => {
                     const isSelected = (activePortfolioId || 'todas') === port.id;
+                    const isBeingDragged = draggedPortfolioId === port.id;
+                    const isOver = dragOverPortfolioId === port.id && draggedPortfolioId !== port.id;
+
                     return (
-                      <button
+                      <div
                         key={port.id}
-                        onClick={() => {
-                          onSwitchPortfolio?.(port.id);
-                          setShowPortfolioDropdown(false);
+                        data-portfolio-id={port.id}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          if (dragOverPortfolioId !== port.id) setDragOverPortfolioId(port.id);
                         }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-colors ${
-                          isSelected
-                            ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 shadow-xs'
-                            : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          const srcId = e.dataTransfer.getData('text/plain') || draggedPortfolioId;
+                          if (srcId && srcId !== port.id) handleMovePortfolio(srcId, port.id);
+                          setDraggedPortfolioId(null);
+                          setDragOverPortfolioId(null);
+                        }}
+                        className={`group relative flex items-center rounded-xl transition-all ${
+                          isBeingDragged
+                            ? 'opacity-40 scale-[0.98] ring-1 ring-slate-400/50'
+                            : isOver
+                            ? 'ring-2 ring-indigo-500/80 bg-indigo-50/50 dark:bg-indigo-950/40'
+                            : ''
                         }`}
                       >
-                        <span className="flex items-center gap-2">
-                          <span className="text-base">{port.icon || '💼'}</span>
-                          <span>{port.name}</span>
-                        </span>
-                        {isSelected && <Check className="w-3.5 h-3.5" />}
-                      </button>
+                        {/* Tirador táctil sutil para mover con el dedo */}
+                        <div
+                          onTouchStart={(e) => handleTouchStartGrip(e, port.id)}
+                          onTouchMove={handleTouchMoveGrip}
+                          onTouchEnd={handleTouchEndGrip}
+                          draggable
+                          onDragStart={(e) => {
+                            e.dataTransfer.effectAllowed = 'move';
+                            e.dataTransfer.setData('text/plain', port.id);
+                            setDraggedPortfolioId(port.id);
+                          }}
+                          onDragEnd={() => {
+                            setDraggedPortfolioId(null);
+                            setDragOverPortfolioId(null);
+                          }}
+                          className="touch-none cursor-grab active:cursor-grabbing p-2 text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 select-none shrink-0"
+                          title="Arrastrar con el dedo para mover"
+                        >
+                          <GripVertical className="w-3.5 h-3.5" />
+                        </div>
+
+                        {/* Botón de selección de cartera */}
+                        <button
+                          onClick={() => {
+                            onSwitchPortfolio?.(port.id);
+                            setShowPortfolioDropdown(false);
+                          }}
+                          className={`flex-1 flex items-center justify-between py-2 pr-3 pl-0.5 text-xs font-bold transition-colors rounded-r-xl ${
+                            isSelected
+                              ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 shadow-xs'
+                              : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                          }`}
+                        >
+                          <span className="flex items-center gap-2 min-w-0">
+                            <span className="text-base shrink-0">{port.icon || '💼'}</span>
+                            <span className="truncate">{port.name}</span>
+                          </span>
+                          {isSelected && <Check className="w-3.5 h-3.5 shrink-0 ml-1" />}
+                        </button>
+                      </div>
                     );
                   })}
                 </div>
+
                 <div className="pt-1.5 mt-1.5 border-t border-slate-100 dark:border-slate-800">
                   <button
                     onClick={() => {

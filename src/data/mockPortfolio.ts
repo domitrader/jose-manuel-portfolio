@@ -1723,6 +1723,7 @@ export const DEFAULT_PORTFOLIOS: PortfolioMeta[] = [
     color: '#0ea5e9',
     hidden: false,
     cash: 5370.31,
+    accessCount: 100,
   },
   {
     id: 'degiro',
@@ -1734,6 +1735,7 @@ export const DEFAULT_PORTFOLIOS: PortfolioMeta[] = [
     color: '#2563eb',
     hidden: false,
     cash: 4360.23,
+    accessCount: 50,
   },
   {
     id: 'myinvestor',
@@ -1745,17 +1747,7 @@ export const DEFAULT_PORTFOLIOS: PortfolioMeta[] = [
     color: '#059669',
     hidden: false,
     cash: 0.00,
-  },
-  {
-    id: 'urbanitae',
-    name: 'Urbanitae',
-    currency: 'EUR',
-    createdAt: '2024-06-01',
-    broker: 'Urbanitae',
-    icon: '🏗️',
-    color: '#16a34a',
-    hidden: false,
-    cash: 0.00,
+    accessCount: 40,
   },
   {
     id: 'kraken',
@@ -1767,6 +1759,7 @@ export const DEFAULT_PORTFOLIOS: PortfolioMeta[] = [
     color: '#7c3aed',
     hidden: false,
     cash: 1010.08,
+    accessCount: 30,
   },
   {
     id: 'bbva',
@@ -1778,6 +1771,19 @@ export const DEFAULT_PORTFOLIOS: PortfolioMeta[] = [
     color: '#004481',
     hidden: false,
     cash: 0.00,
+    accessCount: 20,
+  },
+  {
+    id: 'urbanitae',
+    name: 'Urbanitae',
+    currency: 'EUR',
+    createdAt: '2024-06-01',
+    broker: 'Urbanitae',
+    icon: '🏗️',
+    color: '#16a34a',
+    hidden: false,
+    cash: 0.00,
+    accessCount: 15,
   },
 ];
 

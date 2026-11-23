@@ -130,6 +130,8 @@ export interface PortfolioMeta {
   color?: string;
   hidden?: boolean;
   cash?: number;
+  accessCount?: number;
+  lastAccessedAt?: number;
 }
 
 export interface TradingAnalytics {

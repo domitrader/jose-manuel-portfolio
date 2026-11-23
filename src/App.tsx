@@ -7,6 +7,7 @@ import {
   WatchlistItem,
   TimeRange,
   TradingAnalytics,
+  PortfolioMeta,
 } from './types/portfolio';
 import { INITIAL_PORTFOLIO_STATE } from './data/mockPortfolio';
 import { SupabaseService } from './services/supabaseService';
@@ -303,11 +304,33 @@ export const App: React.FC = () => {
     }));
   };
 
-  // Portfolio switching
+  // Portfolio switching & track usage
   const handleSwitchPortfolio = (portfolioId: string) => {
+    setPortfolioState((prev) => {
+      const now = Date.now();
+      const updatedPortfolios = prev.portfolios.map(p => {
+        if (p.id === portfolioId) {
+          return {
+            ...p,
+            accessCount: (p.accessCount || 0) + 1,
+            lastAccessedAt: now,
+          };
+        }
+        return p;
+      });
+      return {
+        ...prev,
+        activePortfolioId: portfolioId,
+        portfolios: updatedPortfolios,
+      };
+    });
+  };
+
+  // Reorder portfolios (persists order)
+  const handleReorderPortfolios = (newPortfolios: PortfolioMeta[]) => {
     setPortfolioState((prev) => ({
       ...prev,
-      activePortfolioId: portfolioId,
+      portfolios: newPortfolios,
     }));
   };
 
@@ -411,6 +434,7 @@ export const App: React.FC = () => {
               onRefreshLiveQuotes={handleRefreshLiveQuotes}
               isRefreshingLive={isRefreshingLive}
               lastUpdatedTime={lastUpdatedTime}
+              onReorderPortfolios={handleReorderPortfolios}
             />
           )}
 
@@ -448,6 +472,7 @@ export const App: React.FC = () => {
               onAddPortfolio={handleAddPortfolio}
               onToggleHidePortfolio={handleToggleHidePortfolio}
               onDeletePortfolio={handleDeletePortfolio}
+              onReorderPortfolios={handleReorderPortfolios}
               onOpenImport={() => setIsImportOpen(true)}
               onResetDemo={handleResetDemo}
               onRestoreState={setPortfolioState}

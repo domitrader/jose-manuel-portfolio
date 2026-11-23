@@ -287,17 +287,19 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
   // Total cuenta (cartera activa + efectivo activo)
   const isDegiroOnly = activePortfolioId === 'degiro';
   const isDegiroOrConsolidated = !activePortfolioId || activePortfolioId === 'todas' || activePortfolioId === 'degiro';
-  const totalMarketVal = isDegiroOnly ? accountSummary.cuentaCompleta : (activeCarteraVal + activeCash);
-  const headerFormatted = formatHeaderEUR(totalMarketVal, hideFigures);
-  const displayCarteraVal = isDegiroOnly ? accountSummary.cartera : activeCarteraVal;
-  const displayCashVal = isDegiroOnly ? accountSummary.efectivoEur : activeCash;
-  const displayMargenLibre = isDegiroOnly ? accountSummary.margenLibre : activeCash;
 
-  // Métricas calculadas para la cartera activa
+  // Métricas calculadas dinámicamente para la cartera activa
   const metrics = calculatePortfolioMetrics(currentPortfolioPositions, activeCash);
-  const displayDiaBp = isDegiroOnly ? accountSummary.diaBp : metrics.dailyChangeValue;
-  const displayDiaBpPct = isDegiroOnly ? accountSummary.diaBpPct : metrics.dailyChangePct;
-  const displayTotalBp = isDegiroOnly ? accountSummary.totalBpDegiro : metrics.unrealizedGainLoss;
+
+  const totalMarketVal = Number((activeCarteraVal + activeCash).toFixed(2));
+  const headerFormatted = formatHeaderEUR(totalMarketVal, hideFigures);
+  const displayCarteraVal = activeCarteraVal;
+  const displayCashVal = activeCash;
+  const displayMargenLibre = isDegiroOnly ? Number((activeCash * 1.935).toFixed(2)) : activeCash;
+
+  const displayDiaBp = metrics.dailyChangeValue;
+  const displayDiaBpPct = metrics.dailyChangePct;
+  const displayTotalBp = metrics.unrealizedGainLoss;
   const chartPoints = MOCK_CHART_DATA[selectedTimeRange] || MOCK_CHART_DATA['1D'];
 
   // Filtrado y ordenación de posiciones abiertas

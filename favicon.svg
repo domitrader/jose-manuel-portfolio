@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a" />
+      <stop offset="50%" stop-color="#1d4ed8" />
+      <stop offset="100%" stop-color="#0a0f1d" />
+    </linearGradient>
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#93c5fd" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#1e40af" stop-opacity="0.4" />
+    </linearGradient>
+    <radialGradient id="radialGlow" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#1e3a8a" stop-opacity="0" />
+    </radialGradient>
+    <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#020617" flood-opacity="0.55" />
+    </filter>
+  </defs>
+
+  <!-- Background Squircle -->
+  <rect x="8" y="8" width="496" height="496" rx="112" fill="url(#blueGrad)" stroke="url(#borderGrad)" stroke-width="4" />
+  <rect x="8" y="8" width="496" height="496" rx="112" fill="url(#radialGlow)" />
+
+  <!-- Monogram JM -->
+  <g filter="url(#dropShadow)">
+    <text x="256" y="325" 
+          font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+          font-size="230" 
+          font-weight="800" 
+          letter-spacing="-8" 
+          text-anchor="middle" 
+          fill="#FFFFFF">JM</text>
+  </g>
+
+  <!-- Subtle Cyan Accent Line -->
+  <rect x="170" y="360" width="172" height="8" rx="4" fill="#38bdf8" />
+</svg>

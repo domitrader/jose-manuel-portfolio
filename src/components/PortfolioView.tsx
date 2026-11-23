@@ -22,6 +22,7 @@ import { DividendAuditView } from './DividendAuditView';
 import { CommissionsModal } from './CommissionsModal';
 import { NetCashFlowModal } from './NetCashFlowModal';
 import { ClosedProfitsModal } from './ClosedProfitsModal';
+import { ChartsHubView } from './ChartsHubView';
 import { formatDateToSpanish } from '../utils/historicalPriceEstimator';
 import degiroData from '../data/degiroPositionsData.json';
 import earthGlobeHeader from '../assets/earth-globe-header.webp';
@@ -62,6 +63,8 @@ import {
   Zap,
   Trophy,
   FileCheck2,
+  Menu,
+  Briefcase,
 } from 'lucide-react';
 
 function getBrokerLogo(port?: { id?: string; name?: string; broker?: string } | null): string | null {
@@ -128,6 +131,7 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
   onReorderPortfolios,
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<InicioSubTab>('portafolio');
+  const [homeDrawerOpen, setHomeDrawerOpen] = useState(false);
   const [selectedAssetFilter, setSelectedAssetFilter] = useState<'Todos' | AssetType>('Todos');
   const [urbanitaeSubFilter, setUrbanitaeSubFilter] = useState<'todos' | 'plusvalia' | 'prestamo'>('todos');
   const [showSortMenu, setShowSortMenu] = useState(false);
@@ -654,30 +658,121 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
           )}
         </div>
 
-        {/* Conmutador Superior: Cartera vs Dividendos */}
-        <div className="inline-flex p-0.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border border-sky-200/80 dark:border-slate-700 shrink-0 shadow-2xs">
-          <button
-            onClick={() => setActiveSubTab('portafolio')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all ${
-              activeSubTab === 'portafolio'
-                ? 'bg-gradient-to-r from-sky-600 to-blue-700 text-white shadow-xs'
-                : 'text-[#0B2246]/75 dark:text-slate-400 hover:text-sky-700 dark:hover:text-white'
-            }`}
-          >
-            💼 Cartera
-          </button>
-          <button
-            onClick={() => setActiveSubTab('dividendos')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1 ${
-              activeSubTab === 'dividendos'
-                ? 'bg-emerald-600 text-white shadow-xs'
-                : 'text-[#0B2246]/75 dark:text-slate-400 hover:text-emerald-700'
-            }`}
-          >
-            <span>💰 Dividendos</span>
-          </button>
-        </div>
+        {/* Botón Menú (☰) en el lugar de Dividendos: abre Portafolio, Zona de Gráficos y Dividendos */}
+        <button
+          type="button"
+          onClick={() => setHomeDrawerOpen(true)}
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-sky-200/90 dark:border-slate-700 text-[#081C3E] dark:text-white shadow-[0_4px_14px_-4px_rgba(14,165,233,0.22)] hover:bg-sky-50 dark:hover:bg-slate-800 active:scale-95 transition-all shrink-0"
+          title="Abrir menú de secciones (Portafolio, Zona de Gráficos, Dividendos)"
+        >
+          <Menu className="w-4 h-4 stroke-[2.5] text-sky-600 dark:text-sky-400" />
+          <span className="text-xs font-black">
+            {activeSubTab === 'portafolio'
+              ? 'Menú'
+              : activeSubTab === 'graficos'
+                ? 'Gráficos'
+                : 'Dividendos'}
+          </span>
+        </button>
       </div>
+
+      {/* MENÚ LATERAL DESLIZABLE IZQUIERDO DE INICIO (Portafolio, Zona de Gráficos, Dividendos) */}
+      {homeDrawerOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex animate-in fade-in duration-150"
+          onClick={() => setHomeDrawerOpen(false)}
+        >
+          <aside
+            className="w-72 max-w-[82vw] h-full bg-white dark:bg-slate-900 border-r border-sky-100 dark:border-slate-800 shadow-2xl flex flex-col p-4"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+                  Patrimonio Multicartera
+                </span>
+                <h2 className="text-base font-black text-[#081C3E] dark:text-white">José Manuel</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setHomeDrawerOpen(false)}
+                className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <nav className="space-y-1.5 flex-1 overflow-y-auto">
+              {(
+                [
+                  {
+                    id: 'portafolio' as InicioSubTab,
+                    label: `Portafolio (${activePortObj?.name || 'Todas'})`,
+                    subtitle: 'Posiciones, Día +/- y Total +/- en vivo',
+                    icon: Briefcase,
+                    color: 'text-sky-600',
+                  },
+                  {
+                    id: 'graficos' as InicioSubTab,
+                    label: 'Zona de Gráficos',
+                    subtitle: 'Top DEGIRO, Distribución, P/G y Flujo',
+                    icon: BarChart3,
+                    color: 'text-indigo-600',
+                  },
+                  {
+                    id: 'dividendos' as InicioSubTab,
+                    label: 'Dividendos',
+                    subtitle: 'Auditoría Histórica y Calendario Futuro',
+                    icon: Coins,
+                    color: 'text-emerald-600',
+                  },
+                ]
+              ).map(item => {
+                const Icon = item.icon;
+                const isActive = activeSubTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      setActiveSubTab(item.id);
+                      setHomeDrawerOpen(false);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className={`w-full flex items-center gap-3 p-3 rounded-2xl text-left transition-all ${
+                      isActive
+                        ? 'bg-gradient-to-r from-sky-600 to-blue-700 text-white shadow-sm'
+                        : 'hover:bg-sky-50 dark:hover:bg-slate-800/70 text-[#081C3E] dark:text-slate-200'
+                    }`}
+                  >
+                    <div
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                        isActive ? 'bg-white/20' : 'bg-sky-50 dark:bg-slate-800'
+                      }`}
+                    >
+                      <Icon className={`w-4 h-4 ${isActive ? 'text-white' : item.color}`} />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-xs font-extrabold truncate">{item.label}</div>
+                      <div
+                        className={`text-[10px] truncate ${
+                          isActive ? 'text-sky-100' : 'text-slate-500 dark:text-slate-400'
+                        }`}
+                      >
+                        {item.subtitle}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </nav>
+
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 text-center">
+              {activePortObj?.name || 'Todas las Carteras'} · José Manuel
+            </div>
+          </aside>
+        </div>
+      )}
 
       {/* CONTENIDO SEGÚN LA SUB-PESTAÑA ACTIVA */}
       {activeSubTab === 'portafolio' && (
@@ -798,6 +893,7 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
               selectedRange={selectedTimeRange}
               onRangeChange={onSelectTimeRange}
               onExpand={() => setShowChartModal(true)}
+              onOpenChartsHub={() => setActiveSubTab('graficos')}
               hideFigures={hideFigures}
             />
           </section>
@@ -1808,6 +1904,17 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
       {activeSubTab === 'dividendos' && (
         <section className="relative z-10 px-4 pt-1">
           <DividendAuditView hideFigures={hideFigures} />
+        </section>
+      )}
+
+      {/* PESTAÑA: ZONA DE GRÁFICOS (100% sincronizada con José Manuel) */}
+      {activeSubTab === 'graficos' && (
+        <section className="relative z-10 pt-1">
+          <ChartsHubView
+            positions={currentPortfolioPositions}
+            activePortfolioName={activePortObj?.name || 'Todas las Carteras'}
+            hideFigures={hideFigures}
+          />
         </section>
       )}
 

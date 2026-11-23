@@ -368,7 +368,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   )}
 
                   {/* Botón eliminar para carteras creadas por el usuario */}
-                  {port.id !== 'todas' && port.id !== 'degiro' && port.id !== 'myinvestor' && port.id !== 'kraken' && onDeletePortfolio && (
+                  {port.id !== 'todas' && port.id !== 'degiro' && port.id !== 'myinvestor' && port.id !== 'urbanitae' && port.id !== 'kraken' && port.id !== 'bbva' && onDeletePortfolio && (
                     <button
                       type="button"
                       onClick={() => {

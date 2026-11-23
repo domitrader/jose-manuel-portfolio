@@ -1,7 +1,7 @@
 import { PortfolioState } from '../types/portfolio';
 import { INITIAL_PORTFOLIO_STATE } from '../data/mockPortfolio';
 
-const LOCAL_STORAGE_KEY = 'jose_manuel_portfolio_state_v8';
+const LOCAL_STORAGE_KEY = 'jose_manuel_portfolio_state_v9';
 const SUPABASE_CONFIG_KEY = 'jose_manuel_supabase_config_v1';
 const CLOUD_ROW_ID = 'jose_manuel_portfolio';
 
@@ -17,7 +17,8 @@ const LEGACY_STORAGE_KEYS = [
   'jose_manuel_portfolio_state_v4',
   'jose_manuel_portfolio_state_v5',
   'jose_manuel_portfolio_state_v6',
-  'jose_manuel_portfolio_state_v7'
+  'jose_manuel_portfolio_state_v7',
+  'jose_manuel_portfolio_state_v8'
 ];
 
 function mergeMyInvestorIfMissing(state: PortfolioState): PortfolioState {
@@ -39,14 +40,20 @@ function mergeMyInvestorIfMissing(state: PortfolioState): PortfolioState {
     return p;
   });
 
-  // Reemplazar completamente posiciones de MyInvestor y Kraken con las oficiales exactas del PDF
-  positions = positions.filter(p => p.broker !== 'MyInvestor' && p.portfolioId !== 'myinvestor' && p.broker !== 'Kraken' && p.portfolioId !== 'kraken');
-  const freshMyInvestorAndKraken = INITIAL_PORTFOLIO_STATE.positions.filter(
-    p => p.portfolioId === 'myinvestor' || p.broker === 'MyInvestor' || p.portfolioId === 'kraken' || p.broker === 'Kraken'
+  // Reemplazar completamente posiciones de MyInvestor, Kraken y BBVA con las oficiales exactas
+  positions = positions.filter(p => 
+    p.broker !== 'MyInvestor' && p.portfolioId !== 'myinvestor' && 
+    p.broker !== 'Kraken' && p.portfolioId !== 'kraken' &&
+    p.broker !== 'BBVA' && p.portfolioId !== 'bbva'
   );
-  positions = [...positions, ...freshMyInvestorAndKraken];
+  const freshOfficialPositions = INITIAL_PORTFOLIO_STATE.positions.filter(
+    p => p.portfolioId === 'myinvestor' || p.broker === 'MyInvestor' || 
+         p.portfolioId === 'kraken' || p.broker === 'Kraken' ||
+         p.portfolioId === 'bbva' || p.broker === 'BBVA'
+  );
+  positions = [...positions, ...freshOfficialPositions];
 
-  // Sincronizar carteras meta (Kraken con efectivo 1010.08 €, MyInvestor, Urbanitae, etc.)
+  // Sincronizar carteras meta (Kraken con efectivo 1010.08 €, MyInvestor, Urbanitae, BBVA, etc.)
   const existingPortIds = new Set((state.portfolios || []).map(pt => pt.id));
   const mergedPortfolios = (state.portfolios || []).map(pt => {
     if (pt.id === 'kraken') {
@@ -54,6 +61,9 @@ function mergeMyInvestorIfMissing(state: PortfolioState): PortfolioState {
     }
     if (pt.id === 'todas') {
       return { ...pt, cash: 5370.31 };
+    }
+    if (pt.id === 'bbva') {
+      return { ...pt, name: 'BBVA', broker: 'BBVA', icon: '🔷', color: '#004481', cash: 0.00 };
     }
     return pt;
   });

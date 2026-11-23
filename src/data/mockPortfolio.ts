@@ -1422,6 +1422,35 @@ export const INITIAL_POSITIONS: PositionItem[] = [
     status: 'Abierta',
     portfolioId: 'kraken',
     broker: 'Kraken'
+  },
+  // 6. Planes de Pensiones BBVA
+  {
+    id: 'pos-bbva-ppi',
+    name: 'BBVA Plan Global Desarrollo, PPI',
+    ticker: 'PPI',
+    isin: 'N1227',
+    type: 'Fondos',
+    shares: 1,
+    avgPrice: 27929.57,
+    currentPrice: 27929.57,
+    currency: 'EUR',
+    market: 'BBVA Pensiones EGFP • DGS N1227 (Renta Variable Global)',
+    exchange: 'BME',
+    exchangeName: 'BBVA Asset Management',
+    countryFlag: '🇪🇸',
+    logoBg: 'bg-[#004481]',
+    logoText: 'BBVA',
+    dailyChangePct: 0.0,
+    dailyChangeValue: 0.0,
+    totalValue: 27929.57,
+    unrealizedGainLoss: 0.0,
+    unrealizedGainLossPct: 0.0,
+    sparkline: [27800, 27850, 27900, 27929.57],
+    dividendYield: 0.0,
+    status: 'Abierta',
+    portfolioId: 'bbva',
+    subportfolio: 'Plan de Pensiones',
+    broker: 'BBVA'
   }
 ];
 
@@ -1738,6 +1767,17 @@ export const DEFAULT_PORTFOLIOS: PortfolioMeta[] = [
     color: '#7c3aed',
     hidden: false,
     cash: 1010.08,
+  },
+  {
+    id: 'bbva',
+    name: 'BBVA',
+    currency: 'EUR',
+    createdAt: '2023-01-01',
+    broker: 'BBVA',
+    icon: '🔷',
+    color: '#004481',
+    hidden: false,
+    cash: 0.00,
   },
 ];
 

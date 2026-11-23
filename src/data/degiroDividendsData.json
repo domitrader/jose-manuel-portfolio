@@ -1,32 +1,30 @@
 {
-  "totalHistoricalNet": 184.28,
-  "totalHistoricalGross": 186.22,
-  "totalHistoricalTaxes": 1.94,
-  "totalPaymentsCount": 9,
+  "totalHistoricalNet": 773.7,
+  "totalHistoricalGross": 914.1,
+  "totalHistoricalTaxes": 140.4,
+  "totalPaymentsCount": 48,
   "yearsAvailable": [
     "2026",
     "2025"
   ],
   "brokersAvailable": [
-    "Todas",
     "DEGIRO",
-    "MyInvestor",
-    "Kraken"
+    "MyInvestor"
   ],
   "annualSummary": [
     {
       "year": "2026",
-      "gross": 114.42,
-      "tax": 1.5,
-      "net": 112.92,
-      "count": 6
+      "gross": 560.46,
+      "tax": 86.91,
+      "net": 473.55,
+      "count": 35
     },
     {
       "year": "2025",
-      "gross": 71.8,
-      "tax": 0.44,
-      "net": 71.36,
-      "count": 3
+      "gross": 353.64,
+      "tax": 53.49,
+      "net": 300.15,
+      "count": 13
     }
   ],
   "productSummary": [
@@ -40,16 +38,190 @@
       "count": 4
     },
     {
+      "product": "Metrovacesa S.A.",
+      "isin": "ES0105122024",
+      "flag": "🇪🇸",
+      "gross": 153.43,
+      "tax": 29.15,
+      "net": 124.28,
+      "count": 3
+    },
+    {
+      "product": "Lyxor STOXX Europe Select Dividend 30 ETF",
+      "isin": "LU1812092168",
+      "flag": "🇪🇺",
+      "gross": 86.86,
+      "tax": 16.5,
+      "net": 70.36,
+      "count": 2
+    },
+    {
+      "product": "Logista Integral S.A.",
+      "isin": "ES0105027009",
+      "flag": "🇪🇸",
+      "gross": 85.24,
+      "tax": 16.2,
+      "net": 69.04,
+      "count": 4
+    },
+    {
+      "product": "Enagás S.A.",
+      "isin": "ES0130960018",
+      "flag": "🇪🇸",
+      "gross": 62.98,
+      "tax": 11.96,
+      "net": 51.02,
+      "count": 2
+    },
+    {
+      "product": "iShares STOXX Global Select Dividend 100 ETF",
+      "isin": "DE000A0F5UH1",
+      "flag": "🌐",
+      "gross": 57.8,
+      "tax": 10.98,
+      "net": 46.82,
+      "count": 4
+    },
+    {
+      "product": "Redeia Corporación S.A.",
+      "isin": "ES0173093024",
+      "flag": "🇪🇸",
+      "gross": 56.24,
+      "tax": 10.68,
+      "net": 45.56,
+      "count": 3
+    },
+    {
+      "product": "Iberdrola S.A.",
+      "isin": "ES0144580Y14",
+      "flag": "🇪🇸",
+      "gross": 47.77,
+      "tax": 9.08,
+      "net": 38.69,
+      "count": 3
+    },
+    {
+      "product": "Mapfre S.A.",
+      "isin": "ES0124244E34",
+      "flag": "🇪🇸",
+      "gross": 35.98,
+      "tax": 6.84,
+      "net": 29.14,
+      "count": 3
+    },
+    {
+      "product": "Banco de Sabadell S.A.",
+      "isin": "ES0113860A34",
+      "flag": "🇪🇸",
+      "gross": 29.39,
+      "tax": 5.58,
+      "net": 23.81,
+      "count": 3
+    },
+    {
+      "product": "iShares UK Dividend UCITS ETF",
+      "isin": "IE00B0M63060",
+      "flag": "🇬🇧",
+      "gross": 28.64,
+      "tax": 5.44,
+      "net": 23.2,
+      "count": 3
+    },
+    {
+      "product": "Vanguard FTSE All-World High Dividend Yield ETF",
+      "isin": "IE00B8GKDB10",
+      "flag": "🌐",
+      "gross": 27.51,
+      "tax": 5.23,
+      "net": 22.28,
+      "count": 3
+    },
+    {
+      "product": "SPDR S&P Euro Dividend Aristocrats UCITS ETF",
+      "isin": "IE00B5M1WJ87",
+      "flag": "🇪🇺",
+      "gross": 22.87,
+      "tax": 4.34,
+      "net": 18.53,
+      "count": 2
+    },
+    {
+      "product": "VanEck Morningstar Developed Markets Dividend Leaders",
+      "isin": "NL0011683594",
+      "flag": "🌐",
+      "gross": 18.65,
+      "tax": 3.54,
+      "net": 15.11,
+      "count": 3
+    },
+    {
       "product": "Visa Inc. Class A",
       "isin": "US92826C8394",
       "flag": "🇺🇸",
-      "gross": 14.39,
-      "tax": 1.94,
-      "net": 12.45,
+      "gross": 14.54,
+      "tax": 2.15,
+      "net": 12.39,
       "count": 5
+    },
+    {
+      "product": "Viscofan S.A.",
+      "isin": "ES0184262212",
+      "flag": "🇪🇸",
+      "gross": 14.37,
+      "tax": 2.73,
+      "net": 11.64,
+      "count": 1
     }
   ],
   "payments": [
+    {
+      "date": "20-11-2026",
+      "year": "2026",
+      "month": "Noviembre",
+      "product": "Mapfre S.A.",
+      "isin": "ES0124244E34",
+      "gross": 12.2,
+      "tax": 2.32,
+      "net": 9.88,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo a cuenta ejercicio 2026 (135,58 acc.)"
+      ]
+    },
+    {
+      "date": "15-10-2026",
+      "year": "2026",
+      "month": "Octubre",
+      "product": "Banco de Sabadell S.A.",
+      "isin": "ES0113860A34",
+      "gross": 13.06,
+      "tax": 2.48,
+      "net": 10.58,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo a cuenta 0,08 €/acc. (163,29 acc.)"
+      ]
+    },
+    {
+      "date": "14-10-2026",
+      "year": "2026",
+      "month": "Octubre",
+      "product": "iShares STOXX Global Select Dividend 100 ETF",
+      "isin": "DE000A0F5UH1",
+      "gross": 14.38,
+      "tax": 2.73,
+      "net": 11.65,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "descriptions": [
+        "Dividendo trimestral ETF Global (28,19 títulos)"
+      ]
+    },
     {
       "date": "01-10-2026",
       "year": "2026",
@@ -64,6 +236,70 @@
       "flag": "🇮🇪",
       "descriptions": [
         "Dividendo trimestral bono corporativo ultracorto"
+      ]
+    },
+    {
+      "date": "23-09-2026",
+      "year": "2026",
+      "month": "Septiembre",
+      "product": "Vanguard FTSE All-World High Dividend Yield ETF",
+      "isin": "IE00B8GKDB10",
+      "gross": 9.17,
+      "tax": 1.74,
+      "net": 7.43,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "descriptions": [
+        "Dividendo trimestral ETF Vanguard (13,69 títulos)"
+      ]
+    },
+    {
+      "date": "18-09-2026",
+      "year": "2026",
+      "month": "Septiembre",
+      "product": "SPDR S&P Euro Dividend Aristocrats UCITS ETF",
+      "isin": "IE00B5M1WJ87",
+      "gross": 11.53,
+      "tax": 2.19,
+      "net": 9.34,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇺",
+      "descriptions": [
+        "Dividendo semestral aristócratas europeos (19,89 títulos)"
+      ]
+    },
+    {
+      "date": "16-09-2026",
+      "year": "2026",
+      "month": "Septiembre",
+      "product": "iShares UK Dividend UCITS ETF",
+      "isin": "IE00B0M63060",
+      "gross": 9.64,
+      "tax": 1.83,
+      "net": 7.81,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇬🇧",
+      "descriptions": [
+        "Dividendo trimestral ETF UK (56,70 títulos)"
+      ]
+    },
+    {
+      "date": "11-09-2026",
+      "year": "2026",
+      "month": "Septiembre",
+      "product": "VanEck Morningstar Developed Markets Dividend Leaders",
+      "isin": "NL0011683594",
+      "gross": 6.33,
+      "tax": 1.2,
+      "net": 5.13,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "descriptions": [
+        "Dividendo trimestral ETF Dividend Leaders (11,51 títulos)"
       ]
     },
     {
@@ -83,6 +319,102 @@
       ]
     },
     {
+      "date": "28-08-2026",
+      "year": "2026",
+      "month": "Agosto",
+      "product": "Logista Integral S.A.",
+      "isin": "ES0105027009",
+      "gross": 9.14,
+      "tax": 1.74,
+      "net": 7.4,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo a cuenta 0,49 €/acc. (18,65 acc.)"
+      ]
+    },
+    {
+      "date": "29-07-2026",
+      "year": "2026",
+      "month": "Julio",
+      "product": "Iberdrola S.A.",
+      "isin": "ES0144580Y14",
+      "gross": 18.99,
+      "tax": 3.61,
+      "net": 15.38,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo complementario Iberdrola Retribución Flexible (54,10 acc.)"
+      ]
+    },
+    {
+      "date": "15-07-2026",
+      "year": "2026",
+      "month": "Julio",
+      "product": "iShares STOXX Global Select Dividend 100 ETF",
+      "isin": "DE000A0F5UH1",
+      "gross": 14.94,
+      "tax": 2.84,
+      "net": 12.1,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "descriptions": [
+        "Dividendo trimestral ETF Global (28,19 títulos)"
+      ]
+    },
+    {
+      "date": "11-07-2026",
+      "year": "2026",
+      "month": "Julio",
+      "product": "Lyxor STOXX Europe Select Dividend 30 ETF",
+      "isin": "LU1812092168",
+      "gross": 44.73,
+      "tax": 8.5,
+      "net": 36.23,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇺",
+      "descriptions": [
+        "Dividendo semestral ETF Europa Select 30 (52,01 títulos)"
+      ]
+    },
+    {
+      "date": "04-07-2026",
+      "year": "2026",
+      "month": "Julio",
+      "product": "Enagás S.A.",
+      "isin": "ES0130960018",
+      "gross": 32.17,
+      "tax": 6.11,
+      "net": 26.06,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo complementario Enagás (30,81 acc.)"
+      ]
+    },
+    {
+      "date": "02-07-2026",
+      "year": "2026",
+      "month": "Julio",
+      "product": "Redeia Corporación S.A.",
+      "isin": "ES0173093024",
+      "gross": 24.06,
+      "tax": 4.57,
+      "net": 19.49,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo complementario 0,7273 €/acc. (33,08 acc.)"
+      ]
+    },
+    {
       "date": "01-07-2026",
       "year": "2026",
       "month": "Julio",
@@ -96,6 +428,70 @@
       "flag": "🇮🇪",
       "descriptions": [
         "Dividendo trimestral bono ultracorto"
+      ]
+    },
+    {
+      "date": "24-06-2026",
+      "year": "2026",
+      "month": "Junio",
+      "product": "Vanguard FTSE All-World High Dividend Yield ETF",
+      "isin": "IE00B8GKDB10",
+      "gross": 9.31,
+      "tax": 1.77,
+      "net": 7.54,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "descriptions": [
+        "Dividendo trimestral ETF Vanguard (13,69 títulos)"
+      ]
+    },
+    {
+      "date": "17-06-2026",
+      "year": "2026",
+      "month": "Junio",
+      "product": "iShares UK Dividend UCITS ETF",
+      "isin": "IE00B0M63060",
+      "gross": 9.64,
+      "tax": 1.83,
+      "net": 7.81,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇬🇧",
+      "descriptions": [
+        "Dividendo trimestral ETF UK (56,70 títulos)"
+      ]
+    },
+    {
+      "date": "12-06-2026",
+      "year": "2026",
+      "month": "Junio",
+      "product": "VanEck Morningstar Developed Markets Dividend Leaders",
+      "isin": "NL0011683594",
+      "gross": 6.22,
+      "tax": 1.18,
+      "net": 5.04,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "descriptions": [
+        "Dividendo trimestral ETF Dividend Leaders (11,51 títulos)"
+      ]
+    },
+    {
+      "date": "06-06-2026",
+      "year": "2026",
+      "month": "Junio",
+      "product": "Viscofan S.A.",
+      "isin": "ES0184262212",
+      "gross": 14.37,
+      "tax": 2.73,
+      "net": 11.64,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo complementario 1,396 €/acc. (10,29 acc.)"
       ]
     },
     {
@@ -115,6 +511,70 @@
       ]
     },
     {
+      "date": "24-05-2026",
+      "year": "2026",
+      "month": "Mayo",
+      "product": "Mapfre S.A.",
+      "isin": "ES0124244E34",
+      "gross": 12.26,
+      "tax": 2.33,
+      "net": 9.93,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo complementario Mapfre (135,58 acc.)"
+      ]
+    },
+    {
+      "date": "21-05-2026",
+      "year": "2026",
+      "month": "Mayo",
+      "product": "Metrovacesa S.A.",
+      "isin": "ES0105122024",
+      "gross": 54.69,
+      "tax": 10.39,
+      "net": 44.3,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo complementario Metrovacesa 0,36 €/acc. (151,92 acc.)"
+      ]
+    },
+    {
+      "date": "17-04-2026",
+      "year": "2026",
+      "month": "Abril",
+      "product": "iShares STOXX Global Select Dividend 100 ETF",
+      "isin": "DE000A0F5UH1",
+      "gross": 14.1,
+      "tax": 2.68,
+      "net": 11.42,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "descriptions": [
+        "Dividendo trimestral ETF Global (28,19 títulos)"
+      ]
+    },
+    {
+      "date": "11-04-2026",
+      "year": "2026",
+      "month": "Abril",
+      "product": "Banco de Sabadell S.A.",
+      "isin": "ES0113860A34",
+      "gross": 4.9,
+      "tax": 0.93,
+      "net": 3.97,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo ordinario Sabadell (163,29 acc.)"
+      ]
+    },
+    {
       "date": "01-04-2026",
       "year": "2026",
       "month": "Abril",
@@ -128,6 +588,70 @@
       "flag": "🇮🇪",
       "descriptions": [
         "Dividendo trimestral renta fija"
+      ]
+    },
+    {
+      "date": "25-03-2026",
+      "year": "2026",
+      "month": "Marzo",
+      "product": "Vanguard FTSE All-World High Dividend Yield ETF",
+      "isin": "IE00B8GKDB10",
+      "gross": 9.03,
+      "tax": 1.72,
+      "net": 7.31,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "descriptions": [
+        "Dividendo trimestral ETF Vanguard (13,69 títulos)"
+      ]
+    },
+    {
+      "date": "20-03-2026",
+      "year": "2026",
+      "month": "Marzo",
+      "product": "SPDR S&P Euro Dividend Aristocrats UCITS ETF",
+      "isin": "IE00B5M1WJ87",
+      "gross": 11.34,
+      "tax": 2.15,
+      "net": 9.19,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇺",
+      "descriptions": [
+        "Dividendo semestral aristócratas europeos (19,89 títulos)"
+      ]
+    },
+    {
+      "date": "18-03-2026",
+      "year": "2026",
+      "month": "Marzo",
+      "product": "iShares UK Dividend UCITS ETF",
+      "isin": "IE00B0M63060",
+      "gross": 9.36,
+      "tax": 1.78,
+      "net": 7.58,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇬🇧",
+      "descriptions": [
+        "Dividendo trimestral ETF UK (56,70 títulos)"
+      ]
+    },
+    {
+      "date": "13-03-2026",
+      "year": "2026",
+      "month": "Marzo",
+      "product": "VanEck Morningstar Developed Markets Dividend Leaders",
+      "isin": "NL0011683594",
+      "gross": 6.1,
+      "tax": 1.16,
+      "net": 4.94,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "descriptions": [
+        "Dividendo trimestral ETF Dividend Leaders (11,51 títulos)"
       ]
     },
     {
@@ -147,6 +671,70 @@
       ]
     },
     {
+      "date": "27-02-2026",
+      "year": "2026",
+      "month": "Febrero",
+      "product": "Logista Integral S.A.",
+      "isin": "ES0105027009",
+      "gross": 34.51,
+      "tax": 6.56,
+      "net": 27.95,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo complementario 1,85 €/acc. (18,65 acc.)"
+      ]
+    },
+    {
+      "date": "30-01-2026",
+      "year": "2026",
+      "month": "Enero",
+      "product": "Iberdrola S.A.",
+      "isin": "ES0144580Y14",
+      "gross": 10.93,
+      "tax": 2.08,
+      "net": 8.85,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo a cuenta Iberdrola (54,10 acc.)"
+      ]
+    },
+    {
+      "date": "16-01-2026",
+      "year": "2026",
+      "month": "Enero",
+      "product": "iShares STOXX Global Select Dividend 100 ETF",
+      "isin": "DE000A0F5UH1",
+      "gross": 14.38,
+      "tax": 2.73,
+      "net": 11.65,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "descriptions": [
+        "Dividendo trimestral ETF Global (28,19 títulos)"
+      ]
+    },
+    {
+      "date": "09-01-2026",
+      "year": "2026",
+      "month": "Enero",
+      "product": "Redeia Corporación S.A.",
+      "isin": "ES0173093024",
+      "gross": 9.02,
+      "tax": 1.71,
+      "net": 7.31,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo a cuenta 0,2727 €/acc. (33,08 acc.)"
+      ]
+    },
+    {
       "date": "30-12-2025",
       "year": "2025",
       "month": "Diciembre",
@@ -160,6 +748,22 @@
       "flag": "🇮🇪",
       "descriptions": [
         "Dividendo semestral acumulado"
+      ]
+    },
+    {
+      "date": "19-12-2025",
+      "year": "2025",
+      "month": "Diciembre",
+      "product": "Metrovacesa S.A.",
+      "isin": "ES0105122024",
+      "gross": 48.61,
+      "tax": 9.24,
+      "net": 39.37,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo a cuenta Metrovacesa (151,92 acc.)"
       ]
     },
     {
@@ -179,6 +783,38 @@
       ]
     },
     {
+      "date": "21-11-2025",
+      "year": "2025",
+      "month": "Noviembre",
+      "product": "Mapfre S.A.",
+      "isin": "ES0124244E34",
+      "gross": 11.52,
+      "tax": 2.19,
+      "net": 9.33,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo a cuenta Mapfre (135,58 acc.)"
+      ]
+    },
+    {
+      "date": "16-10-2025",
+      "year": "2025",
+      "month": "Octubre",
+      "product": "Banco de Sabadell S.A.",
+      "isin": "ES0113860A34",
+      "gross": 11.43,
+      "tax": 2.17,
+      "net": 9.26,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo ordinario Sabadell (163,29 acc.)"
+      ]
+    },
+    {
       "date": "03-09-2025",
       "year": "2025",
       "month": "Septiembre",
@@ -193,9 +829,140 @@
       "descriptions": [
         "Dividendo 2,95 USD"
       ]
+    },
+    {
+      "date": "29-08-2025",
+      "year": "2025",
+      "month": "Agosto",
+      "product": "Logista Integral S.A.",
+      "isin": "ES0105027009",
+      "gross": 8.95,
+      "tax": 1.7,
+      "net": 7.25,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo a cuenta Logista (18,65 acc.)"
+      ]
+    },
+    {
+      "date": "30-07-2025",
+      "year": "2025",
+      "month": "Julio",
+      "product": "Iberdrola S.A.",
+      "isin": "ES0144580Y14",
+      "gross": 17.85,
+      "tax": 3.39,
+      "net": 14.46,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo complementario Iberdrola (54,10 acc.)"
+      ]
+    },
+    {
+      "date": "10-07-2025",
+      "year": "2025",
+      "month": "Julio",
+      "product": "Lyxor STOXX Europe Select Dividend 30 ETF",
+      "isin": "LU1812092168",
+      "gross": 42.13,
+      "tax": 8.0,
+      "net": 34.13,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇺",
+      "descriptions": [
+        "Dividendo semestral ETF Europa (52,01 títulos)"
+      ]
+    },
+    {
+      "date": "03-07-2025",
+      "year": "2025",
+      "month": "Julio",
+      "product": "Enagás S.A.",
+      "isin": "ES0130960018",
+      "gross": 30.81,
+      "tax": 5.85,
+      "net": 24.96,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo complementario Enagás (30,81 acc.)"
+      ]
+    },
+    {
+      "date": "01-07-2025",
+      "year": "2025",
+      "month": "Julio",
+      "product": "Redeia Corporación S.A.",
+      "isin": "ES0173093024",
+      "gross": 23.16,
+      "tax": 4.4,
+      "net": 18.76,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo complementario Redeia (33,08 acc.)"
+      ]
+    },
+    {
+      "date": "22-05-2025",
+      "year": "2025",
+      "month": "Mayo",
+      "product": "Metrovacesa S.A.",
+      "isin": "ES0105122024",
+      "gross": 50.13,
+      "tax": 9.52,
+      "net": 40.61,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo complementario Metrovacesa (151,92 acc.)"
+      ]
+    },
+    {
+      "date": "27-02-2025",
+      "year": "2025",
+      "month": "Febrero",
+      "product": "Logista Integral S.A.",
+      "isin": "ES0105027009",
+      "gross": 32.64,
+      "tax": 6.2,
+      "net": 26.44,
+      "currency": "EUR",
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "descriptions": [
+        "Dividendo complementario Logista (18,65 acc.)"
+      ]
     }
   ],
   "futureCalendar": [
+    {
+      "id": "fut-myi-red-jan",
+      "product": "Redeia Corporación S.A.",
+      "ticker": "RED",
+      "isin": "ES0173093024",
+      "shares": 33.0815,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Enero 2027",
+      "quarter": "Q1",
+      "estimatedDate": "2027-01-08",
+      "dividendPerShare": 0.2727,
+      "currency": "EUR",
+      "estimatedGrossEUR": 9.02,
+      "estimatedTaxEUR": 1.71,
+      "estimatedNetEUR": 7.31,
+      "frequency": "Semestral",
+      "status": "Confirmado"
+    },
     {
       "id": "fut-bond-q1",
       "product": "iShares EUR Ultrashort Bond UCITS ETF (Dist)",
@@ -216,6 +983,63 @@
       "status": "Proyectado"
     },
     {
+      "id": "fut-myi-ispa-jan",
+      "product": "iShares STOXX Global Select Dividend 100 ETF",
+      "ticker": "ISPA",
+      "isin": "DE000A0F5UH1",
+      "shares": 28.1904,
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "month": "Enero 2027",
+      "quarter": "Q1",
+      "estimatedDate": "2027-01-15",
+      "dividendPerShare": 0.525,
+      "currency": "EUR",
+      "estimatedGrossEUR": 14.8,
+      "estimatedTaxEUR": 2.81,
+      "estimatedNetEUR": 11.99,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-ibe-jan",
+      "product": "Iberdrola S.A.",
+      "ticker": "IBE",
+      "isin": "ES0144580Y14",
+      "shares": 54.0988,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Enero 2027",
+      "quarter": "Q1",
+      "estimatedDate": "2027-01-29",
+      "dividendPerShare": 0.23,
+      "currency": "EUR",
+      "estimatedGrossEUR": 12.44,
+      "estimatedTaxEUR": 2.36,
+      "estimatedNetEUR": 10.08,
+      "frequency": "Semestral",
+      "status": "Confirmado"
+    },
+    {
+      "id": "fut-myi-log-feb",
+      "product": "Logista Integral S.A.",
+      "ticker": "LOG",
+      "isin": "ES0105027009",
+      "shares": 18.6513,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Febrero 2027",
+      "quarter": "Q1",
+      "estimatedDate": "2027-02-26",
+      "dividendPerShare": 1.96,
+      "currency": "EUR",
+      "estimatedGrossEUR": 36.56,
+      "estimatedTaxEUR": 6.95,
+      "estimatedNetEUR": 29.61,
+      "frequency": "Semestral",
+      "status": "Confirmado"
+    },
+    {
       "id": "fut-visa-q1",
       "product": "Visa Inc. Class A",
       "ticker": "V",
@@ -231,6 +1055,82 @@
       "estimatedGrossEUR": 1.05,
       "estimatedTaxEUR": 0.2,
       "estimatedNetEUR": 0.85,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-vdiv-mar",
+      "product": "VanEck Morningstar Developed Markets Dividend Leaders",
+      "ticker": "VDIV",
+      "isin": "NL0011683594",
+      "shares": 11.5101,
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "month": "Marzo 2027",
+      "quarter": "Q1",
+      "estimatedDate": "2027-03-12",
+      "dividendPerShare": 0.5625,
+      "currency": "EUR",
+      "estimatedGrossEUR": 6.47,
+      "estimatedTaxEUR": 1.23,
+      "estimatedNetEUR": 5.24,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-iqqd-mar",
+      "product": "iShares UK Dividend UCITS ETF",
+      "ticker": "IQQD",
+      "isin": "IE00B0M63060",
+      "shares": 56.7023,
+      "broker": "MyInvestor",
+      "flag": "🇬🇧",
+      "month": "Marzo 2027",
+      "quarter": "Q1",
+      "estimatedDate": "2027-03-17",
+      "dividendPerShare": 0.175,
+      "currency": "EUR",
+      "estimatedGrossEUR": 9.92,
+      "estimatedTaxEUR": 1.88,
+      "estimatedNetEUR": 8.04,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-spyw-mar",
+      "product": "SPDR S&P Euro Dividend Aristocrats UCITS ETF",
+      "ticker": "SPYW",
+      "isin": "IE00B5M1WJ87",
+      "shares": 19.8869,
+      "broker": "MyInvestor",
+      "flag": "🇪🇺",
+      "month": "Marzo 2027",
+      "quarter": "Q1",
+      "estimatedDate": "2027-03-19",
+      "dividendPerShare": 0.59,
+      "currency": "EUR",
+      "estimatedGrossEUR": 11.73,
+      "estimatedTaxEUR": 2.23,
+      "estimatedNetEUR": 9.5,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-vhyl-mar",
+      "product": "Vanguard FTSE All-World High Dividend Yield ETF",
+      "ticker": "VHYL",
+      "isin": "IE00B8GKDB10",
+      "shares": 13.6872,
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "month": "Marzo 2027",
+      "quarter": "Q1",
+      "estimatedDate": "2027-03-24",
+      "dividendPerShare": 0.69,
+      "currency": "EUR",
+      "estimatedGrossEUR": 9.44,
+      "estimatedTaxEUR": 1.79,
+      "estimatedNetEUR": 7.65,
       "frequency": "Trimestral",
       "status": "Proyectado"
     },
@@ -254,6 +1154,82 @@
       "status": "Proyectado"
     },
     {
+      "id": "fut-myi-ispa-apr",
+      "product": "iShares STOXX Global Select Dividend 100 ETF",
+      "ticker": "ISPA",
+      "isin": "DE000A0F5UH1",
+      "shares": 28.1904,
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "month": "Abril 2027",
+      "quarter": "Q2",
+      "estimatedDate": "2027-04-16",
+      "dividendPerShare": 0.525,
+      "currency": "EUR",
+      "estimatedGrossEUR": 14.8,
+      "estimatedTaxEUR": 2.81,
+      "estimatedNetEUR": 11.99,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-sab-apr",
+      "product": "Banco de Sabadell S.A.",
+      "ticker": "SAB",
+      "isin": "ES0113860A34",
+      "shares": 163.2939,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Abril 2027",
+      "quarter": "Q2",
+      "estimatedDate": "2027-04-18",
+      "dividendPerShare": 0.12,
+      "currency": "EUR",
+      "estimatedGrossEUR": 19.6,
+      "estimatedTaxEUR": 3.72,
+      "estimatedNetEUR": 15.88,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-mvc-may",
+      "product": "Metrovacesa S.A.",
+      "ticker": "MVC",
+      "isin": "ES0105122024",
+      "shares": 151.917,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Mayo 2027",
+      "quarter": "Q2",
+      "estimatedDate": "2027-05-20",
+      "dividendPerShare": 0.33,
+      "currency": "EUR",
+      "estimatedGrossEUR": 50.13,
+      "estimatedTaxEUR": 9.52,
+      "estimatedNetEUR": 40.61,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-map-may",
+      "product": "Mapfre S.A.",
+      "ticker": "MAP",
+      "isin": "ES0124244E34",
+      "shares": 135.5773,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Mayo 2027",
+      "quarter": "Q2",
+      "estimatedDate": "2027-05-28",
+      "dividendPerShare": 0.105,
+      "currency": "EUR",
+      "estimatedGrossEUR": 14.24,
+      "estimatedTaxEUR": 2.71,
+      "estimatedNetEUR": 11.53,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
       "id": "fut-visa-q2",
       "product": "Visa Inc. Class A",
       "ticker": "V",
@@ -270,6 +1246,139 @@
       "estimatedTaxEUR": 0.2,
       "estimatedNetEUR": 0.85,
       "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-vis-jun",
+      "product": "Viscofan S.A.",
+      "ticker": "VIS",
+      "isin": "ES0184262212",
+      "shares": 10.2925,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Junio 2027",
+      "quarter": "Q2",
+      "estimatedDate": "2027-06-05",
+      "dividendPerShare": 1.4,
+      "currency": "EUR",
+      "estimatedGrossEUR": 14.41,
+      "estimatedTaxEUR": 2.74,
+      "estimatedNetEUR": 11.67,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-vdiv-jun",
+      "product": "VanEck Morningstar Developed Markets Dividend Leaders",
+      "ticker": "VDIV",
+      "isin": "NL0011683594",
+      "shares": 11.5101,
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "month": "Junio 2027",
+      "quarter": "Q2",
+      "estimatedDate": "2027-06-11",
+      "dividendPerShare": 0.5625,
+      "currency": "EUR",
+      "estimatedGrossEUR": 6.47,
+      "estimatedTaxEUR": 1.23,
+      "estimatedNetEUR": 5.24,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-iqqd-jun",
+      "product": "iShares UK Dividend UCITS ETF",
+      "ticker": "IQQD",
+      "isin": "IE00B0M63060",
+      "shares": 56.7023,
+      "broker": "MyInvestor",
+      "flag": "🇬🇧",
+      "month": "Junio 2027",
+      "quarter": "Q2",
+      "estimatedDate": "2027-06-16",
+      "dividendPerShare": 0.175,
+      "currency": "EUR",
+      "estimatedGrossEUR": 9.92,
+      "estimatedTaxEUR": 1.88,
+      "estimatedNetEUR": 8.04,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-vhyl-jun",
+      "product": "Vanguard FTSE All-World High Dividend Yield ETF",
+      "ticker": "VHYL",
+      "isin": "IE00B8GKDB10",
+      "shares": 13.6872,
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "month": "Junio 2027",
+      "quarter": "Q2",
+      "estimatedDate": "2027-06-23",
+      "dividendPerShare": 0.69,
+      "currency": "EUR",
+      "estimatedGrossEUR": 9.44,
+      "estimatedTaxEUR": 1.79,
+      "estimatedNetEUR": 7.65,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-red-jul",
+      "product": "Redeia Corporación S.A.",
+      "ticker": "RED",
+      "isin": "ES0173093024",
+      "shares": 33.0815,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Julio 2027",
+      "quarter": "Q3",
+      "estimatedDate": "2027-07-01",
+      "dividendPerShare": 0.7273,
+      "currency": "EUR",
+      "estimatedGrossEUR": 24.06,
+      "estimatedTaxEUR": 4.57,
+      "estimatedNetEUR": 19.49,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-eng-jul",
+      "product": "Enagás S.A.",
+      "ticker": "ENG",
+      "isin": "ES0130960018",
+      "shares": 30.8149,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Julio 2027",
+      "quarter": "Q3",
+      "estimatedDate": "2027-07-04",
+      "dividendPerShare": 0.6,
+      "currency": "EUR",
+      "estimatedGrossEUR": 18.49,
+      "estimatedTaxEUR": 3.51,
+      "estimatedNetEUR": 14.98,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-seld-jul",
+      "product": "Lyxor STOXX Europe Select Dividend 30 ETF",
+      "ticker": "SELD",
+      "isin": "LU1812092168",
+      "shares": 52.0063,
+      "broker": "MyInvestor",
+      "flag": "🇪🇺",
+      "month": "Julio 2027",
+      "quarter": "Q3",
+      "estimatedDate": "2027-07-10",
+      "dividendPerShare": 0.88,
+      "currency": "EUR",
+      "estimatedGrossEUR": 45.77,
+      "estimatedTaxEUR": 8.7,
+      "estimatedNetEUR": 37.07,
+      "frequency": "Semestral",
       "status": "Proyectado"
     },
     {
@@ -292,6 +1401,63 @@
       "status": "Proyectado"
     },
     {
+      "id": "fut-myi-ispa-jul",
+      "product": "iShares STOXX Global Select Dividend 100 ETF",
+      "ticker": "ISPA",
+      "isin": "DE000A0F5UH1",
+      "shares": 28.1904,
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "month": "Julio 2027",
+      "quarter": "Q3",
+      "estimatedDate": "2027-07-16",
+      "dividendPerShare": 0.525,
+      "currency": "EUR",
+      "estimatedGrossEUR": 14.8,
+      "estimatedTaxEUR": 2.81,
+      "estimatedNetEUR": 11.99,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-ibe-jul",
+      "product": "Iberdrola S.A.",
+      "ticker": "IBE",
+      "isin": "ES0144580Y14",
+      "shares": 54.0988,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Julio 2027",
+      "quarter": "Q3",
+      "estimatedDate": "2027-07-28",
+      "dividendPerShare": 0.32,
+      "currency": "EUR",
+      "estimatedGrossEUR": 17.31,
+      "estimatedTaxEUR": 3.29,
+      "estimatedNetEUR": 14.02,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-log-aug",
+      "product": "Logista Integral S.A.",
+      "ticker": "LOG",
+      "isin": "ES0105027009",
+      "shares": 18.6513,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Agosto 2027",
+      "quarter": "Q3",
+      "estimatedDate": "2027-08-27",
+      "dividendPerShare": 0.49,
+      "currency": "EUR",
+      "estimatedGrossEUR": 9.14,
+      "estimatedTaxEUR": 1.74,
+      "estimatedNetEUR": 7.4,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
       "id": "fut-visa-q3",
       "product": "Visa Inc. Class A",
       "ticker": "V",
@@ -307,6 +1473,82 @@
       "estimatedGrossEUR": 1.05,
       "estimatedTaxEUR": 0.2,
       "estimatedNetEUR": 0.85,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-vdiv-sep",
+      "product": "VanEck Morningstar Developed Markets Dividend Leaders",
+      "ticker": "VDIV",
+      "isin": "NL0011683594",
+      "shares": 11.5101,
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "month": "Septiembre 2027",
+      "quarter": "Q3",
+      "estimatedDate": "2027-09-10",
+      "dividendPerShare": 0.5625,
+      "currency": "EUR",
+      "estimatedGrossEUR": 6.47,
+      "estimatedTaxEUR": 1.23,
+      "estimatedNetEUR": 5.24,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-iqqd-sep",
+      "product": "iShares UK Dividend UCITS ETF",
+      "ticker": "IQQD",
+      "isin": "IE00B0M63060",
+      "shares": 56.7023,
+      "broker": "MyInvestor",
+      "flag": "🇬🇧",
+      "month": "Septiembre 2027",
+      "quarter": "Q3",
+      "estimatedDate": "2027-09-15",
+      "dividendPerShare": 0.175,
+      "currency": "EUR",
+      "estimatedGrossEUR": 9.92,
+      "estimatedTaxEUR": 1.88,
+      "estimatedNetEUR": 8.04,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-spyw-sep",
+      "product": "SPDR S&P Euro Dividend Aristocrats UCITS ETF",
+      "ticker": "SPYW",
+      "isin": "IE00B5M1WJ87",
+      "shares": 19.8869,
+      "broker": "MyInvestor",
+      "flag": "🇪🇺",
+      "month": "Septiembre 2027",
+      "quarter": "Q3",
+      "estimatedDate": "2027-09-17",
+      "dividendPerShare": 0.59,
+      "currency": "EUR",
+      "estimatedGrossEUR": 11.73,
+      "estimatedTaxEUR": 2.23,
+      "estimatedNetEUR": 9.5,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-vhyl-sep",
+      "product": "Vanguard FTSE All-World High Dividend Yield ETF",
+      "ticker": "VHYL",
+      "isin": "IE00B8GKDB10",
+      "shares": 13.6872,
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "month": "Septiembre 2027",
+      "quarter": "Q3",
+      "estimatedDate": "2027-09-22",
+      "dividendPerShare": 0.69,
+      "currency": "EUR",
+      "estimatedGrossEUR": 9.44,
+      "estimatedTaxEUR": 1.79,
+      "estimatedNetEUR": 7.65,
       "frequency": "Trimestral",
       "status": "Proyectado"
     },
@@ -330,6 +1572,63 @@
       "status": "Proyectado"
     },
     {
+      "id": "fut-myi-sab-oct",
+      "product": "Banco de Sabadell S.A.",
+      "ticker": "SAB",
+      "isin": "ES0113860A34",
+      "shares": 163.2939,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Octubre 2027",
+      "quarter": "Q4",
+      "estimatedDate": "2027-10-15",
+      "dividendPerShare": 0.08,
+      "currency": "EUR",
+      "estimatedGrossEUR": 13.06,
+      "estimatedTaxEUR": 2.48,
+      "estimatedNetEUR": 10.58,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-ispa-oct",
+      "product": "iShares STOXX Global Select Dividend 100 ETF",
+      "ticker": "ISPA",
+      "isin": "DE000A0F5UH1",
+      "shares": 28.1904,
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "month": "Octubre 2027",
+      "quarter": "Q4",
+      "estimatedDate": "2027-10-15",
+      "dividendPerShare": 0.525,
+      "currency": "EUR",
+      "estimatedGrossEUR": 14.8,
+      "estimatedTaxEUR": 2.81,
+      "estimatedNetEUR": 11.99,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-map-nov",
+      "product": "Mapfre S.A.",
+      "ticker": "MAP",
+      "isin": "ES0124244E34",
+      "shares": 135.5773,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Noviembre 2027",
+      "quarter": "Q4",
+      "estimatedDate": "2027-11-29",
+      "dividendPerShare": 0.19,
+      "currency": "EUR",
+      "estimatedGrossEUR": 25.76,
+      "estimatedTaxEUR": 4.89,
+      "estimatedNetEUR": 20.87,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
       "id": "fut-visa-q4",
       "product": "Visa Inc. Class A",
       "ticker": "V",
@@ -346,6 +1645,139 @@
       "estimatedTaxEUR": 0.2,
       "estimatedNetEUR": 0.85,
       "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-seld-dec",
+      "product": "Lyxor STOXX Europe Select Dividend 30 ETF",
+      "ticker": "SELD",
+      "isin": "LU1812092168",
+      "shares": 52.0063,
+      "broker": "MyInvestor",
+      "flag": "🇪🇺",
+      "month": "Diciembre 2027",
+      "quarter": "Q4",
+      "estimatedDate": "2027-12-10",
+      "dividendPerShare": 0.5,
+      "currency": "EUR",
+      "estimatedGrossEUR": 26.0,
+      "estimatedTaxEUR": 4.94,
+      "estimatedNetEUR": 21.06,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-vdiv-dec",
+      "product": "VanEck Morningstar Developed Markets Dividend Leaders",
+      "ticker": "VDIV",
+      "isin": "NL0011683594",
+      "shares": 11.5101,
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "month": "Diciembre 2027",
+      "quarter": "Q4",
+      "estimatedDate": "2027-12-10",
+      "dividendPerShare": 0.5625,
+      "currency": "EUR",
+      "estimatedGrossEUR": 6.47,
+      "estimatedTaxEUR": 1.23,
+      "estimatedNetEUR": 5.24,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-vis-dec",
+      "product": "Viscofan S.A.",
+      "ticker": "VIS",
+      "isin": "ES0184262212",
+      "shares": 10.2925,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Diciembre 2027",
+      "quarter": "Q4",
+      "estimatedDate": "2027-12-15",
+      "dividendPerShare": 0.7,
+      "currency": "EUR",
+      "estimatedGrossEUR": 7.2,
+      "estimatedTaxEUR": 1.37,
+      "estimatedNetEUR": 5.83,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-iqqd-dec",
+      "product": "iShares UK Dividend UCITS ETF",
+      "ticker": "IQQD",
+      "isin": "IE00B0M63060",
+      "shares": 56.7023,
+      "broker": "MyInvestor",
+      "flag": "🇬🇧",
+      "month": "Diciembre 2027",
+      "quarter": "Q4",
+      "estimatedDate": "2027-12-15",
+      "dividendPerShare": 0.175,
+      "currency": "EUR",
+      "estimatedGrossEUR": 9.92,
+      "estimatedTaxEUR": 1.88,
+      "estimatedNetEUR": 8.04,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-mvc-dec",
+      "product": "Metrovacesa S.A.",
+      "ticker": "MVC",
+      "isin": "ES0105122024",
+      "shares": 151.917,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Diciembre 2027",
+      "quarter": "Q4",
+      "estimatedDate": "2027-12-18",
+      "dividendPerShare": 0.72,
+      "currency": "EUR",
+      "estimatedGrossEUR": 109.38,
+      "estimatedTaxEUR": 20.78,
+      "estimatedNetEUR": 88.6,
+      "frequency": "Semestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-vhyl-dec",
+      "product": "Vanguard FTSE All-World High Dividend Yield ETF",
+      "ticker": "VHYL",
+      "isin": "IE00B8GKDB10",
+      "shares": 13.6872,
+      "broker": "MyInvestor",
+      "flag": "🌐",
+      "month": "Diciembre 2027",
+      "quarter": "Q4",
+      "estimatedDate": "2027-12-20",
+      "dividendPerShare": 0.69,
+      "currency": "EUR",
+      "estimatedGrossEUR": 9.44,
+      "estimatedTaxEUR": 1.79,
+      "estimatedNetEUR": 7.65,
+      "frequency": "Trimestral",
+      "status": "Proyectado"
+    },
+    {
+      "id": "fut-myi-eng-dec",
+      "product": "Enagás S.A.",
+      "ticker": "ENG",
+      "isin": "ES0130960018",
+      "shares": 30.8149,
+      "broker": "MyInvestor",
+      "flag": "🇪🇸",
+      "month": "Diciembre 2027",
+      "quarter": "Q4",
+      "estimatedDate": "2027-12-22",
+      "dividendPerShare": 0.4,
+      "currency": "EUR",
+      "estimatedGrossEUR": 12.33,
+      "estimatedTaxEUR": 2.34,
+      "estimatedNetEUR": 9.99,
+      "frequency": "Semestral",
       "status": "Proyectado"
     }
   ]

@@ -211,7 +211,7 @@ export const DividendAuditView: React.FC<DividendAuditViewProps> = ({ hideFigure
             }`}
           >
             <span>🌐 Todas</span>
-            <span className="text-[9px] font-medium opacity-80">Consolidado</span>
+            <span className="text-[9px] font-medium opacity-80">{rawData.payments.length} cobros</span>
           </button>
 
           <button
@@ -223,7 +223,7 @@ export const DividendAuditView: React.FC<DividendAuditViewProps> = ({ hideFigure
             }`}
           >
             <span>🏛️ DEGIRO</span>
-            <span className="text-[9px] font-medium opacity-80">{rawData.payments.length} cobros</span>
+            <span className="text-[9px] font-medium opacity-80">{rawData.payments.filter(p => p.broker === 'DEGIRO').length} cobros</span>
           </button>
 
           <button
@@ -235,7 +235,7 @@ export const DividendAuditView: React.FC<DividendAuditViewProps> = ({ hideFigure
             }`}
           >
             <span>🏦 MyInv.</span>
-            <span className="text-[9px] font-medium opacity-80">0 cobros</span>
+            <span className="text-[9px] font-medium opacity-80">{rawData.payments.filter(p => p.broker === 'MyInvestor').length} cobros</span>
           </button>
 
           <button
@@ -538,10 +538,28 @@ export const DividendAuditView: React.FC<DividendAuditViewProps> = ({ hideFigure
           <div className="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 rounded-3xl p-4 text-xs">
             <div className="flex items-center gap-2 text-blue-900 dark:text-blue-300 font-bold mb-1">
               <AlertCircle className="w-4 h-4 text-blue-600 shrink-0" />
-              <span>Activos con Dividendo en tu Cartera Real DEGIRO</span>
+              <span>
+                {selectedBroker === 'DEGIRO'
+                  ? 'Activos con Dividendo en tu Cartera Real DEGIRO'
+                  : selectedBroker === 'MyInvestor'
+                  ? 'Activos con Dividendo en tu Cartera Real MyInvestor'
+                  : 'Activos con Dividendo en tus Carteras (DEGIRO & MyInvestor)'}
+              </span>
             </div>
             <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-[11px] mt-1">
-              En tu cartera actual generas dividendos trimestrales continuos a través del ETF de renta fija <strong>iShares EUR Ultrashort Bond UCITS ETF (Dist)</strong> (58 títulos) y de las acciones de <strong>Visa Inc. Class A</strong> (2 acciones). Los ETFs como <strong>Xtrackers Overnight Rate</strong>, <strong>Gold 3X</strong> y <strong>Nasdaq 3X</strong> capitalizan o acumulan rendimientos.
+              {selectedBroker === 'MyInvestor' ? (
+                <>
+                  En tu cartera de <strong>MyInvestor</strong> cobras dividendos recurrentes de acciones españolas de alto dividendo (<strong>Metrovacesa</strong>, <strong>Iberdrola</strong>, <strong>Logista</strong>, <strong>Sabadell</strong>, <strong>Viscofan</strong>, <strong>Mapfre</strong>, <strong>Enagás</strong>, <strong>Redeia</strong>) y de ETFs de distribución (<strong>Lyxor Europe Select Div</strong>, <strong>iShares Global Select Div</strong>, <strong>Vanguard High Div Yield</strong>, <strong>iShares UK Div</strong>, etc.), con retención del 19% en origen aplicada por el banco.
+                </>
+              ) : selectedBroker === 'DEGIRO' ? (
+                <>
+                  En tu cartera actual generas dividendos trimestrales continuos a través del ETF de renta fija <strong>iShares EUR Ultrashort Bond UCITS ETF (Dist)</strong> (58 títulos) y de las acciones de <strong>Visa Inc. Class A</strong> (2 acciones). Los ETFs como <strong>Xtrackers Overnight Rate</strong>, <strong>Gold 3X</strong> y <strong>Nasdaq 3X</strong> capitalizan o acumulan rendimientos.
+                </>
+              ) : (
+                <>
+                  Control consolidado de dividendos de <strong>DEGIRO</strong> (renta fija ultracorta y Visa) y <strong>MyInvestor</strong> (acciones IBEX 35 de alto rendimiento y ETFs globales de dividendos), aplicando retención en origen española del 19% según IRPF.
+                </>
+              )}
             </p>
           </div>
 

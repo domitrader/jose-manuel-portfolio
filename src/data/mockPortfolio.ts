@@ -275,7 +275,7 @@ export const INITIAL_POSITIONS: PositionItem[] = [
       11.26,
       11.32
     ],
-    "dividendYield": 0,
+    "dividendYield": 9.35,
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
@@ -306,7 +306,7 @@ export const INITIAL_POSITIONS: PositionItem[] = [
       22.56,
       22.67
     ],
-    "dividendYield": 0,
+    "dividendYield": 4.52,
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
@@ -337,7 +337,7 @@ export const INITIAL_POSITIONS: PositionItem[] = [
       36.3,
       36.48
     ],
-    "dividendYield": 0,
+    "dividendYield": 6.85,
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
@@ -368,7 +368,7 @@ export const INITIAL_POSITIONS: PositionItem[] = [
       3.53,
       3.546
     ],
-    "dividendYield": 0,
+    "dividendYield": 5.75,
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
@@ -399,7 +399,7 @@ export const INITIAL_POSITIONS: PositionItem[] = [
       54.43,
       54.7
     ],
-    "dividendYield": 0,
+    "dividendYield": 3.82,
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
@@ -430,7 +430,7 @@ export const INITIAL_POSITIONS: PositionItem[] = [
       4.07,
       4.088
     ],
-    "dividendYield": 0,
+    "dividendYield": 7.2,
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
@@ -461,7 +461,7 @@ export const INITIAL_POSITIONS: PositionItem[] = [
       17.58,
       17.67
     ],
-    "dividendYield": 0,
+    "dividendYield": 7.45,
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
@@ -492,7 +492,7 @@ export const INITIAL_POSITIONS: PositionItem[] = [
       16.12,
       16.2
     ],
-    "dividendYield": 0,
+    "dividendYield": 6.18,
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
@@ -523,7 +523,7 @@ export const INITIAL_POSITIONS: PositionItem[] = [
       23.84,
       23.96
     ],
-    "dividendYield": 0,
+    "dividendYield": 5.8,
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
@@ -554,7 +554,7 @@ export const INITIAL_POSITIONS: PositionItem[] = [
       38.82,
       39.015
     ],
-    "dividendYield": 0,
+    "dividendYield": 5.4,
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
@@ -585,7 +585,7 @@ export const INITIAL_POSITIONS: PositionItem[] = [
       79.76,
       80.163
     ],
-    "dividendYield": 0,
+    "dividendYield": 3.45,
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
@@ -647,7 +647,7 @@ export const INITIAL_POSITIONS: PositionItem[] = [
       11.73,
       11.79
     ],
-    "dividendYield": 0,
+    "dividendYield": 5.95,
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
@@ -678,7 +678,7 @@ export const INITIAL_POSITIONS: PositionItem[] = [
       54.72,
       54.99
     ],
-    "dividendYield": 0,
+    "dividendYield": 4.1,
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
@@ -709,7 +709,7 @@ export const INITIAL_POSITIONS: PositionItem[] = [
       30.16,
       30.315
     ],
-    "dividendYield": 0,
+    "dividendYield": 3.9,
     "status": "Abierta",
     "portfolioId": "myinvestor",
     "broker": "MyInvestor"
@@ -1585,6 +1585,76 @@ export const INITIAL_WATCHLIST: WatchlistItem[] = [
 ];
 
 export const INITIAL_EVENTS: FinancialEvent[] = [
+  {
+    id: 'ev-myi-red-q1',
+    type: 'pago-dividendo',
+    ticker: 'RED',
+    assetName: 'Redeia Corporación S.A.',
+    date: '2027-01-08',
+    estimatedAmount: 9.02,
+    dividendPerShare: 0.2727,
+    sharesOwned: 33.0815,
+    confirmed: true,
+    description: 'Dividendo a cuenta Redeia (MyInvestor)',
+    logoBg: 'bg-emerald-700',
+    logoText: 'RED',
+  },
+  {
+    id: 'ev-myi-ibe-q1',
+    type: 'pago-dividendo',
+    ticker: 'IBE',
+    assetName: 'Iberdrola S.A.',
+    date: '2027-01-29',
+    estimatedAmount: 12.44,
+    dividendPerShare: 0.23,
+    sharesOwned: 54.0988,
+    confirmed: true,
+    description: 'Dividendo a cuenta Iberdrola Retribución Flexible (MyInvestor)',
+    logoBg: 'bg-green-700',
+    logoText: 'IBE',
+  },
+  {
+    id: 'ev-myi-log-q1',
+    type: 'pago-dividendo',
+    ticker: 'LOG',
+    assetName: 'Logista Integral S.A.',
+    date: '2027-02-26',
+    estimatedAmount: 36.56,
+    dividendPerShare: 1.96,
+    sharesOwned: 18.6513,
+    confirmed: true,
+    description: 'Dividendo complementario Logista (MyInvestor)',
+    logoBg: 'bg-blue-700',
+    logoText: 'LOG',
+  },
+  {
+    id: 'ev-myi-sab-q2',
+    type: 'pago-dividendo',
+    ticker: 'SAB',
+    assetName: 'Banco de Sabadell S.A.',
+    date: '2027-04-18',
+    estimatedAmount: 19.60,
+    dividendPerShare: 0.12,
+    sharesOwned: 163.2939,
+    confirmed: true,
+    description: 'Dividendo ordinario Banco Sabadell (MyInvestor)',
+    logoBg: 'bg-sky-700',
+    logoText: 'SAB',
+  },
+  {
+    id: 'ev-myi-mvc-q2',
+    type: 'pago-dividendo',
+    ticker: 'MVC',
+    assetName: 'Metrovacesa S.A.',
+    date: '2027-05-20',
+    estimatedAmount: 50.13,
+    dividendPerShare: 0.33,
+    sharesOwned: 151.917,
+    confirmed: true,
+    description: 'Dividendo ordinario Metrovacesa (MyInvestor)',
+    logoBg: 'bg-amber-700',
+    logoText: 'MVC',
+  },
   {
     id: 'ev-erne-q1',
     type: 'pago-dividendo',

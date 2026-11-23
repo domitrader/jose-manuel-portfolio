@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { AssetType, PositionItem, WatchlistItem } from '../types/portfolio';
+import { AssetType, PositionItem, WatchlistItem, WatchlistPortfolioMeta } from '../types/portfolio';
 import { COMPREHENSIVE_CATALOG, CatalogAsset } from '../data/comprehensiveAssetCatalog';
 import { estimateHistoricalPrice, formatDateToSpanish } from '../utils/historicalPriceEstimator';
 import { formatEUR } from '../utils/calculations';
@@ -29,6 +29,9 @@ interface SearchModalViewProps {
   onAddToPortfolio: (position: Omit<PositionItem, 'id' | 'totalValue' | 'unrealizedGainLoss' | 'unrealizedGainLossPct' | 'dailyChangeValue' | 'sparkline'>) => void;
   onAddToWatchlist: (item: Omit<WatchlistItem, 'id' | 'sparkline' | 'dailyChangeValue'>) => void;
   initialCategory?: AssetType;
+  defaultAddMode?: 'portfolio' | 'watchlist';
+  watchlistLists?: WatchlistPortfolioMeta[];
+  activeWatchlistListId?: string;
 }
 
 export const SearchModalView: React.FC<SearchModalViewProps> = ({
@@ -36,6 +39,9 @@ export const SearchModalView: React.FC<SearchModalViewProps> = ({
   onAddToPortfolio,
   onAddToWatchlist,
   initialCategory,
+  defaultAddMode = 'portfolio',
+  watchlistLists = [],
+  activeWatchlistListId = 'default',
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState<'Todos' | AssetType>(initialCategory || 'Todos');
@@ -43,11 +49,13 @@ export const SearchModalView: React.FC<SearchModalViewProps> = ({
   const [onlyDegiroCore, setOnlyDegiroCore] = useState(false);
   const [quickAddAsset, setQuickAddAsset] = useState<CatalogAsset | null>(null);
   
-  // Parámetros para añadir posición
+  // Parámetros para añadir posición o cartera de seguimiento
   const [purchaseDate, setPurchaseDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
   const [sharesInput, setSharesInput] = useState('10');
   const [priceInput, setPriceInput] = useState('');
-  const [addMode, setAddMode] = useState<'portfolio' | 'watchlist'>('portfolio');
+  const [totalAmountInput, setTotalAmountInput] = useState('');
+  const [addMode, setAddMode] = useState<'portfolio' | 'watchlist'>(defaultAddMode);
+  const [targetListId, setTargetListId] = useState<string>(activeWatchlistListId || 'default');
   const [addedSuccessMsg, setAddedSuccessMsg] = useState('');
 
   // Modal para añadir activo 100% manual si no está en catálogo
@@ -60,13 +68,13 @@ export const SearchModalView: React.FC<SearchModalViewProps> = ({
   const [customCountryFlag, setCustomCountryFlag] = useState('🇪🇸');
   const [customPrice, setCustomPrice] = useState('10.00');
 
-  // Búsqueda global online en tiempo real (Yahoo Finance - todas las bolsas del mundo: .MI, .DE, .L, .PA, .MC, NYSE, NASDAQ)
+  // Búsqueda global online en tiempo real desde 1 sola letra (TradingView + Yahoo Finance + CoinGecko)
   const [onlineResults, setOnlineResults] = useState<CatalogAsset[]>([]);
   const [isSearchingOnline, setIsSearchingOnline] = useState(false);
 
   useEffect(() => {
     const clean = searchTerm.trim();
-    if (clean.length < 2) {
+    if (clean.length < 1) {
       setOnlineResults([]);
       setIsSearchingOnline(false);
       return;
@@ -77,7 +85,7 @@ export const SearchModalView: React.FC<SearchModalViewProps> = ({
 
     const timer = setTimeout(async () => {
       try {
-        const remote = await liveQuotesService.searchGlobalMarketAssets(clean);
+        const remote = await liveQuotesService.searchGlobalMarketAssets(clean, selectedFilter);
         if (cancelled) return;
 
         // Excluir duplicados exactos que ya están en el catálogo local
@@ -109,13 +117,13 @@ export const SearchModalView: React.FC<SearchModalViewProps> = ({
       } finally {
         if (!cancelled) setIsSearchingOnline(false);
       }
-    }, 350);
+    }, 250);
 
     return () => {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [searchTerm]);
+  }, [searchTerm, selectedFilter]);
 
   // Filtrado de activos reactivo y veloz (Catálogo Local)
   const filteredAssets = useMemo(() => {
@@ -128,6 +136,13 @@ export const SearchModalView: React.FC<SearchModalViewProps> = ({
       if (!matchesFilter || !matchesZeroTax || !matchesDegiroCore) return false;
       if (!term) return true;
 
+      if (term.length === 1) {
+        return (
+          asset.ticker.toLowerCase().startsWith(term) ||
+          asset.name.toLowerCase().startsWith(term)
+        );
+      }
+
       const matchesSearch =
         asset.name.toLowerCase().includes(term) ||
         asset.ticker.toLowerCase().includes(term) ||
@@ -138,10 +153,10 @@ export const SearchModalView: React.FC<SearchModalViewProps> = ({
     });
   }, [searchTerm, selectedFilter, onlyZeroDoubleTax, onlyDegiroCore]);
 
-  // Filtrado de resultados online según la pestaña seleccionada
+  // Buscador global sin filtros: muestra todos los resultados encontrados online (acciones, ETFs, fondos, cripto)
   const filteredOnlineResults = useMemo(() => {
-    return onlineResults.filter(a => selectedFilter === 'Todos' || a.type === selectedFilter);
-  }, [onlineResults, selectedFilter]);
+    return onlineResults;
+  }, [onlineResults]);
 
   // Agrupación para la vista de inicio vacía
   const accionesList = useMemo(() => COMPREHENSIVE_CATALOG.filter(a => a.type === 'Acciones'), []);
@@ -161,16 +176,57 @@ export const SearchModalView: React.FC<SearchModalViewProps> = ({
     const today = new Date().toISOString().split('T')[0];
     setPurchaseDate(today);
     setPriceInput(asset.price > 0 ? asset.price.toString() : '');
-    setSharesInput(asset.type === 'Fondos' ? '1.000' : '10');
-    setAddMode('portfolio');
+    const defaultShares = asset.type === 'Fondos' ? 100 : 10;
+    setSharesInput(defaultShares.toString());
+    setTotalAmountInput(asset.price > 0 ? (defaultShares * asset.price).toFixed(2) : '');
+    setAddMode(defaultAddMode);
+    setTargetListId(activeWatchlistListId && activeWatchlistListId !== 'all' ? activeWatchlistListId : 'default');
 
     // Si es resultado online (o cualquier ticker con símbolo de Yahoo), intentar traer su precio actual en vivo
     if (asset.price === 0 || asset.yahooSymbol) {
       const live = await liveQuotesService.fetchStockQuote(asset.yahooSymbol || asset.ticker);
       if (live && live.priceEUR > 0) {
         setQuickAddAsset(prev => prev ? { ...prev, price: live.priceEUR, dailyChangePct: live.changePct } : prev);
-        setPriceInput(prev => (!prev || prev === '0' || prev === asset.price.toString() ? live.priceEUR.toString() : prev));
+        setPriceInput(prev => {
+          const nextPrice = (!prev || prev === '0' || prev === asset.price.toString()) ? live.priceEUR.toString() : prev;
+          setTotalAmountInput((defaultShares * (parseFloat(nextPrice) || live.priceEUR)).toFixed(2));
+          return nextPrice;
+        });
       }
+    }
+  };
+
+  // Cálculo bidireccional: al poner un importe en € (ej. 1000 € o 3000 €), calcula automáticamente los títulos aproximados
+  const handleTotalAmountChange = (rawVal: string) => {
+    setTotalAmountInput(rawVal);
+    const targetEur = parseFloat(rawVal);
+    const unitPrice = parseFloat(priceInput) || quickAddAsset?.price || 0;
+    if (!isNaN(targetEur) && targetEur > 0 && unitPrice > 0) {
+      const isFractional = quickAddAsset?.type === 'Fondos' || quickAddAsset?.type === 'Cripto';
+      const calcShares = isFractional
+        ? Number((targetEur / unitPrice).toFixed(4))
+        : Math.max(1, Math.round(targetEur / unitPrice));
+      setSharesInput(calcShares.toString());
+    }
+  };
+
+  const handleSharesInputChange = (rawVal: string) => {
+    setSharesInput(rawVal);
+    const sh = parseFloat(rawVal);
+    const unitPrice = parseFloat(priceInput) || quickAddAsset?.price || 0;
+    if (!isNaN(sh) && sh >= 0 && unitPrice > 0) {
+      setTotalAmountInput((sh * unitPrice).toFixed(2));
+    } else {
+      setTotalAmountInput('');
+    }
+  };
+
+  const handlePriceInputChange = (rawVal: string) => {
+    setPriceInput(rawVal);
+    const unitPrice = parseFloat(rawVal);
+    const sh = parseFloat(sharesInput);
+    if (!isNaN(unitPrice) && unitPrice > 0 && !isNaN(sh) && sh > 0) {
+      setTotalAmountInput((sh * unitPrice).toFixed(2));
     }
   };
 
@@ -218,6 +274,8 @@ export const SearchModalView: React.FC<SearchModalViewProps> = ({
       });
       setAddedSuccessMsg(`¡${quickAddAsset.ticker} añadido con fecha ${formatDateToSpanish(purchaseDate)}!`);
     } else {
+      const shares = parseFloat(sharesInput) || 1;
+      const entryPrice = parseFloat(priceInput) || quickAddAsset.price;
       onAddToWatchlist({
         name: quickAddAsset.name,
         ticker: quickAddAsset.ticker,
@@ -230,8 +288,13 @@ export const SearchModalView: React.FC<SearchModalViewProps> = ({
         market: quickAddAsset.market,
         logoBg: quickAddAsset.logoBg,
         logoText: quickAddAsset.logoText,
+        listId: targetListId || 'default',
+        addedDate: purchaseDate,
+        entryPrice,
+        shares,
       });
-      setAddedSuccessMsg(`¡${quickAddAsset.ticker} añadido a seguimiento!`);
+      const listName = watchlistLists.find(l => l.id === targetListId)?.name || 'Favoritos';
+      setAddedSuccessMsg(`¡${quickAddAsset.ticker} añadido a "${listName}" (${formatDateToSpanish(purchaseDate)})!`);
     }
 
     setQuickAddAsset(null);
@@ -674,15 +737,33 @@ export const SearchModalView: React.FC<SearchModalViewProps> = ({
               </button>
             </div>
 
-            {addMode === 'portfolio' && (
-              <div className="space-y-3 mb-4">
-                {/* 1. CAMPO: FECHA DE COMPRA (SOLICITADO POR EL USUARIO) */}
-                <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-[11px] font-black uppercase text-slate-700 flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Fecha de la compra</span>
-                    </label>
+            <div className="space-y-3 mb-4">
+              {addMode === 'watchlist' && watchlistLists.length > 0 && (
+                <div className="bg-indigo-50/70 p-3 rounded-2xl border border-indigo-200/80">
+                  <label className="text-[11px] font-black uppercase text-indigo-800 block mb-1.5">
+                    Lista / Cartera de Seguimiento
+                  </label>
+                  <select
+                    value={targetListId}
+                    onChange={e => setTargetListId(e.target.value)}
+                    className="w-full bg-white border border-indigo-300 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                    {watchlistLists.map(l => (
+                      <option key={l.id} value={l.id}>
+                        {l.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* 1. CAMPO: FECHA DE ENTRADA / COMPRA */}
+              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-[11px] font-black uppercase text-slate-700 flex items-center gap-1">
+                    <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>{addMode === 'watchlist' ? 'Fecha de entrada en lista' : 'Fecha de la compra'}</span>
+                  </label>
                     <span className="text-[10px] text-emerald-700 font-bold">
                       {formatDateToSpanish(purchaseDate)}
                     </span>
@@ -743,7 +824,7 @@ export const SearchModalView: React.FC<SearchModalViewProps> = ({
                     type="number"
                     step="any"
                     value={priceInput}
-                    onChange={e => setPriceInput(e.target.value)}
+                    onChange={e => handlePriceInputChange(e.target.value)}
                     placeholder={quickAddAsset.price.toString()}
                     className="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
@@ -754,7 +835,7 @@ export const SearchModalView: React.FC<SearchModalViewProps> = ({
                       <span>Precio histórico estimado: <strong>{formatEUR(historicalEstimate.estimatedPrice)}</strong></span>
                       <button
                         type="button"
-                        onClick={() => setPriceInput(historicalEstimate.estimatedPrice.toString())}
+                        onClick={() => handlePriceInputChange(historicalEstimate.estimatedPrice.toString())}
                         className="px-2 py-0.5 rounded-lg bg-emerald-600 text-white font-bold text-[10px] hover:bg-emerald-700 transition-colors shadow-2xs"
                       >
                         Aplicar
@@ -772,20 +853,52 @@ export const SearchModalView: React.FC<SearchModalViewProps> = ({
                     type="number"
                     step="any"
                     value={sharesInput}
-                    onChange={e => setSharesInput(e.target.value)}
+                    onChange={e => handleSharesInputChange(e.target.value)}
                     className="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
 
-                {/* Resumen del importe total */}
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <span className="text-slate-500">Total inversión estimada:</span>
-                  <span className="font-black text-slate-900 text-sm">
-                    {formatEUR((parseFloat(sharesInput) || 0) * (parseFloat(priceInput) || 0))}
-                  </span>
+                {/* 4. CAMPO EDITABLE: TOTAL INVERSIÓN (€) -> CALCULA AUTOMÁTICAMENTE LOS TÍTULOS */}
+                <div className="pt-2 border-t border-slate-100 space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <label className="text-[11px] font-black text-slate-700">
+                      Invertir por importe (€):
+                    </label>
+                    <div className="relative w-32">
+                      <input
+                        type="number"
+                        step="any"
+                        value={totalAmountInput}
+                        onChange={e => handleTotalAmountChange(e.target.value)}
+                        placeholder="1000"
+                        className="w-full border border-emerald-300 bg-emerald-50/40 rounded-xl pl-3 pr-7 py-1.5 text-sm font-black text-slate-900 text-right focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-emerald-700">€</span>
+                    </div>
+                  </div>
+
+                  {/* Botones rápidos de importe en euros */}
+                  <div className="flex items-center gap-1.5">
+                    {[500, 1000, 3000, 5000].map(amt => (
+                      <button
+                        key={amt}
+                        type="button"
+                        onClick={() => handleTotalAmountChange(amt.toString())}
+                        className="flex-1 py-1 rounded-lg text-[10px] font-extrabold bg-slate-100 hover:bg-emerald-100 hover:text-emerald-800 text-slate-700 transition"
+                      >
+                        {amt.toLocaleString('es-ES')} €
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center justify-between text-[11px] text-slate-500">
+                    <span>Importe real ({sharesInput || 0} títulos):</span>
+                    <span className="font-black text-slate-900">
+                      {formatEUR((parseFloat(sharesInput) || 0) * (parseFloat(priceInput) || quickAddAsset.price || 0))}
+                    </span>
+                  </div>
                 </div>
               </div>
-            )}
 
             <div className="flex gap-2">
               <button

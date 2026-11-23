@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 42" fill="none">
+  <!-- Kraken iconic purple symbol -->
+  <rect x="2" y="5" width="32" height="32" rx="9" fill="#5741D9"/>
+  <path d="M18 11.5C13.6 11.5 10.5 14.5 10.5 18.8V28.5C10.5 29.4 11.2 30 12 30C12.8 30 13.5 29.4 13.5 28.5V23.2C13.5 22.3 14.1 21.7 14.9 21.7C15.7 21.7 16.3 22.3 16.3 23.2V28.5C16.3 29.4 17 30 17.8 30C18.6 30 19.3 29.4 19.3 28.5V23.2C19.3 22.3 19.9 21.7 20.7 21.7C21.5 21.7 22.1 22.3 22.1 23.2V28.5C22.1 29.4 22.8 30 23.6 30C24.4 30 25.1 29.4 25.1 28.5V18.8C25.1 14.5 22.4 11.5 18 11.5Z" fill="#FFFFFF"/>
+  <!-- Kraken wordmark -->
+  <text x="42" y="29" font-family="system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif" font-size="25" font-weight="800" letter-spacing="-0.6" fill="#231F20">kraken</text>
+</svg>

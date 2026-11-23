@@ -317,26 +317,26 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   };
 
   return (
-    <div className="pb-28 pt-2 px-4 max-w-md mx-auto">
+    <div className="pb-28 pt-2 px-4 max-w-md mx-auto min-h-screen bg-gradient-to-b from-[#E6F4FE] via-[#F5FAFF] to-white dark:from-[#0B1221] dark:via-[#0B0F19] dark:to-[#0B0F19]">
       {/* 1. Cabecera */}
-      <header className="pt-1 pb-4">
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white">Perfil & Carteras</h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">José Manuel Portafolio 💼 • Gestión de carteras y ajustes</p>
+      <header className="pt-2 pb-4">
+        <h1 className="text-3xl font-black tracking-tight text-[#081C3E] dark:text-white">Perfil & Carteras</h1>
+        <p className="text-xs text-[#173A6A]/80 dark:text-slate-400 font-semibold">José Manuel Portafolio • Gestión de carteras y ajustes</p>
       </header>
 
-      {/* 2. Tarjeta de Usuario */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 mb-4 shadow-xs flex items-center gap-3.5">
-        <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-blue-700 via-indigo-600 to-slate-900 text-white font-black text-xl flex items-center justify-center shadow-md">
+      {/* 2. Tarjeta de Usuario con Avatar Dorado */}
+      <div className="fintech-card-blue border border-sky-200/80 dark:border-slate-800 rounded-3xl p-4 mb-4 flex items-center gap-3.5">
+        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#0F2952] via-[#173566] to-[#0B1D3B] text-white font-black text-xl flex items-center justify-center ring-2 ring-amber-400 border-2 border-amber-200/90 shadow-[0_0_18px_rgba(251,191,36,0.55)] shrink-0">
           JM
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="font-extrabold text-slate-900 dark:text-white text-base">José Manuel</h2>
-            <span className="text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full">
+            <h2 className="font-black text-[#081C3E] dark:text-white text-base">José Manuel</h2>
+            <span className="text-[10px] font-extrabold bg-emerald-100/90 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full">
               Cuenta Activa
             </span>
           </div>
-          <span className="text-xs text-slate-500 dark:text-slate-400">jose.manuel@inversor.es • Cartera Privada</span>
+          <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">jose.manuel@inversor.es • Cartera Privada</span>
         </div>
       </div>
 

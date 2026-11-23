@@ -33,6 +33,7 @@ export const App: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [searchInitialCategory, setSearchInitialCategory] = useState<AssetType | undefined>(undefined);
   const [isImportOpen, setIsImportOpen] = useState<boolean>(false);
+  const [activeWatchlistListId, setActiveWatchlistListId] = useState<string>('default');
 
   // Security PIN lock state
   const [pinCode, setPinCode] = useState<string>(() => {
@@ -306,18 +307,72 @@ export const App: React.FC = () => {
     });
   };
 
-  // Add item to Watchlist from search
+  const watchlistLists =
+    portfolioState.watchlistLists && portfolioState.watchlistLists.length > 0
+      ? portfolioState.watchlistLists
+      : [{ id: 'default', name: 'Favoritos', createdAt: '2026-01-01' }];
+
+  const handleCreateWatchlistList = (name: string) => {
+    const newList = {
+      id: `wlist-${Date.now()}`,
+      name,
+      createdAt: new Date().toISOString().split('T')[0],
+    };
+    setPortfolioState((prev) => {
+      const base =
+        prev.watchlistLists && prev.watchlistLists.length > 0
+          ? prev.watchlistLists
+          : [{ id: 'default', name: 'Favoritos', createdAt: '2026-01-01' }];
+      return {
+        ...prev,
+        watchlistLists: [...base, newList],
+      };
+    });
+    setActiveWatchlistListId(newList.id);
+  };
+
+  const handleRenameWatchlistList = (listId: string, newName: string) => {
+    const clean = newName.trim();
+    if (!clean) return;
+    setPortfolioState((prev) => {
+      const base =
+        prev.watchlistLists && prev.watchlistLists.length > 0
+          ? prev.watchlistLists
+          : [{ id: 'default', name: 'Favoritos', createdAt: '2026-01-01' }];
+      return {
+        ...prev,
+        watchlistLists: base.map((l) => (l.id === listId ? { ...l, name: clean } : l)),
+      };
+    });
+  };
+
+  const handleDeleteWatchlistList = (listId: string) => {
+    if (listId === 'default') return;
+    setPortfolioState((prev) => ({
+      ...prev,
+      watchlistLists: (prev.watchlistLists || []).filter((l) => l.id !== listId),
+      watchlist: prev.watchlist.filter((w) => (w.listId || 'default') !== listId),
+    }));
+    setActiveWatchlistListId('default');
+  };
+
+  const handleUpdateWatchlistItem = (updated: WatchlistItem) => {
+    setPortfolioState((prev) => ({
+      ...prev,
+      watchlist: prev.watchlist.map((w) => (w.id === updated.id ? updated : w)),
+    }));
+  };
+
+  // Add item to Watchlist / Simulated Portfolio from search
   const handleAddToWatchlist = (
     rawItem: Omit<WatchlistItem, 'id' | 'sparkline' | 'dailyChangeValue'>
   ) => {
     setPortfolioState((prev) => {
-      if (prev.watchlist.some((w) => w.ticker.toUpperCase() === rawItem.ticker.toUpperCase())) {
-        return prev;
-      }
       const dailyChangeValue = rawItem.price * (rawItem.dailyChangePct / 100);
       const newWatchlistItem: WatchlistItem = {
         ...rawItem,
-        id: `watch-${Date.now()}`,
+        id: `watch-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`,
+        listId: rawItem.listId || (activeWatchlistListId === 'all' ? 'default' : activeWatchlistListId) || 'default',
         dailyChangeValue: Number(dailyChangeValue.toFixed(2)),
         sparkline: [
           rawItem.price * 0.99,
@@ -509,6 +564,13 @@ export const App: React.FC = () => {
           {activeTab === 'seguimiento' && (
             <WatchlistView
               watchlist={portfolioState.watchlist}
+              watchlistLists={watchlistLists}
+              activeListId={activeWatchlistListId}
+              onSelectList={setActiveWatchlistListId}
+              onCreateList={handleCreateWatchlistList}
+              onRenameList={handleRenameWatchlistList}
+              onDeleteList={handleDeleteWatchlistList}
+              onUpdateWatchlistItem={handleUpdateWatchlistItem}
               onOpenSearch={() => handleOpenSearch()}
               onGoToProfile={() => handleTabChange('perfil')}
               onRemoveFromWatchlist={handleRemoveFromWatchlist}
@@ -536,7 +598,7 @@ export const App: React.FC = () => {
           )}
         </main>
 
-        {/* Fixed 5-tab bottom navigation */}
+        {/* Fixed 4-tab bluish luminous bottom navigation */}
         <BottomNav
           activeTab={activeTab}
           onChangeTab={handleTabChange}
@@ -548,6 +610,9 @@ export const App: React.FC = () => {
           <SearchModalView
             onClose={() => setIsSearchOpen(false)}
             initialCategory={searchInitialCategory}
+            defaultAddMode={activeTab === 'seguimiento' ? 'watchlist' : 'portfolio'}
+            watchlistLists={watchlistLists}
+            activeWatchlistListId={activeWatchlistListId === 'all' ? 'default' : activeWatchlistListId}
             onAddToPortfolio={handleAddToPortfolio}
             onAddToWatchlist={handleAddToWatchlist}
           />

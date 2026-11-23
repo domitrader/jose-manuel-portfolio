@@ -4,7 +4,7 @@ export type InicioSubTab = 'portafolio' | 'dividendos';
 
 export type AssetType = 'Acciones' | 'ETFs' | 'Fondos' | 'Inmobiliario' | 'Cripto';
 
-export type TimeRange = '1D' | '1S' | '1M' | '3M' | 'YTD' | '1A' | '5A';
+export type TimeRange = '1D' | '1S' | '1M' | '3M' | 'YTD' | '1A' | '5A' | '10A';
 
 export type SortOption = 'name-asc' | 'name-desc' | 'change-asc' | 'change-desc' | 'custom';
 
@@ -67,10 +67,24 @@ export interface PositionItem {
   portfolioId?: string;
   subportfolio?: string;
   broker?: 'DEGIRO' | 'MyInvestor' | 'Kraken' | string;
+  historicalNetCashFlow?: number;
+  historicalPeakCapital?: number;
 }
+
+export interface WatchlistList {
+  id: string;
+  name: string;
+  createdAt: string;
+}
+
+export type WatchlistPortfolioMeta = WatchlistList;
 
 export interface WatchlistItem {
   id: string;
+  listId?: string;
+  addedDate?: string;
+  entryPrice?: number;
+  shares?: number;
   name: string;
   ticker: string;
   isin?: string;
@@ -177,6 +191,7 @@ export interface PortfolioState {
   portfolios: PortfolioMeta[];
   positions: PositionItem[];
   watchlist: WatchlistItem[];
+  watchlistLists?: WatchlistList[];
   events: FinancialEvent[];
   tradingAnalytics?: TradingAnalytics;
   historicalAssetStats?: HistoricalAssetStat[];

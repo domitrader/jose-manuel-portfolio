@@ -90,14 +90,17 @@ export function calculatePortfolioMetrics(positions: PositionItem[], cash: numbe
   let totalCostBasis = 0;
   let dailyChangeValue = 0;
   let annualProjectedDividends = 0;
+  let totalUnrealizedGainLoss = 0;
 
   for (const pos of positions) {
-    const posValue = pos.shares * pos.currentPrice;
-    const posCost = pos.shares * pos.avgPrice;
+    const posValue = pos.totalValue !== undefined ? pos.totalValue : (pos.shares * pos.currentPrice);
+    const posCost = pos.avgPrice ? (pos.shares * pos.avgPrice) : posValue;
+    const posPnl = pos.unrealizedGainLoss !== undefined ? pos.unrealizedGainLoss : (posValue - posCost);
     
     totalMarketValue += posValue;
     totalCostBasis += posCost;
-    dailyChangeValue += pos.dailyChangeValue;
+    totalUnrealizedGainLoss += posPnl;
+    dailyChangeValue += pos.dailyChangeValue || 0;
 
     if (pos.annualDividendPerShare) {
       annualProjectedDividends += pos.shares * pos.annualDividendPerShare;
@@ -106,7 +109,7 @@ export function calculatePortfolioMetrics(positions: PositionItem[], cash: numbe
     }
   }
 
-  const unrealizedGainLoss = totalMarketValue - totalCostBasis;
+  const unrealizedGainLoss = totalUnrealizedGainLoss;
   const unrealizedGainLossPct = totalCostBasis > 0 ? (unrealizedGainLoss / totalCostBasis) * 100 : 0;
 
   const previousDayValue = totalMarketValue - dailyChangeValue;

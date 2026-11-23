@@ -198,6 +198,8 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
   const stockPositions = filteredPositions.filter(p => p.type === 'Acciones');
   const fondosPositions = filteredPositions.filter(p => p.type === 'Fondos' && p.broker !== 'Urbanitae');
   const inmobiliarioPositions = filteredPositions.filter(p => p.type === 'Inmobiliario' || p.broker === 'Urbanitae');
+  const etfPositions = filteredPositions.filter(p => p.type === 'ETFs');
+  const cryptoPositions = filteredPositions.filter(p => p.type === 'Cripto');
   const etfAndCryptoPositions = filteredPositions.filter(p => p.type === 'ETFs' || p.type === 'Cripto');
 
   // Separación individual de proyectos Urbanitae: Plusvalía (Equity) vs Préstamos (Deuda Garantizada)
@@ -853,7 +855,7 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                                     )}
                                   </div>
                                   <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                                    {pos.exchange || 'NDQ'} | ${pos.currentPrice} × {pos.shares}
+                                    {pos.exchange || (pos.currency === 'USD' ? 'NYSE' : 'BME')} | {pos.currency === 'USD' ? '$' : '€'} {pos.currentPrice} × {pos.shares}
                                   </div>
                                 </div>
                               </div>
@@ -861,9 +863,15 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                                 <div className="font-extrabold text-slate-900 dark:text-white text-xs">
                                   {formatEUR(pos.totalValue, hideFigures)}
                                 </div>
-                                <div className={`text-[11px] font-bold ${isLoss ? 'text-rose-500' : 'text-emerald-500'}`}>
-                                  +{formatEUR(pos.dailyChangeValue, hideFigures)} (+{pos.dailyChangePct.toFixed(2)}%)
-                                </div>
+                                {pos.unrealizedGainLoss !== undefined && pos.unrealizedGainLoss !== 0 ? (
+                                  <div className={`text-[11px] font-bold ${pos.unrealizedGainLoss < 0 ? 'text-rose-500' : 'text-emerald-500'}`}>
+                                    {pos.unrealizedGainLoss > 0 ? '+' : ''}{formatEUR(pos.unrealizedGainLoss, hideFigures)} ({pos.unrealizedGainLossPct !== undefined ? `${pos.unrealizedGainLossPct > 0 ? '+' : ''}${pos.unrealizedGainLossPct.toFixed(2)}%` : ''})
+                                  </div>
+                                ) : (
+                                  <div className={`text-[11px] font-bold ${isLoss ? 'text-rose-500' : 'text-emerald-500'}`}>
+                                    {pos.dailyChangeValue > 0 ? '+' : ''}{formatEUR(pos.dailyChangeValue, hideFigures)} ({pos.dailyChangePct > 0 ? '+' : ''}{pos.dailyChangePct.toFixed(2)}%)
+                                  </div>
+                                )}
                               </div>
                             </div>
                           );
@@ -913,9 +921,15 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                             <div className="font-extrabold text-slate-900 dark:text-white text-xs">
                               {formatEUR(pos.totalValue, hideFigures)}
                             </div>
-                            <div className="text-[11px] font-semibold text-emerald-500">
-                              {pos.purchaseDate ? formatDateToSpanish(pos.purchaseDate) : 'Fondo Indexado'}
-                            </div>
+                            {pos.unrealizedGainLoss !== undefined && pos.unrealizedGainLoss !== 0 ? (
+                              <div className={`text-[11px] font-bold ${pos.unrealizedGainLoss < 0 ? 'text-rose-500' : 'text-emerald-500'}`}>
+                                {pos.unrealizedGainLoss > 0 ? '+' : ''}{formatEUR(pos.unrealizedGainLoss, hideFigures)} ({pos.unrealizedGainLossPct !== undefined ? `${pos.unrealizedGainLossPct > 0 ? '+' : ''}${pos.unrealizedGainLossPct.toFixed(2)}%` : ''})
+                              </div>
+                            ) : (
+                              <div className="text-[11px] font-semibold text-emerald-500">
+                                {pos.purchaseDate ? formatDateToSpanish(pos.purchaseDate) : 'Fondo Indexado'}
+                              </div>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -1097,66 +1111,154 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                   </div>
                 )}
 
-                {/* 2. SECCIÓN: TRACKERS (ETFS) Y CRIPTO (ABAJO) */}
-                {filteredPositions.length > 0 && (selectedAssetFilter === 'Todos' || selectedAssetFilter === 'ETFs' || selectedAssetFilter === 'Cripto') && (
+                {/* SECCIÓN 3: TRACKERS (ETFS) */}
+                {filteredPositions.length > 0 && (selectedAssetFilter === 'Todos' || selectedAssetFilter === 'ETFs') && etfPositions.length > 0 && (
                   <div className="mb-5">
                     <div className="flex items-center justify-between mb-2 pb-1 border-b border-slate-100 dark:border-slate-800">
                       <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                        Trackers (ETFs) ({etfAndCryptoPositions.length})
+                        Trackers (ETFs) ({etfPositions.length})
                       </span>
                       <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
-                        {formatEUR(etfsVal + criptoVal, hideFigures)}
+                        {formatEUR(etfsVal, hideFigures)}
                       </span>
                     </div>
 
                     <div className="space-y-1">
-                      {etfAndCryptoPositions.length > 0 ? (
-                        etfAndCryptoPositions.map(pos => {
-                          const isBitcoin = pos.type === 'Cripto' || pos.name.toUpperCase().includes('BITCOIN');
-                          const displayFlag = isBitcoin ? '₿' : pos.countryFlag;
-
-                          return (
-                            <div
-                              key={pos.id}
-                              onClick={() => setSelectedPosition(pos)}
-                              className="flex items-center justify-between py-2.5 px-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 active:scale-[0.99]"
-                            >
-                              <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white text-xs font-black shadow-xs shrink-0 ${isBitcoin ? 'bg-amber-600' : pos.logoBg || 'bg-blue-700'}`}>
-                                  {isBitcoin ? '₿' : pos.logoText || pos.ticker.slice(0, 3)}
-                                </div>
-                                <div className="min-w-0">
-                                  <div className="font-bold text-slate-900 dark:text-white text-xs truncate flex items-center gap-1.5">
-                                    <span>{pos.name}</span>
-                                    {displayFlag && (
-                                      <span className={`text-xs ${isBitcoin ? 'font-black text-amber-500' : ''}`}>
-                                        {displayFlag}
-                                      </span>
-                                    )}
-                                    {positionViewMode === 'todas' && (
-                                      <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                                        Abierta
-                                      </span>
-                                    )}
-                                  </div>
-                                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                                    {pos.exchange || 'MIL'} | € {pos.currentPrice} × {pos.shares}
-                                  </div>
-                                </div>
+                      {etfPositions.map(pos => (
+                        <div
+                          key={pos.id}
+                          onClick={() => setSelectedPosition(pos)}
+                          className="flex items-center justify-between py-2.5 px-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 active:scale-[0.99]"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white text-xs font-black shadow-xs shrink-0 ${pos.logoBg || 'bg-blue-700'}`}>
+                              {pos.logoText || pos.ticker.slice(0, 3)}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="font-bold text-slate-900 dark:text-white text-xs truncate flex items-center gap-1.5">
+                                <span>{pos.name}</span>
+                                {pos.countryFlag && <span className="text-xs">{pos.countryFlag}</span>}
+                                {positionViewMode === 'todas' && (
+                                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                                    Abierta
+                                  </span>
+                                )}
                               </div>
-                              <div className="text-right shrink-0">
-                                <div className="font-extrabold text-slate-900 dark:text-white text-xs">
-                                  {formatEUR(pos.totalValue, hideFigures)}
+                              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                                {pos.exchange || 'XETR'} | € {pos.currentPrice} × {pos.shares}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <div className="font-extrabold text-slate-900 dark:text-white text-xs">
+                              {formatEUR(pos.totalValue, hideFigures)}
+                            </div>
+                            {pos.unrealizedGainLoss !== undefined && pos.unrealizedGainLoss !== 0 ? (
+                              <div className={`text-[11px] font-bold ${pos.unrealizedGainLoss < 0 ? 'text-rose-500' : 'text-emerald-500'}`}>
+                                {pos.unrealizedGainLoss > 0 ? '+' : ''}{formatEUR(pos.unrealizedGainLoss, hideFigures)} ({pos.unrealizedGainLossPct !== undefined ? `${pos.unrealizedGainLossPct > 0 ? '+' : ''}${pos.unrealizedGainLossPct.toFixed(2)}%` : ''})
+                              </div>
+                            ) : (
+                              <div className={`text-[11px] font-bold ${pos.dailyChangePct < 0 ? 'text-rose-500' : 'text-emerald-500'}`}>
+                                {pos.dailyChangeValue > 0 ? '+' : ''}{formatEUR(pos.dailyChangeValue, hideFigures)} ({pos.dailyChangePct > 0 ? '+' : ''}{pos.dailyChangePct.toFixed(2)}%)
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* SECCIÓN 4: CRIPTOACTIVOS (KRAKEN / OTROS) */}
+                {filteredPositions.length > 0 && (selectedAssetFilter === 'Todos' || selectedAssetFilter === 'Cripto') && (cryptoPositions.length > 0 || activePortfolioId === 'kraken') && (
+                  <div className="mb-5">
+                    <div className="flex items-center justify-between mb-2 pb-1 border-b border-slate-100 dark:border-slate-800">
+                      <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                        <span>🐙</span>
+                        <span>Criptoactivos {activePortfolioId === 'kraken' ? 'Kraken' : ''} ({cryptoPositions.length + (activePortfolioId === 'kraken' ? 1 : 0)})</span>
+                      </span>
+                      <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
+                        {formatEUR(criptoVal + (activePortfolioId === 'kraken' ? activeCash : 0), hideFigures)}
+                      </span>
+                    </div>
+
+                    <div className="space-y-1">
+                      {cryptoPositions.map(pos => {
+                        const isBitcoin = pos.ticker === 'BTC' || pos.name.toUpperCase().includes('BITCOIN');
+                        const isEth = pos.ticker === 'ETH' || pos.name.toUpperCase().includes('ETHEREUM');
+                        const isPaxg = pos.ticker === 'PAXG' || pos.name.toUpperCase().includes('GOLD');
+
+                        return (
+                          <div
+                            key={pos.id}
+                            onClick={() => setSelectedPosition(pos)}
+                            className="flex items-center justify-between py-2.5 px-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 active:scale-[0.99]"
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                              <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white text-xs font-black shadow-xs shrink-0 ${isBitcoin ? 'bg-amber-600' : isEth ? 'bg-indigo-600' : isPaxg ? 'bg-amber-500' : pos.logoBg || 'bg-purple-700'}`}>
+                                {isBitcoin ? '₿' : isEth ? 'Ξ' : isPaxg ? '🥇' : pos.logoText || pos.ticker.slice(0, 3)}
+                              </div>
+                              <div className="min-w-0">
+                                <div className="font-bold text-slate-900 dark:text-white text-xs truncate flex items-center gap-1.5">
+                                  <span>{pos.name}</span>
+                                  <span className="text-xs">{pos.ticker}</span>
+                                  {pos.broker === 'Kraken' && (
+                                    <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-purple-500/10 text-purple-600 border border-purple-500/20">
+                                      Kraken
+                                    </span>
+                                  )}
                                 </div>
-                                <div className="text-[11px] font-semibold text-slate-400">
-                                  0,00 (0,00%)
+                                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                                  {pos.market || 'Kraken'} | € {pos.currentPrice} × {pos.shares}
                                 </div>
                               </div>
                             </div>
-                          );
-                        })
-                      ) : (
-                        <p className="text-xs text-slate-400 py-2 italic text-center">No hay ETFs abiertos</p>
+                            <div className="text-right shrink-0">
+                              <div className="font-extrabold text-slate-900 dark:text-white text-xs">
+                                {formatEUR(pos.totalValue, hideFigures)}
+                              </div>
+                              {pos.unrealizedGainLoss !== undefined && pos.unrealizedGainLoss !== 0 ? (
+                                <div className={`text-[11px] font-bold ${pos.unrealizedGainLoss < 0 ? 'text-rose-500' : 'text-emerald-500'}`}>
+                                  {pos.unrealizedGainLoss > 0 ? '+' : ''}{formatEUR(pos.unrealizedGainLoss, hideFigures)} ({pos.unrealizedGainLossPct !== undefined ? `${pos.unrealizedGainLossPct > 0 ? '+' : ''}${pos.unrealizedGainLossPct.toFixed(2)}%` : ''})
+                                </div>
+                              ) : (
+                                <div className={`text-[11px] font-bold ${pos.dailyChangePct < 0 ? 'text-rose-500' : 'text-emerald-500'}`}>
+                                  {pos.dailyChangeValue > 0 ? '+' : ''}{formatEUR(pos.dailyChangeValue, hideFigures)} ({pos.dailyChangePct > 0 ? '+' : ''}{pos.dailyChangePct.toFixed(2)}%)
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      {/* Fila de Efectivo EUR en Kraken si estamos en la cartera Kraken */}
+                      {activePortfolioId === 'kraken' && (
+                        <div className="flex items-center justify-between py-2.5 px-2.5 rounded-2xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/40">
+                          <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                            <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-xs font-black shadow-xs shrink-0 bg-emerald-600">
+                              €
+                            </div>
+                            <div className="min-w-0">
+                              <div className="font-bold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
+                                <span>Euro Efectivo</span>
+                                <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                                  Liquidez
+                                </span>
+                              </div>
+                              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                                Kraken EUR Cash | Coste 1.014,87 €
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <div className="font-extrabold text-slate-900 dark:text-white text-xs">
+                              {formatEUR(activeCash, hideFigures)}
+                            </div>
+                            <div className="text-[11px] font-bold text-rose-500">
+                              -4,79 € (-0,47%)
+                            </div>
+                          </div>
+                        </div>
                       )}
                     </div>
                   </div>

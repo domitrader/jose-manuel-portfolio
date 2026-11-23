@@ -1,7 +1,7 @@
 import { PortfolioState } from '../types/portfolio';
 import { INITIAL_PORTFOLIO_STATE } from '../data/mockPortfolio';
 
-const LOCAL_STORAGE_KEY = 'jose_manuel_portfolio_state_v7';
+const LOCAL_STORAGE_KEY = 'jose_manuel_portfolio_state_v8';
 const SUPABASE_CONFIG_KEY = 'jose_manuel_supabase_config_v1';
 const CLOUD_ROW_ID = 'jose_manuel_portfolio';
 
@@ -16,11 +16,12 @@ const LEGACY_STORAGE_KEYS = [
   'jose_manuel_portfolio_state_v3',
   'jose_manuel_portfolio_state_v4',
   'jose_manuel_portfolio_state_v5',
-  'jose_manuel_portfolio_state_v6'
+  'jose_manuel_portfolio_state_v6',
+  'jose_manuel_portfolio_state_v7'
 ];
 
 function mergeMyInvestorIfMissing(state: PortfolioState): PortfolioState {
-  // Eliminar la antigua posición agregada de Urbanitae si existiera en la nube o caché
+  // Eliminar la antigua posición agregada de Urbanitae si existiera
   let positions = (state.positions || []).filter(p => p.id !== 'pos-urbanitae-12');
 
   // Asegurar que TODAS las posiciones de Urbanitae tengan tipo 'Inmobiliario' y descripción de Crowdfunding
@@ -35,24 +36,28 @@ function mergeMyInvestorIfMissing(state: PortfolioState): PortfolioState {
         logoText: match?.logoText || p.logoText || '•U',
       };
     }
-    // Asegurar dividendYield actualizado para MyInvestor
-    if (p.broker === 'MyInvestor' || p.portfolioId === 'myinvestor') {
-      const match = INITIAL_PORTFOLIO_STATE.positions.find(ip => ip.id === p.id);
-      if (match && match.dividendYield !== undefined && match.dividendYield > 0) {
-        return {
-          ...p,
-          dividendYield: match.dividendYield,
-        };
-      }
-    }
     return p;
   });
 
-  const existingIds = new Set(positions.map(p => p.id));
-  const missingPositions = INITIAL_PORTFOLIO_STATE.positions.filter(
-    p => (p.portfolioId === 'myinvestor' || p.broker === 'MyInvestor' || p.portfolioId === 'urbanitae' || p.broker === 'Urbanitae') && !existingIds.has(p.id)
+  // Reemplazar completamente posiciones de MyInvestor y Kraken con las oficiales exactas del PDF
+  positions = positions.filter(p => p.broker !== 'MyInvestor' && p.portfolioId !== 'myinvestor' && p.broker !== 'Kraken' && p.portfolioId !== 'kraken');
+  const freshMyInvestorAndKraken = INITIAL_PORTFOLIO_STATE.positions.filter(
+    p => p.portfolioId === 'myinvestor' || p.broker === 'MyInvestor' || p.portfolioId === 'kraken' || p.broker === 'Kraken'
   );
+  positions = [...positions, ...freshMyInvestorAndKraken];
+
+  // Sincronizar carteras meta (Kraken con efectivo 1010.08 €, MyInvestor, Urbanitae, etc.)
   const existingPortIds = new Set((state.portfolios || []).map(pt => pt.id));
+  const mergedPortfolios = (state.portfolios || []).map(pt => {
+    if (pt.id === 'kraken') {
+      return { ...pt, cash: 1010.08 };
+    }
+    if (pt.id === 'todas') {
+      return { ...pt, cash: 5370.31 };
+    }
+    return pt;
+  });
+
   const missingPortfolios = INITIAL_PORTFOLIO_STATE.portfolios.filter(
     pt => !existingPortIds.has(pt.id)
   );
@@ -64,8 +69,9 @@ function mergeMyInvestorIfMissing(state: PortfolioState): PortfolioState {
 
   return {
     ...state,
-    portfolios: [...(state.portfolios || []), ...missingPortfolios],
-    positions: [...positions, ...missingPositions],
+    cash: (state.cash || 0) < 5370.31 ? 5370.31 : state.cash,
+    portfolios: [...mergedPortfolios, ...missingPortfolios],
+    positions,
     events: [...(state.events || []), ...missingEvents],
   };
 }

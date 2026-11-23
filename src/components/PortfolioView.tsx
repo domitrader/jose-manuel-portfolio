@@ -40,6 +40,7 @@ import {
   Calendar,
   RefreshCw,
   ChevronDown,
+  ChevronUp,
   Check,
   Upload,
   TrendingUp,
@@ -124,7 +125,8 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
   const [dragOverPortfolioId, setDragOverPortfolioId] = useState<string | null>(null);
   const [sortNotification, setSortNotification] = useState<string | null>(null);
 
-  const touchStateRef = React.useRef<{
+  const listContainerRef = React.useRef<HTMLDivElement | null>(null);
+  const pointerStateRef = React.useRef<{
     fromId: string | null;
     currentOverId: string | null;
     startY: number;
@@ -161,42 +163,74 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
     onReorderPortfolios(currentList);
   };
 
-  const handleTouchStartGrip = (e: React.TouchEvent, portId: string) => {
+  const handleShiftPortfolio = (portId: string, direction: 'up' | 'down') => {
+    if (!portfolios || !onReorderPortfolios) return;
+    const visible = portfolios.filter(p => !p.hidden);
+    const currentList = [...portfolios];
+    const visIdx = visible.findIndex(p => p.id === portId);
+    if (visIdx === -1) return;
+    const targetVisIdx = direction === 'up' ? visIdx - 1 : visIdx + 1;
+    if (targetVisIdx < 0 || targetVisIdx >= visible.length) return;
+
+    const targetPortId = visible[targetVisIdx].id;
+    const fromIndex = currentList.findIndex(p => p.id === portId);
+    const toIndex = currentList.findIndex(p => p.id === targetPortId);
+    if (fromIndex === -1 || toIndex === -1) return;
+
+    const [moved] = currentList.splice(fromIndex, 1);
+    currentList.splice(toIndex, 0, moved);
+    onReorderPortfolios(currentList);
+  };
+
+  const handlePointerDownGrip = (e: React.PointerEvent, portId: string) => {
+    if (e.button !== 0) return;
     e.stopPropagation();
-    touchStateRef.current = {
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {}
+
+    pointerStateRef.current = {
       fromId: portId,
       currentOverId: portId,
-      startY: e.touches[0].clientY,
+      startY: e.clientY,
       hasMoved: false,
     };
     setDraggedPortfolioId(portId);
     setDragOverPortfolioId(portId);
   };
 
-  const handleTouchMoveGrip = (e: React.TouchEvent) => {
-    if (!touchStateRef.current.fromId) return;
-    const touch = e.touches[0];
-    const diff = Math.abs(touch.clientY - touchStateRef.current.startY);
+  const handlePointerMoveGrip = (e: React.PointerEvent) => {
+    if (!pointerStateRef.current.fromId) return;
+    const diff = Math.abs(e.clientY - pointerStateRef.current.startY);
     if (diff > 4) {
-      touchStateRef.current.hasMoved = true;
+      pointerStateRef.current.hasMoved = true;
     }
-    const elem = document.elementFromPoint(touch.clientX, touch.clientY);
-    const itemElem = elem?.closest('[data-portfolio-id]');
-    if (itemElem) {
-      const overId = itemElem.getAttribute('data-portfolio-id');
-      if (overId && overId !== touchStateRef.current.currentOverId) {
-        touchStateRef.current.currentOverId = overId;
-        setDragOverPortfolioId(overId);
+
+    const container = listContainerRef.current;
+    if (!container) return;
+    const items = container.querySelectorAll<HTMLElement>('[data-portfolio-id]');
+    for (let i = 0; i < items.length; i++) {
+      const rect = items[i].getBoundingClientRect();
+      if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
+        const overId = items[i].getAttribute('data-portfolio-id');
+        if (overId && overId !== pointerStateRef.current.currentOverId) {
+          pointerStateRef.current.currentOverId = overId;
+          setDragOverPortfolioId(overId);
+        }
+        break;
       }
     }
   };
 
-  const handleTouchEndGrip = (e: React.TouchEvent) => {
-    const { fromId, currentOverId, hasMoved } = touchStateRef.current;
+  const handlePointerUpGrip = (e: React.PointerEvent) => {
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {}
+    const { fromId, currentOverId, hasMoved } = pointerStateRef.current;
     if (fromId && currentOverId && hasMoved && fromId !== currentOverId) {
       handleMovePortfolio(fromId, currentOverId);
     }
-    touchStateRef.current = { fromId: null, currentOverId: null, startY: 0, hasMoved: false };
+    pointerStateRef.current = { fromId: null, currentOverId: null, startY: 0, hasMoved: false };
     setDraggedPortfolioId(null);
     setDragOverPortfolioId(null);
   };
@@ -408,77 +442,100 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                   </button>
                 </div>
 
-                <div className="space-y-0.5">
-                  {(portfolios || []).filter(p => !p.hidden).map(port => {
-                    const isSelected = (activePortfolioId || 'todas') === port.id;
-                    const isBeingDragged = draggedPortfolioId === port.id;
-                    const isOver = dragOverPortfolioId === port.id && draggedPortfolioId !== port.id;
+                <div ref={listContainerRef} className="space-y-0.5">
+                  {(() => {
+                    const visiblePorts = (portfolios || []).filter(p => !p.hidden);
+                    return visiblePorts.map((port, idx) => {
+                      const isSelected = (activePortfolioId || 'todas') === port.id;
+                      const isBeingDragged = draggedPortfolioId === port.id;
+                      const isOver = dragOverPortfolioId === port.id && draggedPortfolioId !== port.id;
 
-                    return (
-                      <div
-                        key={port.id}
-                        data-portfolio-id={port.id}
-                        onDragOver={(e) => {
-                          e.preventDefault();
-                          if (dragOverPortfolioId !== port.id) setDragOverPortfolioId(port.id);
-                        }}
-                        onDrop={(e) => {
-                          e.preventDefault();
-                          const srcId = e.dataTransfer.getData('text/plain') || draggedPortfolioId;
-                          if (srcId && srcId !== port.id) handleMovePortfolio(srcId, port.id);
-                          setDraggedPortfolioId(null);
-                          setDragOverPortfolioId(null);
-                        }}
-                        className={`group relative flex items-center rounded-xl transition-all ${
-                          isBeingDragged
-                            ? 'opacity-40 scale-[0.98] ring-1 ring-slate-400/50'
-                            : isOver
-                            ? 'ring-2 ring-indigo-500/80 bg-indigo-50/50 dark:bg-indigo-950/40'
-                            : ''
-                        }`}
-                      >
-                        {/* Tirador táctil sutil para mover con el dedo */}
+                      return (
                         <div
-                          onTouchStart={(e) => handleTouchStartGrip(e, port.id)}
-                          onTouchMove={handleTouchMoveGrip}
-                          onTouchEnd={handleTouchEndGrip}
-                          draggable
-                          onDragStart={(e) => {
-                            e.dataTransfer.effectAllowed = 'move';
-                            e.dataTransfer.setData('text/plain', port.id);
-                            setDraggedPortfolioId(port.id);
+                          key={port.id}
+                          data-portfolio-id={port.id}
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            if (dragOverPortfolioId !== port.id) setDragOverPortfolioId(port.id);
                           }}
-                          onDragEnd={() => {
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            const srcId = e.dataTransfer.getData('text/plain') || draggedPortfolioId;
+                            if (srcId && srcId !== port.id) handleMovePortfolio(srcId, port.id);
                             setDraggedPortfolioId(null);
                             setDragOverPortfolioId(null);
                           }}
-                          className="touch-none cursor-grab active:cursor-grabbing p-2 text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 select-none shrink-0"
-                          title="Arrastrar con el dedo para mover"
-                        >
-                          <GripVertical className="w-3.5 h-3.5" />
-                        </div>
-
-                        {/* Botón de selección de cartera */}
-                        <button
-                          onClick={() => {
-                            onSwitchPortfolio?.(port.id);
-                            setShowPortfolioDropdown(false);
-                          }}
-                          className={`flex-1 flex items-center justify-between py-2 pr-3 pl-0.5 text-xs font-bold transition-colors rounded-r-xl ${
-                            isSelected
-                              ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 shadow-xs'
-                              : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                          className={`group relative flex items-center rounded-xl transition-all ${
+                            isBeingDragged
+                              ? 'opacity-40 scale-[0.98] ring-1 ring-slate-400/50'
+                              : isOver
+                              ? 'ring-2 ring-indigo-500/80 bg-indigo-50/50 dark:bg-indigo-950/40'
+                              : ''
                           }`}
                         >
-                          <span className="flex items-center gap-2 min-w-0">
-                            <span className="text-base shrink-0">{port.icon || '💼'}</span>
-                            <span className="truncate">{port.name}</span>
-                          </span>
-                          {isSelected && <Check className="w-3.5 h-3.5 shrink-0 ml-1" />}
-                        </button>
-                      </div>
-                    );
-                  })}
+                          {/* Tirador táctil ultra-sensible con captura de puntero */}
+                          <div
+                            onPointerDown={(e) => handlePointerDownGrip(e, port.id)}
+                            onPointerMove={handlePointerMoveGrip}
+                            onPointerUp={handlePointerUpGrip}
+                            onPointerCancel={handlePointerUpGrip}
+                            style={{ touchAction: 'none' }}
+                            className="cursor-grab active:cursor-grabbing p-2 text-slate-300 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-300 select-none shrink-0"
+                            title="Mantén pulsado y arrastra con el dedo hacia arriba o abajo"
+                          >
+                            <GripVertical className="w-3.5 h-3.5" />
+                          </div>
+
+                          {/* Botón de selección de cartera */}
+                          <button
+                            onClick={() => {
+                              onSwitchPortfolio?.(port.id);
+                              setShowPortfolioDropdown(false);
+                            }}
+                            className={`flex-1 flex items-center justify-between py-2 px-1 text-xs font-bold transition-colors rounded-xl ${
+                              isSelected
+                                ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 shadow-xs'
+                                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                            }`}
+                          >
+                            <span className="flex items-center gap-2 min-w-0">
+                              <span className="text-base shrink-0">{port.icon || '💼'}</span>
+                              <span className="truncate">{port.name}</span>
+                            </span>
+                            {isSelected && <Check className="w-3.5 h-3.5 shrink-0 ml-1" />}
+                          </button>
+
+                          {/* Flechas táctiles discretas para subir o bajar con un toque */}
+                          <div className="flex flex-col items-center justify-center shrink-0 pr-1 gap-0.5 opacity-60 hover:opacity-100">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleShiftPortfolio(port.id, 'up');
+                              }}
+                              disabled={idx === 0}
+                              className="p-0.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 disabled:opacity-10 transition-colors"
+                              title="Subir cartera"
+                            >
+                              <ChevronUp className="w-3 h-3" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleShiftPortfolio(port.id, 'down');
+                              }}
+                              disabled={idx === visiblePorts.length - 1}
+                              className="p-0.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 disabled:opacity-10 transition-colors"
+                              title="Bajar cartera"
+                            >
+                              <ChevronDown className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    });
+                  })()}
                 </div>
 
                 <div className="pt-1.5 mt-1.5 border-t border-slate-100 dark:border-slate-800">

@@ -31,6 +31,8 @@ import {
   Fingerprint,
   GripVertical,
   Sparkles,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-react';
 
 interface ProfileViewProps {
@@ -97,7 +99,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const [dragOverPortfolioId, setDragOverPortfolioId] = useState<string | null>(null);
   const [sortNotification, setSortNotification] = useState<string | null>(null);
 
-  const touchStateRef = React.useRef<{
+  const listContainerRef = React.useRef<HTMLDivElement | null>(null);
+  const pointerStateRef = React.useRef<{
     fromId: string | null;
     currentOverId: string | null;
     startY: number;
@@ -134,42 +137,68 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     onReorderPortfolios(currentList);
   };
 
-  const handleTouchStartGrip = (e: React.TouchEvent, portId: string) => {
+  const handleShiftPortfolio = (portId: string, direction: 'up' | 'down') => {
+    if (!portfolioState.portfolios || !onReorderPortfolios) return;
+    const currentList = [...portfolioState.portfolios];
+    const index = currentList.findIndex(p => p.id === portId);
+    if (index === -1) return;
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= currentList.length) return;
+
+    const [moved] = currentList.splice(index, 1);
+    currentList.splice(targetIndex, 0, moved);
+    onReorderPortfolios(currentList);
+  };
+
+  const handlePointerDownGrip = (e: React.PointerEvent, portId: string) => {
+    if (e.button !== 0) return;
     e.stopPropagation();
-    touchStateRef.current = {
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {}
+
+    pointerStateRef.current = {
       fromId: portId,
       currentOverId: portId,
-      startY: e.touches[0].clientY,
+      startY: e.clientY,
       hasMoved: false,
     };
     setDraggedPortfolioId(portId);
     setDragOverPortfolioId(portId);
   };
 
-  const handleTouchMoveGrip = (e: React.TouchEvent) => {
-    if (!touchStateRef.current.fromId) return;
-    const touch = e.touches[0];
-    const diff = Math.abs(touch.clientY - touchStateRef.current.startY);
+  const handlePointerMoveGrip = (e: React.PointerEvent) => {
+    if (!pointerStateRef.current.fromId) return;
+    const diff = Math.abs(e.clientY - pointerStateRef.current.startY);
     if (diff > 4) {
-      touchStateRef.current.hasMoved = true;
+      pointerStateRef.current.hasMoved = true;
     }
-    const elem = document.elementFromPoint(touch.clientX, touch.clientY);
-    const itemElem = elem?.closest('[data-portfolio-id]');
-    if (itemElem) {
-      const overId = itemElem.getAttribute('data-portfolio-id');
-      if (overId && overId !== touchStateRef.current.currentOverId) {
-        touchStateRef.current.currentOverId = overId;
-        setDragOverPortfolioId(overId);
+
+    const container = listContainerRef.current;
+    if (!container) return;
+    const items = container.querySelectorAll<HTMLElement>('[data-portfolio-id]');
+    for (let i = 0; i < items.length; i++) {
+      const rect = items[i].getBoundingClientRect();
+      if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
+        const overId = items[i].getAttribute('data-portfolio-id');
+        if (overId && overId !== pointerStateRef.current.currentOverId) {
+          pointerStateRef.current.currentOverId = overId;
+          setDragOverPortfolioId(overId);
+        }
+        break;
       }
     }
   };
 
-  const handleTouchEndGrip = (e: React.TouchEvent) => {
-    const { fromId, currentOverId, hasMoved } = touchStateRef.current;
+  const handlePointerUpGrip = (e: React.PointerEvent) => {
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {}
+    const { fromId, currentOverId, hasMoved } = pointerStateRef.current;
     if (fromId && currentOverId && hasMoved && fromId !== currentOverId) {
       handleMovePortfolio(fromId, currentOverId);
     }
-    touchStateRef.current = { fromId: null, currentOverId: null, startY: 0, hasMoved: false };
+    pointerStateRef.current = { fromId: null, currentOverId: null, startY: 0, hasMoved: false };
     setDraggedPortfolioId(null);
     setDragOverPortfolioId(null);
   };
@@ -405,8 +434,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         )}
 
         {/* Listado de Carteras con selector, visibilidad, reordenación y eliminar */}
-        <div className="space-y-2">
-          {portfolioState.portfolios.map(port => {
+        <div ref={listContainerRef} className="space-y-2">
+          {portfolioState.portfolios.map((port, idx) => {
             const isSelected = portfolioState.activePortfolioId === port.id;
             const isHidden = port.hidden === true;
             const isProtected = port.id === 'todas';
@@ -440,23 +469,15 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     : ''
                 }`}
               >
-                {/* Tirador táctil sutil para mover con el dedo */}
+                {/* Tirador táctil ultra-sensible con captura de puntero */}
                 <div
-                  onTouchStart={(e) => handleTouchStartGrip(e, port.id)}
-                  onTouchMove={handleTouchMoveGrip}
-                  onTouchEnd={handleTouchEndGrip}
-                  draggable
-                  onDragStart={(e) => {
-                    e.dataTransfer.effectAllowed = 'move';
-                    e.dataTransfer.setData('text/plain', port.id);
-                    setDraggedPortfolioId(port.id);
-                  }}
-                  onDragEnd={() => {
-                    setDraggedPortfolioId(null);
-                    setDragOverPortfolioId(null);
-                  }}
-                  className="touch-none cursor-grab active:cursor-grabbing p-1.5 -ml-1 text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 select-none shrink-0"
-                  title="Arrastrar con el dedo para mover"
+                  onPointerDown={(e) => handlePointerDownGrip(e, port.id)}
+                  onPointerMove={handlePointerMoveGrip}
+                  onPointerUp={handlePointerUpGrip}
+                  onPointerCancel={handlePointerUpGrip}
+                  style={{ touchAction: 'none' }}
+                  className="cursor-grab active:cursor-grabbing p-1.5 -ml-1 text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 select-none shrink-0"
+                  title="Mantén pulsado y arrastra con el dedo hacia arriba o abajo"
                 >
                   <GripVertical className="w-4 h-4" />
                 </div>
@@ -487,6 +508,28 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 </div>
 
                 <div className="flex items-center gap-1.5 shrink-0">
+                  {/* Flechas para mover posición arriba o abajo */}
+                  <div className="flex flex-col items-center justify-center gap-0.5">
+                    <button
+                      type="button"
+                      onClick={() => handleShiftPortfolio(port.id, 'up')}
+                      disabled={idx === 0}
+                      className="p-1 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 disabled:opacity-15 transition-colors"
+                      title="Mover arriba"
+                    >
+                      <ChevronUp className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleShiftPortfolio(port.id, 'down')}
+                      disabled={idx === portfolioState.portfolios.length - 1}
+                      className="p-1 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 disabled:opacity-15 transition-colors"
+                      title="Mover abajo"
+                    >
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
                   {/* Botón para esconder / mostrar cartera */}
                   {!isProtected && onToggleHidePortfolio && (
                     <button

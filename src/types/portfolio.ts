@@ -65,6 +65,7 @@ export interface PositionItem {
   nextEarningsDate?: string;
   status?: 'Abierta' | 'Cerrada';
   portfolioId?: string;
+  subportfolio?: string;
   broker?: 'DEGIRO' | 'MyInvestor' | 'Kraken' | string;
 }
 

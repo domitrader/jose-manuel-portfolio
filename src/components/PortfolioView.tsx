@@ -1907,12 +1907,15 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
         </section>
       )}
 
-      {/* PESTAÑA: ZONA DE GRÁFICOS (100% sincronizada con José Manuel) */}
+      {/* PESTAÑA: ZONA DE GRÁFICOS (aislada por cartera: DEGIRO tiene su interfaz completa; MyInvestor/BBVA/Kraken/Urbanitae solo sus propios datos) */}
       {activeSubTab === 'graficos' && (
         <section className="relative z-10 pt-1">
           <ChartsHubView
             positions={currentPortfolioPositions}
+            activePortfolioId={activePortfolioId || 'todas'}
             activePortfolioName={activePortObj?.name || 'Todas las Carteras'}
+            activeBrokerLogo={activeBrokerLogo}
+            activeCash={displayCashVal}
             hideFigures={hideFigures}
           />
         </section>

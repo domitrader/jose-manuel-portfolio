@@ -144,6 +144,7 @@ export interface PortfolioMeta {
   color?: string;
   hidden?: boolean;
   cash?: number;
+  goalAmount?: number;
   accessCount?: number;
   lastAccessedAt?: number;
 }

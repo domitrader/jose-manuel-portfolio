@@ -1,0 +1,973 @@
+{
+  "yearly": [
+    {
+      "year": 2026,
+      "netPnl": 1788.97,
+      "fees": 168.79,
+      "trades": 76,
+      "deposits": 0.0,
+      "withdrawals": 0.0,
+      "netCashFlow": 0.0,
+      "peakCapital": 27949.71,
+      "roiPct": 6.4,
+      "months": [
+        {
+          "m": 1,
+          "netPnl": 525.89,
+          "fees": 36.0,
+          "trades": 13,
+          "roiPct": 1.88
+        },
+        {
+          "m": 2,
+          "netPnl": -58.54,
+          "fees": 41.0,
+          "trades": 17,
+          "roiPct": -0.21
+        },
+        {
+          "m": 3,
+          "netPnl": -108.71,
+          "fees": 12.0,
+          "trades": 4,
+          "roiPct": -0.39
+        },
+        {
+          "m": 4,
+          "netPnl": 794.83,
+          "fees": 15.0,
+          "trades": 5,
+          "roiPct": 2.84
+        },
+        {
+          "m": 5,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 6,
+          "netPnl": -23.0,
+          "fees": 23.0,
+          "trades": 9,
+          "roiPct": -0.08
+        },
+        {
+          "m": 7,
+          "netPnl": 5.0,
+          "fees": 12.0,
+          "trades": 4,
+          "roiPct": 0.02
+        },
+        {
+          "m": 8,
+          "netPnl": 136.5,
+          "fees": 4.0,
+          "trades": 2,
+          "roiPct": 0.49
+        },
+        {
+          "m": 9,
+          "netPnl": 81.19,
+          "fees": 12.0,
+          "trades": 12,
+          "roiPct": 0.29
+        },
+        {
+          "m": 10,
+          "netPnl": 213.14,
+          "fees": 9.0,
+          "trades": 9,
+          "roiPct": 0.76
+        },
+        {
+          "m": 11,
+          "netPnl": 222.67,
+          "fees": 4.79,
+          "trades": 1,
+          "roiPct": 0.8
+        },
+        {
+          "m": 12,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        }
+      ]
+    },
+    {
+      "year": 2025,
+      "netPnl": 5935.43,
+      "fees": 285.74,
+      "trades": 101,
+      "deposits": 37500.0,
+      "withdrawals": 30000.0,
+      "netCashFlow": -7500.0,
+      "peakCapital": 37500.0,
+      "roiPct": 15.83,
+      "months": [
+        {
+          "m": 1,
+          "netPnl": -1.0,
+          "fees": 1.0,
+          "trades": 1,
+          "roiPct": -0.0
+        },
+        {
+          "m": 2,
+          "netPnl": 349.63,
+          "fees": 48.0,
+          "trades": 16,
+          "roiPct": 0.93
+        },
+        {
+          "m": 3,
+          "netPnl": -18.0,
+          "fees": 18.0,
+          "trades": 6,
+          "roiPct": -0.05
+        },
+        {
+          "m": 4,
+          "netPnl": -6.0,
+          "fees": 6.0,
+          "trades": 2,
+          "roiPct": -0.02
+        },
+        {
+          "m": 5,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 6,
+          "netPnl": -3.0,
+          "fees": 3.0,
+          "trades": 2,
+          "roiPct": -0.01
+        },
+        {
+          "m": 7,
+          "netPnl": 1398.05,
+          "fees": 32.7,
+          "trades": 10,
+          "roiPct": 3.73
+        },
+        {
+          "m": 8,
+          "netPnl": 817.55,
+          "fees": 24.0,
+          "trades": 10,
+          "roiPct": 2.18
+        },
+        {
+          "m": 9,
+          "netPnl": 1126.68,
+          "fees": 12.0,
+          "trades": 5,
+          "roiPct": 3.0
+        },
+        {
+          "m": 10,
+          "netPnl": 2200.88,
+          "fees": 63.05,
+          "trades": 21,
+          "roiPct": 5.87
+        },
+        {
+          "m": 11,
+          "netPnl": 1637.5,
+          "fees": 48.0,
+          "trades": 18,
+          "roiPct": 4.37
+        },
+        {
+          "m": 12,
+          "netPnl": -1566.86,
+          "fees": 29.99,
+          "trades": 10,
+          "roiPct": -4.18
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "netPnl": 282.96,
+      "fees": 21.0,
+      "trades": 7,
+      "deposits": 0.0,
+      "withdrawals": 0.0,
+      "netCashFlow": 0.0,
+      "peakCapital": 10000.0,
+      "roiPct": 2.83,
+      "months": [
+        {
+          "m": 1,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 2,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 3,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 4,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 5,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 6,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 7,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 8,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 9,
+          "netPnl": -6.0,
+          "fees": 6.0,
+          "trades": 2,
+          "roiPct": -0.06
+        },
+        {
+          "m": 10,
+          "netPnl": -3.0,
+          "fees": 3.0,
+          "trades": 1,
+          "roiPct": -0.03
+        },
+        {
+          "m": 11,
+          "netPnl": 63.9,
+          "fees": 3.0,
+          "trades": 1,
+          "roiPct": 0.64
+        },
+        {
+          "m": 12,
+          "netPnl": 228.06,
+          "fees": 9.0,
+          "trades": 3,
+          "roiPct": 2.28
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "netPnl": 707.22,
+      "fees": 4.0,
+      "trades": 6,
+      "deposits": 2500.0,
+      "withdrawals": 0.0,
+      "netCashFlow": -2500.0,
+      "peakCapital": 10000.0,
+      "roiPct": 7.07,
+      "months": [
+        {
+          "m": 1,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 2,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 3,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 4,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 5,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 6,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 7,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 8,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 9,
+          "netPnl": -3.0,
+          "fees": 3.0,
+          "trades": 3,
+          "roiPct": -0.03
+        },
+        {
+          "m": 10,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 11,
+          "netPnl": 0.0,
+          "fees": 0.0,
+          "trades": 0,
+          "roiPct": 0.0
+        },
+        {
+          "m": 12,
+          "netPnl": 710.22,
+          "fees": 1.0,
+          "trades": 3,
+          "roiPct": 7.1
+        }
+      ]
+    }
+  ],
+  "weeklyByYear": {
+    "2026": [
+      {
+        "w": "S01",
+        "label": "02 Jan",
+        "netPnl": -3.0,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S04",
+        "label": "22 Jan",
+        "netPnl": 206.13,
+        "fees": 21.0,
+        "trades": 7
+      },
+      {
+        "w": "S05",
+        "label": "29 Jan",
+        "netPnl": 322.76,
+        "fees": 12.0,
+        "trades": 5
+      },
+      {
+        "w": "S06",
+        "label": "05 Feb",
+        "netPnl": 13.65,
+        "fees": 32.0,
+        "trades": 14
+      },
+      {
+        "w": "S08",
+        "label": "18 Feb",
+        "netPnl": -69.18,
+        "fees": 6.0,
+        "trades": 2
+      },
+      {
+        "w": "S09",
+        "label": "27 Feb",
+        "netPnl": -3.0,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S10",
+        "label": "02 Mar",
+        "netPnl": -99.71,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S12",
+        "label": "18 Mar",
+        "netPnl": -9.0,
+        "fees": 9.0,
+        "trades": 3
+      },
+      {
+        "w": "S16",
+        "label": "17 Apr",
+        "netPnl": 794.83,
+        "fees": 15.0,
+        "trades": 5
+      },
+      {
+        "w": "S23",
+        "label": "05 Jun",
+        "netPnl": -4.0,
+        "fees": 4.0,
+        "trades": 2
+      },
+      {
+        "w": "S24",
+        "label": "11 Jun",
+        "netPnl": -9.0,
+        "fees": 9.0,
+        "trades": 3
+      },
+      {
+        "w": "S26",
+        "label": "24 Jun",
+        "netPnl": -9.0,
+        "fees": 9.0,
+        "trades": 3
+      },
+      {
+        "w": "S27",
+        "label": "29 Jun",
+        "netPnl": -1.0,
+        "fees": 1.0,
+        "trades": 1
+      },
+      {
+        "w": "S31",
+        "label": "30 Jul",
+        "netPnl": 5.0,
+        "fees": 12.0,
+        "trades": 4
+      },
+      {
+        "w": "S32",
+        "label": "04 Aug",
+        "netPnl": 137.5,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S35",
+        "label": "26 Aug",
+        "netPnl": -1.0,
+        "fees": 1.0,
+        "trades": 1
+      },
+      {
+        "w": "S36",
+        "label": "01 Sep",
+        "netPnl": -1.0,
+        "fees": 1.0,
+        "trades": 1
+      },
+      {
+        "w": "S38",
+        "label": "16 Sep",
+        "netPnl": 48.07,
+        "fees": 3.0,
+        "trades": 3
+      },
+      {
+        "w": "S39",
+        "label": "24 Sep",
+        "netPnl": -25.21,
+        "fees": 3.0,
+        "trades": 3
+      },
+      {
+        "w": "S40",
+        "label": "30 Sep",
+        "netPnl": 59.33,
+        "fees": 5.0,
+        "trades": 5
+      },
+      {
+        "w": "S41",
+        "label": "09 Oct",
+        "netPnl": 184.42,
+        "fees": 4.0,
+        "trades": 4
+      },
+      {
+        "w": "S42",
+        "label": "16 Oct",
+        "netPnl": -3.0,
+        "fees": 3.0,
+        "trades": 3
+      },
+      {
+        "w": "S43",
+        "label": "22 Oct",
+        "netPnl": 31.72,
+        "fees": 2.0,
+        "trades": 2
+      },
+      {
+        "w": "S45",
+        "label": "02 Nov",
+        "netPnl": 222.67,
+        "fees": 4.79,
+        "trades": 1
+      }
+    ],
+    "2025": [
+      {
+        "w": "S01",
+        "label": "31 Dec",
+        "netPnl": -1993.42,
+        "fees": 5.99,
+        "trades": 1
+      },
+      {
+        "w": "S05",
+        "label": "29 Jan",
+        "netPnl": -1.0,
+        "fees": 1.0,
+        "trades": 1
+      },
+      {
+        "w": "S06",
+        "label": "03 Feb",
+        "netPnl": -3.0,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S07",
+        "label": "13 Feb",
+        "netPnl": 143.11,
+        "fees": 12.0,
+        "trades": 4
+      },
+      {
+        "w": "S08",
+        "label": "21 Feb",
+        "netPnl": 224.53,
+        "fees": 18.0,
+        "trades": 6
+      },
+      {
+        "w": "S09",
+        "label": "25 Feb",
+        "netPnl": -15.0,
+        "fees": 15.0,
+        "trades": 5
+      },
+      {
+        "w": "S10",
+        "label": "07 Mar",
+        "netPnl": -9.0,
+        "fees": 9.0,
+        "trades": 3
+      },
+      {
+        "w": "S11",
+        "label": "12 Mar",
+        "netPnl": -3.0,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S12",
+        "label": "21 Mar",
+        "netPnl": -3.0,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S14",
+        "label": "03 Apr",
+        "netPnl": -6.0,
+        "fees": 6.0,
+        "trades": 2
+      },
+      {
+        "w": "S15",
+        "label": "10 Apr",
+        "netPnl": -3.0,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S27",
+        "label": "03 Jul",
+        "netPnl": 1399.33,
+        "fees": 6.0,
+        "trades": 3
+      },
+      {
+        "w": "S28",
+        "label": "11 Jul",
+        "netPnl": -5.7,
+        "fees": 5.7,
+        "trades": 1
+      },
+      {
+        "w": "S30",
+        "label": "25 Jul",
+        "netPnl": -9.0,
+        "fees": 9.0,
+        "trades": 3
+      },
+      {
+        "w": "S31",
+        "label": "01 Aug",
+        "netPnl": 31.39,
+        "fees": 24.0,
+        "trades": 8
+      },
+      {
+        "w": "S32",
+        "label": "04 Aug",
+        "netPnl": 436.7,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S34",
+        "label": "22 Aug",
+        "netPnl": 359.88,
+        "fees": 12.0,
+        "trades": 6
+      },
+      {
+        "w": "S36",
+        "label": "03 Sep",
+        "netPnl": 155.03,
+        "fees": 6.0,
+        "trades": 3
+      },
+      {
+        "w": "S38",
+        "label": "15 Sep",
+        "netPnl": 974.65,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S39",
+        "label": "25 Sep",
+        "netPnl": -3.0,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S41",
+        "label": "10 Oct",
+        "netPnl": 933.0,
+        "fees": 12.0,
+        "trades": 5
+      },
+      {
+        "w": "S42",
+        "label": "17 Oct",
+        "netPnl": 292.79,
+        "fees": 12.0,
+        "trades": 4
+      },
+      {
+        "w": "S43",
+        "label": "24 Oct",
+        "netPnl": 575.67,
+        "fees": 24.05,
+        "trades": 7
+      },
+      {
+        "w": "S44",
+        "label": "30 Oct",
+        "netPnl": 399.42,
+        "fees": 15.0,
+        "trades": 5
+      },
+      {
+        "w": "S45",
+        "label": "07 Nov",
+        "netPnl": 110.41,
+        "fees": 24.0,
+        "trades": 8
+      },
+      {
+        "w": "S46",
+        "label": "14 Nov",
+        "netPnl": 126.67,
+        "fees": 12.0,
+        "trades": 4
+      },
+      {
+        "w": "S47",
+        "label": "19 Nov",
+        "netPnl": 1400.43,
+        "fees": 12.0,
+        "trades": 6
+      },
+      {
+        "w": "S49",
+        "label": "02 Dec",
+        "netPnl": 331.98,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S50",
+        "label": "12 Dec",
+        "netPnl": -6.0,
+        "fees": 6.0,
+        "trades": 2
+      },
+      {
+        "w": "S51",
+        "label": "18 Dec",
+        "netPnl": 100.58,
+        "fees": 15.0,
+        "trades": 6
+      }
+    ],
+    "2023": [
+      {
+        "w": "S36",
+        "label": "07 Sep",
+        "netPnl": -3.0,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S38",
+        "label": "21 Sep",
+        "netPnl": -3.0,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S40",
+        "label": "03 Oct",
+        "netPnl": -3.0,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S47",
+        "label": "23 Nov",
+        "netPnl": 63.9,
+        "fees": 3.0,
+        "trades": 1
+      },
+      {
+        "w": "S49",
+        "label": "08 Dec",
+        "netPnl": 228.06,
+        "fees": 9.0,
+        "trades": 3
+      }
+    ],
+    "2022": [
+      {
+        "w": "S38",
+        "label": "23 Sep",
+        "netPnl": -2.0,
+        "fees": 2.0,
+        "trades": 2
+      },
+      {
+        "w": "S39",
+        "label": "29 Sep",
+        "netPnl": -1.0,
+        "fees": 1.0,
+        "trades": 1
+      },
+      {
+        "w": "S50",
+        "label": "15 Dec",
+        "netPnl": -1.0,
+        "fees": 1.0,
+        "trades": 1
+      },
+      {
+        "w": "S51",
+        "label": "19 Dec",
+        "netPnl": 711.22,
+        "fees": 0.0,
+        "trades": 2
+      }
+    ]
+  },
+  "topWinners": [
+    {
+      "id": "IE00BLRPRL42_MIL",
+      "name": "WISDOMTREE NASDAQ 100 3X DAILY LEVERAGED",
+      "exchange": "MIL",
+      "netPnl": 7047.78,
+      "fees": 328.0,
+      "trades": 118,
+      "isOpen": true
+    },
+    {
+      "id": "IE00B8HGT870_MIL",
+      "name": "WISDOMTREE GOLD 3X DAILY LEVERAGED",
+      "exchange": "MIL",
+      "netPnl": 975.26,
+      "fees": 76.0,
+      "trades": 26,
+      "isOpen": true
+    },
+    {
+      "id": "IE00B7Y34M31_MIL",
+      "name": "WISDOMTREE S&P 500 3X DAILY LEVERAGED",
+      "exchange": "MIL",
+      "netPnl": 317.0,
+      "fees": 4.0,
+      "trades": 4,
+      "isOpen": false
+    },
+    {
+      "id": "FR0010342592_EPA",
+      "name": "AMUNDI NASDAQ-100 DAILY (2X) LEV UCITS ETF ACC",
+      "exchange": "EPA",
+      "netPnl": 306.0,
+      "fees": 4.0,
+      "trades": 2,
+      "isOpen": false
+    },
+    {
+      "id": "IE00B8HGT870_TDG",
+      "name": "WISDOMTREE GOLD 3X DAILY LEVERAGED",
+      "exchange": "TDG",
+      "netPnl": 263.61,
+      "fees": 18.0,
+      "trades": 18,
+      "isOpen": true
+    },
+    {
+      "id": "US92826C8394_NSY",
+      "name": "VISA INC. CLASS A",
+      "exchange": "NSY",
+      "netPnl": 216.97,
+      "fees": 10.49,
+      "trades": 2,
+      "isOpen": true
+    },
+    {
+      "id": "IE00BLRPRL42_TDG",
+      "name": "WISDOMTREE NASDAQ 100 3X DAILY LEVERAGED",
+      "exchange": "TDG",
+      "netPnl": 30.72,
+      "fees": 3.0,
+      "trades": 3,
+      "isOpen": false
+    },
+    {
+      "id": "IE00B7XD2195_MIL",
+      "name": "WISDOMTREE SILVER 3X DAILY LEVERAGED",
+      "exchange": "MIL",
+      "netPnl": 9.28,
+      "fees": 9.0,
+      "trades": 3,
+      "isOpen": false
+    }
+  ],
+  "topLosers": [
+    {
+      "id": "US64110L1061_NDQ",
+      "name": "NETFLIX, INC.",
+      "exchange": "NDQ",
+      "netPnl": -440.02,
+      "fees": 15.04,
+      "trades": 5,
+      "isOpen": false
+    },
+    {
+      "id": "DE000A28M8D0_TDG",
+      "name": "VANECK BITCOIN ETN",
+      "exchange": "TDG",
+      "netPnl": -4.0,
+      "fees": 4.0,
+      "trades": 4,
+      "isOpen": true
+    },
+    {
+      "id": "IE00BCRY6557_XET",
+      "name": "ISHS EUR ULTRASHORT BD UCITS ETF (DIST)",
+      "exchange": "XET",
+      "netPnl": -3.0,
+      "fees": 3.0,
+      "trades": 2,
+      "isOpen": true
+    },
+    {
+      "id": "IE000OYABFQ2_MIL",
+      "name": "ISHARES RUSSELL 2000 SWAP UCITS ETF EUR H A",
+      "exchange": "MIL",
+      "netPnl": -3.0,
+      "fees": 3.0,
+      "trades": 1,
+      "isOpen": true
+    },
+    {
+      "id": "IE00B5BMR087_TDG",
+      "name": "ISHARES CORE S&P 500 UCITS ETF USD (ACC)",
+      "exchange": "TDG",
+      "netPnl": -1.0,
+      "fees": 1.0,
+      "trades": 1,
+      "isOpen": true
+    },
+    {
+      "id": "LU0290358497_TDG",
+      "name": "XTRACKERS II EUR OVERNIGHT RATE SWAP UCITS 1C ETF",
+      "exchange": "TDG",
+      "netPnl": -1.0,
+      "fees": 1.0,
+      "trades": 1,
+      "isOpen": true
+    }
+  ]
+}

@@ -14,7 +14,7 @@ import {
   formatPercent,
   calculatePortfolioMetrics,
 } from '../utils/calculations';
-import { MOCK_CHART_DATA } from '../data/mockPortfolio';
+import { buildRealDegiroChartData } from '../utils/realPortfolioChartBuilder';
 import { Sparkline } from './Sparkline';
 import { InteractiveChart } from './InteractiveChart';
 import { HistoricalAssetModal } from './HistoricalAssetModal';
@@ -358,7 +358,35 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
   const displayDiaBp = metrics.dailyChangeValue;
   const displayDiaBpPct = metrics.dailyChangePct;
   const displayTotalBp = metrics.unrealizedGainLoss;
-  const chartPoints = MOCK_CHART_DATA[selectedTimeRange] || MOCK_CHART_DATA['1D'];
+  const realChart = isDegiroOnly
+    ? buildRealDegiroChartData(
+        selectedTimeRange,
+        totalMarketVal,
+        displayDiaBp,
+        displayDiaBpPct,
+        Number((accountSummary.totalBpDegiro || displayTotalBp).toFixed(2))
+      )
+    : {
+        subtitle: `Evolución real · ${(portfolios || []).find(p => p.id === (activePortfolioId || 'todas'))?.name || 'Todas las Carteras'}`,
+        points: [
+          {
+            date: 'Inicio',
+            label: 'Invertido',
+            value: Number(Math.max(totalMarketVal - displayTotalBp, 0).toFixed(2)),
+            change: 0,
+            changePct: 0,
+          },
+          {
+            date: 'Hoy',
+            label: 'Hoy (vivo)',
+            value: totalMarketVal,
+            change: displayTotalBp,
+            changePct: displayDiaBpPct,
+          },
+        ],
+      };
+  const chartPoints = realChart.points;
+  const chartSubtitle = realChart.subtitle;
 
   // Filtrado y ordenación de posiciones abiertas
   const filteredPositions = currentPortfolioPositions
@@ -886,6 +914,7 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
               onRangeChange={onSelectTimeRange}
               onExpand={() => setShowChartModal(true)}
               onOpenChartsHub={() => setActiveSubTab('graficos')}
+              subtitle={chartSubtitle}
               hideFigures={hideFigures}
             />
           </section>

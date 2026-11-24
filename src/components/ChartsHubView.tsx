@@ -14,7 +14,7 @@ import {
 import { PositionItem } from '../types/portfolio';
 import { formatEUR } from '../utils/calculations';
 import degiroDataRaw from '../data/degiroPositionsData.json';
-import historicalAssetsRaw from '../data/historicalAssetStats.json';
+import degiroChartsDataRaw from '../data/degiroChartsData.json';
 import dividendsDataRaw from '../data/degiroDividendsData.json';
 
 interface ChartsHubViewProps {
@@ -28,81 +28,61 @@ interface ChartsHubViewProps {
 
 type DegiroChartTab = 'heatmap' | 'rendimiento' | 'ranking' | 'distribucion' | 'flujo';
 type BrokerChartTab = 'distribucion' | 'abiertas' | 'ranking' | 'capital';
+type PeriodGranularity = 'years' | 'months' | 'weeks';
 
-interface HistoricalStat {
-  isin: string;
+interface MonthEntry {
+  m: number;
+  netPnl: number;
+  fees: number;
+  trades: number;
+  roiPct: number;
+}
+
+interface YearEntry {
+  year: number;
+  netPnl: number;
+  fees: number;
+  trades: number;
+  deposits: number;
+  withdrawals: number;
+  netCashFlow: number;
+  peakCapital: number;
+  roiPct: number;
+  months: MonthEntry[];
+}
+
+interface WeekEntry {
+  w: string;
+  label: string;
+  netPnl: number;
+  fees: number;
+  trades: number;
+}
+
+interface RankAsset {
+  id: string;
   name: string;
-  type: string;
-  shares: number;
-  cost_basis: number;
-  total_bought_val: number;
-  total_sold_val: number;
-  realized_pnl: number;
-  total_fees: number;
-  trades_count: number;
-  first_trade: string;
-  last_trade: string;
-  status: string;
+  exchange: string;
+  netPnl: number;
+  fees: number;
+  trades: number;
+  isOpen: boolean;
 }
 
 const MONTHS_SHORT = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
 const DEGIRO_SUMMARY = (degiroDataRaw as any).accountSummary || {};
-const HISTORICAL_ASSETS = (Array.isArray(historicalAssetsRaw) ? historicalAssetsRaw : []) as HistoricalStat[];
+const DEGIRO_CHARTS = degiroChartsDataRaw as {
+  yearly: YearEntry[];
+  weeklyByYear: Record<string, WeekEntry[]>;
+  topWinners: RankAsset[];
+  topLosers: RankAsset[];
+};
+const DEGIRO_HEATMAP_YEARS = DEGIRO_CHARTS.yearly;
 const DIVIDENDS_DATA = dividendsDataRaw as {
   annualSummary?: { year: string; gross: number; tax: number; net: number; count: number }[];
   payments?: { date: string; year: string; month: string; product: string; net: number; broker?: string }[];
 };
-
-// Construye tabla mensual real de DEGIRO para José Manuel (2026 → 2022) usando cierres y dividendos reales registrados
-function buildDegiroHeatmapYears() {
-  const years = [2026, 2025, 2024, 2023, 2022];
-  const map = new Map<number, { year: number; netPnl: number; fees: number; trades: number; months: { m: number; netPnl: number; trades: number; roiPct: number }[] }>();
-
-  for (const yr of years) {
-    map.set(yr, {
-      year: yr,
-      netPnl: 0,
-      fees: 0,
-      trades: 0,
-      months: Array.from({ length: 12 }, (_, idx) => ({ m: idx + 1, netPnl: 0, trades: 0, roiPct: 0 })),
-    });
-  }
-
-  const baseCapital = Number(DEGIRO_SUMMARY.totalDeposited || 40000);
-
-  // Asignar cada activo histórico real de DEGIRO al mes/año de su último cierre auditado
-  for (const item of HISTORICAL_ASSETS) {
-    const parts = (item.last_trade || '').split('-');
-    if (parts.length !== 3) continue;
-    const m = parseInt(parts[1], 10);
-    const yr = parseInt(parts[2], 10);
-    const entry = map.get(yr);
-    if (!entry || m < 1 || m > 12) continue;
-
-    const net = Number((item.realized_pnl - item.total_fees).toFixed(2));
-    entry.netPnl = Number((entry.netPnl + net).toFixed(2));
-    entry.fees = Number((entry.fees + item.total_fees).toFixed(2));
-    entry.trades += item.trades_count || 0;
-    const mo = entry.months[m - 1];
-    mo.netPnl = Number((mo.netPnl + net).toFixed(2));
-    mo.trades += item.trades_count || 0;
-  }
-
-  // Calcular % ROI sobre capital depositado real
-  const list = Array.from(map.values()).map(yr => {
-    const roiPct = baseCapital > 0 ? Number(((yr.netPnl / baseCapital) * 100).toFixed(2)) : 0;
-    const months = yr.months.map(mo => ({
-      ...mo,
-      roiPct: baseCapital > 0 ? Number(((mo.netPnl / baseCapital) * 100).toFixed(2)) : 0,
-    }));
-    return { ...yr, roiPct, months };
-  });
-
-  return list;
-}
-
-const DEGIRO_HEATMAP_YEARS = buildDegiroHeatmapYears();
 
 function heatColor(val: number, mode: 'pct' | 'eur'): string {
   if (Math.abs(val) < 0.01) {
@@ -136,16 +116,17 @@ export const ChartsHubView: React.FC<ChartsHubViewProps> = ({
 
   const [degiroTab, setDegiroTab] = useState<DegiroChartTab>('heatmap');
   const [brokerTab, setBrokerTab] = useState<BrokerChartTab>('distribucion');
-  const [heatMode, setHeatMode] = useState<'pct' | 'eur'>('eur');
+  const [heatMode, setHeatMode] = useState<'pct' | 'eur'>('pct');
   const [selectedCell, setSelectedCell] = useState<{
     year: number;
     m: number;
     netPnl: number;
+    fees: number;
     trades: number;
     roiPct: number;
   } | null>(null);
   const [rankMode, setRankMode] = useState<'winners' | 'losers'>('winners');
-  const [perfGranularity, setPerfGranularity] = useState<'years' | 'months'>('years');
+  const [perfGranularity, setPerfGranularity] = useState<PeriodGranularity>('years');
   const [selectedYear, setSelectedYear] = useState<number>(2026);
 
   // Al cambiar de cartera, limpiar celda seleccionada y resetear pestaña apropiada
@@ -235,17 +216,11 @@ export const ChartsHubView: React.FC<ChartsHubViewProps> = ({
     return list.sort((a, b) => (a.unrealizedGainLoss || 0) - (b.unrealizedGainLoss || 0));
   }, [positions, rankMode]);
 
-  // Ranking histórico DEGIRO (solo usado cuando isDegiroOnly === true)
-  const degiroTopWinners = useMemo(
-    () => [...HISTORICAL_ASSETS].filter(a => a.realized_pnl > 0).sort((a, b) => b.realized_pnl - a.realized_pnl),
-    []
-  );
-  const degiroTopLosers = useMemo(
-    () => [...HISTORICAL_ASSETS].filter(a => a.realized_pnl < 0).sort((a, b) => a.realized_pnl - b.realized_pnl),
-    []
-  );
+  // Ranking histórico DEGIRO auditado (solo usado cuando isDegiroOnly === true)
+  const degiroTopWinners = DEGIRO_CHARTS.topWinners;
+  const degiroTopLosers = DEGIRO_CHARTS.topLosers;
 
-  // Barras de rendimiento DEGIRO (Años / Meses)
+  // Barras de rendimiento DEGIRO (Años / Meses / Semanas)
   const degiroBarSeries = useMemo(() => {
     if (perfGranularity === 'years') {
       return DEGIRO_HEATMAP_YEARS.map(y => ({
@@ -255,12 +230,21 @@ export const ChartsHubView: React.FC<ChartsHubViewProps> = ({
         sub: `${y.trades} ops · ${y.roiPct > 0 ? '+' : ''}${y.roiPct.toFixed(2)}%`,
       }));
     }
-    const yr = DEGIRO_HEATMAP_YEARS.find(y => y.year === selectedYear) || DEGIRO_HEATMAP_YEARS[0];
-    return yr.months.map(mo => ({
-      key: `${yr.year}-${mo.m}`,
-      label: MONTHS_SHORT[mo.m - 1],
-      val: mo.netPnl,
-      sub: mo.trades > 0 ? `${mo.trades} ops` : 'Sin cierres',
+    if (perfGranularity === 'months') {
+      const yr = DEGIRO_HEATMAP_YEARS.find(y => y.year === selectedYear) || DEGIRO_HEATMAP_YEARS[0];
+      return yr.months.map(mo => ({
+        key: `${yr.year}-${mo.m}`,
+        label: MONTHS_SHORT[mo.m - 1],
+        val: mo.netPnl,
+        sub: mo.trades > 0 ? `${mo.trades} ops · comis. ${mo.fees.toFixed(2)}€` : 'Sin operaciones',
+      }));
+    }
+    const wks = DEGIRO_CHARTS.weeklyByYear[String(selectedYear)] || [];
+    return wks.map(w => ({
+      key: `${selectedYear}-${w.w}`,
+      label: `${w.w} (${w.label})`,
+      val: w.netPnl,
+      sub: `${w.trades} ops · comis. ${w.fees.toFixed(2)}€`,
     }));
   }, [perfGranularity, selectedYear]);
 
@@ -461,7 +445,7 @@ export const ChartsHubView: React.FC<ChartsHubViewProps> = ({
           </div>
         )}
 
-        {/* 2. RENDIMIENTO POR AÑOS / MESES */}
+        {/* 2. RENDIMIENTO POR AÑOS / MESES / SEMANAS */}
         {degiroTab === 'rendimiento' && (
           <div className="bg-white dark:bg-slate-900 border border-sky-200/80 dark:border-slate-800 rounded-3xl p-4 shadow-xs space-y-3">
             <div className="flex items-center justify-between gap-2">
@@ -470,14 +454,14 @@ export const ChartsHubView: React.FC<ChartsHubViewProps> = ({
                   Rendimiento Real DEGIRO
                 </h2>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                  Beneficio neto por {perfGranularity === 'years' ? 'año (2022–2026)' : `meses de ${selectedYear}`}
+                  Beneficio neto por {perfGranularity === 'years' ? 'año (2022–2026)' : perfGranularity === 'months' ? `meses de ${selectedYear}` : `semanas de ${selectedYear}`}
                 </p>
               </div>
-              <div className="inline-flex rounded-xl bg-sky-50 dark:bg-slate-800 p-0.5 border border-sky-200/80 dark:border-slate-700">
+              <div className="inline-flex rounded-xl bg-sky-50 dark:bg-slate-800 p-0.5 border border-sky-200/80 dark:border-slate-700 shrink-0">
                 <button
                   type="button"
                   onClick={() => setPerfGranularity('years')}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold ${
+                  className={`px-2 py-1 rounded-lg text-[10px] font-extrabold ${
                     perfGranularity === 'years' ? 'bg-white dark:bg-slate-900 text-sky-700 dark:text-white shadow-2xs' : 'text-slate-500'
                   }`}
                 >
@@ -486,16 +470,25 @@ export const ChartsHubView: React.FC<ChartsHubViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setPerfGranularity('months')}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold ${
+                  className={`px-2 py-1 rounded-lg text-[10px] font-extrabold ${
                     perfGranularity === 'months' ? 'bg-white dark:bg-slate-900 text-sky-700 dark:text-white shadow-2xs' : 'text-slate-500'
                   }`}
                 >
                   Meses
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setPerfGranularity('weeks')}
+                  className={`px-2 py-1 rounded-lg text-[10px] font-extrabold ${
+                    perfGranularity === 'weeks' ? 'bg-white dark:bg-slate-900 text-sky-700 dark:text-white shadow-2xs' : 'text-slate-500'
+                  }`}
+                >
+                  Semanas
+                </button>
               </div>
             </div>
 
-            {perfGranularity === 'months' && (
+            {perfGranularity !== 'years' && (
               <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
                 {DEGIRO_HEATMAP_YEARS.map(y => (
                   <button
@@ -566,7 +559,7 @@ export const ChartsHubView: React.FC<ChartsHubViewProps> = ({
                   Top Activos Históricos DEGIRO
                 </h2>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                  Beneficio realizado auditado (12 activos operados)
+                  Beneficio neto realizado auditado (190 operaciones)
                 </p>
               </div>
               <div className="inline-flex rounded-xl bg-sky-50 dark:bg-slate-800 p-0.5 border border-sky-200/80 dark:border-slate-700 shrink-0">
@@ -597,24 +590,24 @@ export const ChartsHubView: React.FC<ChartsHubViewProps> = ({
                 if (list.length === 0) {
                   return <p className="text-xs text-slate-400 text-center py-4">Sin activos en esta categoría.</p>;
                 }
-                const maxVal = Math.max(...list.map(x => Math.abs(x.realized_pnl)), 1);
+                const maxVal = Math.max(...list.map(x => Math.abs(x.netPnl)), 1);
                 return list.map(item => {
-                  const wPct = Math.max(Math.round((Math.abs(item.realized_pnl) / maxVal) * 100), 4);
-                  const isWin = item.realized_pnl >= 0;
+                  const wPct = Math.max(Math.round((Math.abs(item.netPnl) / maxVal) * 100), 4);
+                  const isWin = item.netPnl >= 0;
                   return (
-                    <div key={item.isin + item.name} className="space-y-1">
+                    <div key={item.id} className="space-y-1">
                       <div className="flex items-center justify-between gap-2 text-xs">
                         <div className="min-w-0">
                           <span className="font-extrabold text-[#081C3E] dark:text-white truncate block">
                             {item.name}
                           </span>
                           <span className="text-[10px] text-slate-500">
-                            {item.trades_count} ops • Comis. {formatEUR(item.total_fees, hideFigures)} • {item.status}
+                            {item.exchange} • {item.trades} ops • Comis. {formatEUR(item.fees, hideFigures)} • {item.isOpen ? 'Abierta' : 'Cerrada'}
                           </span>
                         </div>
                         <span className={`font-black shrink-0 ${isWin ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600'}`}>
-                          {item.realized_pnl > 0 ? '+' : ''}
-                          {formatEUR(item.realized_pnl, hideFigures)}
+                          {item.netPnl > 0 ? '+' : ''}
+                          {formatEUR(item.netPnl, hideFigures)}
                         </span>
                       </div>
                       <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">

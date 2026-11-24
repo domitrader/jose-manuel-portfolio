@@ -23,6 +23,7 @@ import { CommissionsModal } from './CommissionsModal';
 import { NetCashFlowModal } from './NetCashFlowModal';
 import { ClosedProfitsModal } from './ClosedProfitsModal';
 import { ChartsHubView } from './ChartsHubView';
+import { BrokerFeesView } from './BrokerFeesView';
 import { formatDateToSpanish } from '../utils/historicalPriceEstimator';
 import degiroData from '../data/degiroPositionsData.json';
 import earthGlobeHeader from '../assets/earth-globe-header.webp';
@@ -65,6 +66,7 @@ import {
   FileCheck2,
   Menu,
   Briefcase,
+  Receipt,
 } from 'lucide-react';
 
 function getBrokerLogo(port?: { id?: string; name?: string; broker?: string } | null): string | null {
@@ -501,7 +503,9 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                 ? 'José Manuel'
                 : activeSubTab === 'graficos'
                   ? 'Zona de Gráficos'
-                  : 'Dividendos'}
+                  : activeSubTab === 'tarifas'
+                    ? 'Tarifas y Buscadores'
+                    : 'Dividendos'}
             </h1>
 
             {/* Selector Desplegable ÚNICO de Cartera (sin duplicar el logo) */}
@@ -745,6 +749,13 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                     subtitle: 'Auditoría Histórica y Calendario Futuro',
                     icon: Coins,
                     color: 'text-emerald-600',
+                  },
+                  {
+                    id: 'tarifas' as InicioSubTab,
+                    label: 'Tarifas y Buscadores',
+                    subtitle: 'DEGIRO, MyInvestor, Kraken/BBVA y Links',
+                    icon: Receipt,
+                    color: 'text-amber-500',
                   },
                 ]
               ).map(item => {
@@ -1939,6 +1950,13 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
             activeCash={displayCashVal}
             hideFigures={hideFigures}
           />
+        </section>
+      )}
+
+      {/* PESTAÑA: TARIFAS Y BUSCADORES OFICIALES */}
+      {activeSubTab === 'tarifas' && (
+        <section className="relative z-10 pt-1">
+          <BrokerFeesView showExtendedBrokers={true} />
         </section>
       )}
 
